@@ -1,0 +1,19 @@
+server:
+  address: 127.0.0.9
+  port: 2233
+  compression:
+    enabled: true
+    min-response-size: 1KB
+    mime-types:
+      - text/*
+      - application/javascript
+      - text/javascript
+      - application/json
+      - application/xml
+    excluded-user-agents:
+      - application/octet-stream
+      - application/zip
+      - application/x-gzip
+      - image/*
+      - audio/*
+      - video/*

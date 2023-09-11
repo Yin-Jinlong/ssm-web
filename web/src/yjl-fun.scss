@@ -1,0 +1,7 @@
+@function whiteAlpha($v) {
+  @return rgba(255, 255, 255, $v)
+}
+
+@function blackAlpha($v) {
+  @return rgba(0, 0, 0, $v)
+}

@@ -1,0 +1,86 @@
+@use 'yjl-var' as v;
+@use 'yjl-fun' as f;
+@forward 'element-plus/theme-chalk/src/common/var.scss' with (
+$colors:(
+  'primary':(
+    'base':v.$color-primary
+  ),
+  'warning': (
+      'base': v.$color-warning
+    ),
+)
+);
+
+@use 'element-plus/theme-chalk/src/dark/var';
+@use 'element-plus/theme-chalk/src/dark/css-vars';
+@use 'element-plus/theme-chalk/src/base';
+
+// 预导入
+@use 'element-plus/theme-chalk/src/space';
+@use 'element-plus/theme-chalk/src/link';
+@use 'element-plus/theme-chalk/src/row';
+@use 'element-plus/theme-chalk/src/col';
+@use 'element-plus/theme-chalk/src/scrollbar';
+@use 'element-plus/theme-chalk/src/button';
+@use 'element-plus/theme-chalk/src/image';
+@use 'element-plus/theme-chalk/src/popper';
+@use 'element-plus/theme-chalk/src/tooltip-v2';
+@use 'element-plus/theme-chalk/src/overlay';
+@use 'element-plus/theme-chalk/src/dialog';
+@use 'element-plus/theme-chalk/src/form';
+@use 'element-plus/theme-chalk/src/form-item';
+@use 'element-plus/theme-chalk/src/input';
+@use 'element-plus/theme-chalk/src/popconfirm';
+//@use 'element-plus/theme-chalk/';
+
+* {
+  padding : 0;
+  margin  : 0;
+}
+
+:root {
+  --width     : 800px;
+  --min-width : 600px;
+  --max-width : 1200px;
+  --bgc       : #{v.$color-bgc};
+  color       : f.blackAlpha(0.8);
+}
+
+html.dark {
+  --bgc : #{v.$color-bgc-dark};
+  color : f.whiteAlpha(0.8);
+}
+
+body {
+  background-color : var(--bgc);
+}
+
+.bg-dot-blur {
+  background-image  : radial-gradient(transparent 1px, var(--bgc) 1px);
+  background-size   : var(--ds) var(--ds);
+  background-repeat : repeat;
+  backdrop-filter   : saturate(50%) blur(var(--ds));
+}
+
+.max-size {
+  width  : 100%;
+  height : 100%;
+}
+
+textarea::-webkit-scrollbar {
+  width  : 8px;
+  height : 8px;
+}
+
+textarea::-webkit-scrollbar-thumb {
+  background    : rgba(128, 128, 128, 0.5);
+  border-radius : 10px;
+}
+
+.el-popconfirm__action {
+  display : flex;
+
+  &>.el-button {
+    width: 100%;
+  }
+}
