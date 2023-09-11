@@ -60,9 +60,11 @@ const showAddDialog = ref(false)
 
 const scrollBar = ref<InstanceType<typeof ElScrollbar>>()
 
-let data = reactive<(AynuCardData & {
+interface KeyedCardData extends AynuCardData {
     time: number
-})[]>([])
+}
+
+let data = reactive<KeyedCardData[]>([])
 
 onMounted(() => {
     let i = 0
@@ -93,7 +95,10 @@ function add() {
 }
 
 function onAdd(v: AynuCardData) {
-    data.push(v)
+    data.push({
+        ...v,
+        time: Date.now()
+    })
     showAddDialog.value = false
     let wrapRef = scrollBar.value!.wrapRef as HTMLDivElement
 
