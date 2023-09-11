@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class FileBean {
 
-    val mfm = MemFileManager(System.getProperty("yjl.web-dir"))
+    val mfm = MemFileManager(System.getProperty("yjl.web-dir") ?: "./web/dist")
 
     @Bean
     fun getMemFileManager(): MemFileManager = mfm

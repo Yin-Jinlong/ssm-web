@@ -32,18 +32,18 @@ repositories {
 
 dependencies {
     // spring-boot-jdbc
-//    implementation("org.springframework.boot:spring-boot-starter-jdbc")
+    implementation("org.springframework.boot:spring-boot-starter-jdbc")
     // spring-boot-web
     implementation("org.springframework.boot:spring-boot-starter-web")
-
-    // spring webmvc
-    implementation("org.springframework:spring-webmvc:6.0.11")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
     // servlet-api
     implementation("jakarta.servlet:jakarta.servlet-api:5.0.0")
+
+    // mybatis
+    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.2")
 
     // mysql
     runtimeOnly("com.mysql:mysql-connector-j")
