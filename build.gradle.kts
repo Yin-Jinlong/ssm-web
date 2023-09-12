@@ -35,6 +35,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     // spring-boot-web
     implementation("org.springframework.boot:spring-boot-starter-web")
+    // spring-validation
+    implementation("org.springframework.boot:spring-boot-starter-validation")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
