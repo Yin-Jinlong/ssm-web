@@ -1,5 +1,6 @@
 package cn.yjl.io
 
+import cn.yjl.log.util.getLogger
 import java.io.File
 import java.util.*
 import java.util.logging.Logger
@@ -15,7 +16,7 @@ class MemFileManager(baseDir: String) {
 
     companion object {
         @JvmStatic
-        val LOGGER: Logger = Logger.getLogger(MemFileManager::class.java.name)
+        val log = getLogger()
     }
 
     private val baseFile = File(baseDir)
@@ -23,11 +24,11 @@ class MemFileManager(baseDir: String) {
 
     init {
         if (!baseFile.exists()) {
-            LOGGER.warning("baseDir $baseFile not exist")
+            log.warning("baseDir $baseFile not exist")
         } else if (!baseFile.isDirectory) {
-            LOGGER.warning("baseDir $baseFile is not a directory")
+            log.warning("baseDir $baseFile is not a directory")
         } else if (!baseFile.canRead()) {
-            LOGGER.warning("baseDir $baseFile can not read")
+            log.warning("baseDir $baseFile can not read")
         }
     }
 
@@ -38,7 +39,7 @@ class MemFileManager(baseDir: String) {
             fileMap[file] = mf
             return mf
         }.onFailure {
-            LOGGER.warning("addCache $file failed -> ${it.message}")
+            log.info("addCache $file failed -> ${it.message}")
         }
         return null
     }
@@ -51,7 +52,7 @@ class MemFileManager(baseDir: String) {
         return if (cache.exists())// 物理文件存在
             cache
         else {// 物理文件不存在
-            LOGGER.warning("file $name in disk not exist")
+            log.warning("file $name in disk not exist")
             fileMap -= name
             null
         }

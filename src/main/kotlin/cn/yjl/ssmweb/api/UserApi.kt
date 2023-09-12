@@ -1,6 +1,7 @@
 package cn.yjl.ssmweb.api
 
 import cn.yjl.db.dao.UserDao
+import cn.yjl.log.util.getLogger
 import cn.yjl.resp.ErrorRespJson
 import cn.yjl.resp.RespCode
 import cn.yjl.resp.ResponseJson
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/user", method = [RequestMethod.POST])
 class UserApi {
 
+    val log = getLogger()
+
     @Autowired
     lateinit var sqlSession: SqlSession
 
@@ -27,9 +30,9 @@ class UserApi {
         @RequestParam
         pwd: String
     ): ResponseJson {
-        val id = uid.toInt()
+        log.info("login:$uid - $pwd")
         val dao = sqlSession.getMapper(UserDao::class.java)
-        val user = dao.getUserByUidPwd(id, pwd)
+        val user = dao.getUserByUidPwd(uid.toInt(), pwd)
         return if (user != null)
             UserLoginRespJson(RespCode.USER_LOGIN_SUCCESS, user)
         else

@@ -31,7 +31,7 @@ repositories {
 }
 
 configurations.all {
-    exclude("com.zaxxer","HikariCP")
+    exclude("com.zaxxer", "HikariCP")
 }
 
 dependencies {
