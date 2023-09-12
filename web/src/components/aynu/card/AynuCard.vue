@@ -18,22 +18,23 @@
                     <el-button><span>编辑</span></el-button>
                 </top-tooltip>
             </div>
-            <div class="card-btn">
-                <top-tooltip
-                        content="删除">
+            <top-tooltip
+                    content="删除">
+                <div class="card-btn">
                     <el-popconfirm
                             :width="100"
                             :confirm-button-type="'danger'"
                             @confirm="onDelete"
                             title="确认删除?">
                         <template #reference>
+
                             <el-button
                                     type="danger"><span>删除</span></el-button>
                         </template>
                     </el-popconfirm>
-                </top-tooltip>
 
-            </div>
+                </div>
+            </top-tooltip>
         </div>
     </el-card>
 </template>
