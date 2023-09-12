@@ -1,0 +1,138 @@
+openapi: 3.0.3
+info:
+  title: UserAPi
+  description: 用户信息Api
+  version: 1.0.0
+servers:
+  - url: 'http://127.0.0.9:2233/api'
+
+paths:
+  /user/login:
+    post:
+      summary: 用户登录
+      description: '
+    
+      - 不带pwd参数时为自动登录（之前已经登录过，且状态未过期）
+      
+      - 带pwd参数时为常规登录
+      '
+      parameters:
+        - $ref: '#/components/parameters/uid'
+        - $ref: '#/components/parameters/pwd'
+
+      responses:
+        '200':
+          description: 登录成功
+          content:
+            'application/json':
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseJson'
+                  - $ref: '#/components/schemas/UserLogin'
+              example:
+                code: 0
+                msg: 登录成功
+                user:
+                  uid: 123456
+                  name: user
+        '400':
+          description: 登录失败
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseJson'
+              example:
+                code: 101
+                msg: 用户名或密码错误
+        default:
+          description: 服务器错误
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseJson'
+              example:
+                code: 1000
+                msg: 服务器错误
+
+components:
+  parameters:
+    uid:
+      in: query
+      name: uid
+      required: true
+      schema:
+        $ref: '#/components/schemas/user-name'
+    pwd:
+      in: query
+      name: pwd
+      required: false
+      schema:
+        $ref: '#/components/schemas/user-pwd'
+
+  schemas:
+
+    uid:
+      type: integer
+      format: int
+      pattern: '\d{6}'
+      minLength: 6
+      maxLength: 6
+      description: 用户id
+      example: 123456
+
+    user-pwd:
+      type: string
+      format: sha-256
+      pattern: '[0-9a-fA-F]{128}'
+      minLength: 128
+      maxLength: 128
+      description: 密码
+      example: 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413'
+
+    user-name:
+      type: string
+      format: String
+      pattern: '\w{3,24}'
+      minLength: 3
+      maxLength: 24
+      description: 用户名
+      example: 'user'
+
+    resp-code:
+      type: integer
+      format: int
+      description: '
+
+      - 0 成功
+
+      - 其他 错误代码
+      '
+      example: 0
+
+    resp-msg:
+      type: string
+      format: String
+      description: 错误信息
+      example: '操作成功'
+
+    ResponseJson:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/resp-code'
+        msg:
+          $ref: '#/components/schemas/resp-msg'
+
+    User:
+      type: object
+      properties:
+        uid:
+          $ref: '#/components/schemas/uid'
+        name:
+          $ref: '#/components/schemas/user-name'
+
+    UserLogin:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'

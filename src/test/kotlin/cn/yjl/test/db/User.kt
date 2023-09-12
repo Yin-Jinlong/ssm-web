@@ -1,6 +1,6 @@
-package cn.yjl.db
+package cn.yjl.test.db
 
 data class User(
-    val uid: Int,
     val name: String,
+    val age: Int
 )
