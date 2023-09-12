@@ -30,11 +30,19 @@ repositories {
     mavenCentral()
 }
 
+configurations.all {
+    exclude("com.zaxxer","HikariCP")
+}
+
 dependencies {
     // spring-boot-jdbc
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     // spring-boot-web
     implementation("org.springframework.boot:spring-boot-starter-web")
+    // druid
+    // https://mvnrepository.com/artifact/com.alibaba/druid-spring-boot-starter
+    implementation("com.alibaba:druid-spring-boot-starter:1.2.19")
+
     // spring-validation
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
