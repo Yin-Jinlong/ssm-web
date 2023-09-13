@@ -6,6 +6,7 @@ import cn.yjl.resp.ErrorRespJson
 import cn.yjl.resp.RespCode
 import cn.yjl.resp.ResponseJson
 import cn.yjl.resp.user.UserLoginRespJson
+import cn.yjl.resp.user.UserRespJson
 import cn.yjl.ssmweb.validater.Uid
 import org.apache.ibatis.session.SqlSession
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*
 
 @Validated
 @RestController
-@RequestMapping("/api/user", method = [RequestMethod.POST])
+@RequestMapping("/api/user", method = [RequestMethod.POST, RequestMethod.GET])
 class UserApi {
 
     val log = getLogger()
@@ -37,6 +38,20 @@ class UserApi {
             UserLoginRespJson(RespCode.USER_LOGIN_SUCCESS, user)
         else
             ErrorRespJson(RespCode.USER_FAILED_LOGIN)
+    }
+
+    @GetMapping("/get")
+    fun getUserName(
+        @RequestParam
+        @Uid
+        uid: String
+    ): ResponseJson {
+        val dao = sqlSession.getMapper(UserDao::class.java)
+        val user = dao.getUserByUid(uid.toInt())
+        return if (user != null)
+            UserRespJson(user)
+        else
+            ErrorRespJson(RespCode.USER_NOT_FOUND)
     }
 
 }

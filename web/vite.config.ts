@@ -13,6 +13,13 @@ export default defineConfig({
     server: {
         port: 2222,
         open: true,
+        proxy:{
+            '/api': {
+                target: 'http://127.0.0.9:2233/api',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/api/, '') // 不可以省略rewrite
+            }
+        }
     },
     resolve: {
         alias: {

@@ -55,6 +55,7 @@ import {AddButton, AddMsgDialog, AynuCard, AynuCardData, CommonHeader} from "@co
 import {onMounted, reactive, ref} from "vue";
 import gsap from "gsap";
 import {Callback, ElScrollbar} from "element-plus";
+import axios from "axios";
 
 const showAddDialog = ref(false)
 
@@ -67,19 +68,35 @@ interface KeyedCardData extends AynuCardData {
 let data = reactive<KeyedCardData[]>([])
 
 onMounted(() => {
-    let i = 0
+
+    function getUser(uid: number, callback) {
+        axios({
+                url: "/api/user/get?uid="+uid,
+                method: 'get'
+            }
+        ).then(res => {
+            callback(res.data.user)
+        })
+    }
 
     function initAdd() {
-        if (i < 10) {
-            i++
-            data.push({
-                name: `USER${i}`,
-                img: '/img/avatar.svg',
-                msg: `msg${i}`,
-                time: Date.now()
-            })
-            setTimeout(initAdd, 100)
-        }
+        axios.get('/api/msg/all').then(res => {
+            console.log(res)
+            for (const item of res.data.data) {
+                console.log(item)
+                getUser(item.uid, (u) => {
+                    data.push({
+                        ...u,
+                        img: '/img/avatar.svg',
+                        ...item
+                    })
+                    data.sort((a,b)=>{
+                        return Date(a)-Date(b)
+                    })
+                })
+
+            }
+        })
     }
 
     initAdd()

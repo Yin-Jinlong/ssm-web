@@ -7,6 +7,24 @@ servers:
   - url: 'http://127.0.0.9:2233/api'
 
 paths:
+
+  /user/getname:
+    get:
+      summary: 获取用户
+      description: 获取用户
+      parameters:
+        - $ref: '#/components/schemas/uid'
+      responses:
+        200:
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseJson'
+                  - $ref: '#/components/schemas/UserJson'
+
+
   /user/login:
     post:
       summary: 用户登录
@@ -53,6 +71,20 @@ paths:
               example:
                 code: 1000
                 msg: 服务器错误
+
+  /msg/all:
+    get:
+      summary: 获取所有消息
+      description: 获取所有消息
+      responses:
+        200:
+          description: 获取成功
+          content:
+            'application/json':
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseJson'
+                  - $ref: '#/components/schemas/MsgList'
 
 components:
   parameters:
@@ -115,6 +147,28 @@ components:
       description: 错误信息
       example: '操作成功'
 
+    msg-obj:
+      type: object
+      description: ；留言消息
+      properties:
+        uid:
+          $ref: '#/components/schemas/uid'
+        msg:
+          type: string
+        time:
+          type: string
+
+    msg-list:
+      type: array
+      items:
+        $ref: '#/components/schemas/msg-obj'
+
+    MsgList:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/msg-list'
+
     ResponseJson:
       type: object
       properties:
@@ -130,6 +184,12 @@ components:
           $ref: '#/components/schemas/uid'
         name:
           $ref: '#/components/schemas/user-name'
+
+    UserJson:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
 
     UserLogin:
       type: object
