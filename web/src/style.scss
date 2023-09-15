@@ -33,7 +33,9 @@ $colors:(
 @use 'element-plus/theme-chalk/src/popconfirm';
 @use 'element-plus/theme-chalk/src/message';
 @use 'element-plus/theme-chalk/src/empty';
-@use 'element-plus/theme-chalk/src';
+@use 'element-plus/theme-chalk/src/skeleton';
+@use 'element-plus/theme-chalk/src/skeleton-item';
+//@use 'element-plus/theme-chalk/src';
 
 * {
   padding : 0;

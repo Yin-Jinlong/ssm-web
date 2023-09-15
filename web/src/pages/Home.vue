@@ -9,27 +9,50 @@
             style="padding: 0 1em">
         <common-header/>
         <div class="contents">
-            <el-empty
-                    v-if="!loading&&data.length==0"
-                    description="空空如也"/>
-            <transition-group
-                    :css="false"
-                    tag="div"
-                    @enter="onEnter"
-                    @leave="onLeave"
-                    @before-enter="beforeEnter"
-                    @before-leave="beforeLeave">
-                <div
-                        v-for="(v,i) in data"
-                        :key="v.time.toString()"
-                        :data-index="i"
-                        style="margin: 1em 0;">
-                    <aynu-card
-                            :data='v'
-                            :on-delete="() =>{del(i)} "
-                            class="aynu-card"/>
-                </div>
-            </transition-group>
+            <el-skeleton
+                    :count="3"
+                    style="--el-skeleton-circle-size: 100px"
+                    :animated="true"
+                    :loading="loading">
+                <template #template>
+                    <div style="display: flex;width: 1000px;margin: 10px auto;align-items: center;justify-content: center">
+                        <div style="width: 120px">
+                            <el-skeleton-item variant="circle"/>
+                            <el-skeleton-item variant="text"/>
+                        </div>
+                        <div style="width: 100%;padding: 1em">
+                            <el-skeleton-item
+                                    style="height: 20px;width: 30%;margin: 5px 0"/>
+                            <el-skeleton-item
+                                    style="height: 60px"/>
+                        </div>
+                    </div>
+
+                </template>
+                <template #default>
+                    <el-empty
+                            v-if="!loading&&data.length==0"
+                            description="空空如也"/>
+                    <transition-group
+                            :css="false"
+                            tag="div"
+                            @enter="onEnter"
+                            @leave="onLeave"
+                            @before-enter="beforeEnter"
+                            @before-leave="beforeLeave">
+                        <div
+                                v-for="(v,i) in data"
+                                :key="v.time.toString()"
+                                :data-index="i"
+                                style="margin: 1em 0;">
+                            <aynu-card
+                                    :data='v'
+                                    :on-delete="() =>{del(i)} "
+                                    class="aynu-card"/>
+                        </div>
+                    </transition-group>
+                </template>
+            </el-skeleton>
         </div>
     </el-scrollbar>
     <add-msg-dialog
@@ -103,24 +126,26 @@ onMounted(() => {
     }
 
     function initAdd() {
-        axios.get('/api/msg/all').then(res => {
-            console.log(res)
-            for (const item of res.data.data as Msg[]) {
-                console.log(item)
-                getUser(item.uid, (u) => {
-                    let time = parseDate(item.time)
-                    data.push({
-                        ...u,
-                        img: '/img/avatar.svg',
-                        ...item,
-                        time: time
+        setTimeout(() => {
+            axios.get('/api/msg/all').then(res => {
+                console.log(res)
+                for (const item of res.data.data as Msg[]) {
+                    console.log(item)
+                    getUser(item.uid, (u) => {
+                        let time = parseDate(item.time)
+                        data.push({
+                            ...u,
+                            img: '/img/avatar.svg',
+                            ...item,
+                            time: time
+                        })
                     })
-                })
-            }
-            loading.value = false
-        }).catch(err => {
-            ElMessage.error("获取数据失败: " + err)
-        })
+                }
+                loading.value = false
+            }).catch(err => {
+                ElMessage.error("获取数据失败: " + err)
+            })
+        }, 1000)
     }
 
     initAdd()
