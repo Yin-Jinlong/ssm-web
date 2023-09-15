@@ -9,6 +9,9 @@
             style="padding: 0 1em">
         <common-header/>
         <div class="contents">
+            <el-empty
+                    v-if="!loading&&data.length==0"
+                    description="空空如也"/>
             <transition-group
                     :css="false"
                     tag="div"
@@ -58,6 +61,8 @@ import {Callback, ElMessage, ElScrollbar} from "element-plus";
 import axios from "axios";
 import User from "@types/User.ts";
 import Msg from "@types/Msg.ts";
+
+const loading = ref(true)
 
 const showAddDialog = ref(false)
 
@@ -112,6 +117,7 @@ onMounted(() => {
                     })
                 })
             }
+            loading.value = false
         }).catch(err => {
             ElMessage.error("获取数据失败: " + err)
         })
