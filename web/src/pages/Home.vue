@@ -32,6 +32,7 @@
                 <template #default>
                     <el-empty
                             v-if="!loading&&data.length==0"
+                            class="empty"
                             description="空空如也"/>
                     <transition-group
                             :css="false"
@@ -73,6 +74,13 @@
   width : 100%;
 }
 
+.empty:not(:has(.is-checked)) {
+  position : absolute;
+  margin   : auto;
+  width    : 100%;
+  filter   : hue-rotate(170deg) brightness(0.9) saturate(3);
+  opacity  : 80%;
+}
 </style>
 
 <script lang="ts" setup>
