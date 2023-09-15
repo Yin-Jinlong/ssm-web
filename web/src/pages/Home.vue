@@ -18,7 +18,7 @@
                     @before-leave="beforeLeave">
                 <div
                         v-for="(v,i) in data"
-                        :key="v.time"
+                        :key="v.time.toString()"
                         :data-index="i"
                         style="margin: 1em 0;">
                     <aynu-card
@@ -54,48 +54,66 @@
 import {AddButton, AddMsgDialog, AynuCard, AynuCardData, CommonHeader} from "@components";
 import {onMounted, reactive, ref} from "vue";
 import gsap from "gsap";
-import {Callback, ElScrollbar} from "element-plus";
+import {Callback, ElMessage, ElScrollbar} from "element-plus";
 import axios from "axios";
+import User from "@types/User.ts";
+import Msg from "@types/Msg.ts";
 
 const showAddDialog = ref(false)
 
 const scrollBar = ref<InstanceType<typeof ElScrollbar>>()
 
-interface KeyedCardData extends AynuCardData {
-    time: number
-}
-
-let data = reactive<KeyedCardData[]>([])
+let data = reactive<AynuCardData[]>([])
 
 onMounted(() => {
 
-    function getUser(uid: number, callback) {
+    function getUser(uid: number, callback: (u: User) => void) {
         axios({
-                url: "/api/user/get?uid="+uid,
+                url: "/api/user/get?uid=" + uid,
                 method: 'get'
             }
         ).then(res => {
             callback(res.data.user)
+        }).catch(err => {
+            ElMessage.error("获取用户信息失败:" + err)
         })
+    }
+
+    function parseDate(date: string): Date | null {
+        //2023-09-13T09:32:02.000+00:00
+        let dateReg = /(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}).(\d{3}).(\d{2}):(\d{2})/
+        if (dateReg.test(date)) {
+            let gs = dateReg.exec(date)!
+            let year = +gs[1]
+            let month = +gs[2]
+            let day = +[3]
+            let hour = +gs[4]
+            let minute = +gs[5]
+            let second = +gs[6]
+            let millisecond = +gs[7]
+            let timezone = +gs[8]
+            return new Date(year, month, day, hour + timezone + 8, minute, second, millisecond)
+        }
+        return null
     }
 
     function initAdd() {
         axios.get('/api/msg/all').then(res => {
             console.log(res)
-            for (const item of res.data.data) {
+            for (const item of res.data.data as Msg[]) {
                 console.log(item)
                 getUser(item.uid, (u) => {
+                    let time = parseDate(item.time)
                     data.push({
                         ...u,
                         img: '/img/avatar.svg',
-                        ...item
-                    })
-                    data.sort((a,b)=>{
-                        return Date(a)-Date(b)
+                        ...item,
+                        time: time
                     })
                 })
-
             }
+        }).catch(err => {
+            ElMessage.error("获取数据失败: " + err)
         })
     }
 
@@ -112,19 +130,8 @@ function add() {
 }
 
 function onAdd(v: AynuCardData) {
-    data.push({
-        ...v,
-        time: Date.now()
-    })
+    data.splice(0, 0, v)
     showAddDialog.value = false
-    let wrapRef = scrollBar.value!.wrapRef as HTMLDivElement
-
-    setTimeout(function scrollBottom() {
-        wrapRef.scrollTo({
-            behavior: "smooth",
-            top: wrapRef.scrollHeight
-        })
-    }, 16)
 }
 
 function beforeEnter(el: Element) {

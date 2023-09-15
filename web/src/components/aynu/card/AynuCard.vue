@@ -10,6 +10,10 @@
             <div class="msg">
                 {{ props.data.msg }}
             </div>
+            <div class="time">
+                {{props.data.time.toLocaleDateString()}}
+                {{props.data.time.toLocaleTimeString()}}
+            </div>
         </div>
         <div class="card-btn-container">
             <div class="card-btn">
@@ -32,7 +36,6 @@
                                     type="danger"><span>删除</span></el-button>
                         </template>
                     </el-popconfirm>
-
                 </div>
             </top-tooltip>
         </div>
@@ -51,6 +54,13 @@
 .base-info {
   width        : max-content;
   border-right : #{f.blackAlpha(0.2)} solid 1px;
+}
+
+.time{
+  position: absolute;
+  top: 0.9em;
+  left: 140px;
+  color: rgba(128,128,128,0.5);
 }
 
 html.dark {
@@ -114,6 +124,7 @@ const props = defineProps<{
         name: string
         img: string
         msg: string
+        time:Date
     },
     onDelete: () => void
 }>()

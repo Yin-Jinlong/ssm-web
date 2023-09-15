@@ -110,7 +110,8 @@ function onsubmit() {
     form.value!.validate((valid: boolean) => {
         if (valid) {
             emits('onAdd', {
-                ...data
+                ...data,
+                time:new Date()
             })
             data.img = '/img/avatar.svg'
             data.name = ''

@@ -1,5 +1,5 @@
 interface Props {
-    data:{
+    data: {
         name: string
         img: string
         msg: string
@@ -10,6 +10,7 @@ declare interface Data {
     name: string
     img: string
     msg: string
+    time: Date
 }
 
 export type AynuCardProps = Props
