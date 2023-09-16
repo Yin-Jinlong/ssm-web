@@ -90,7 +90,7 @@ import {onMounted, reactive, ref} from "vue";
 import gsap from "gsap";
 import {Callback, ElMessage, ElScrollbar} from "element-plus";
 import axios from "axios";
-import {User, Msg} from "@types";
+import {Msg} from "@types";
 
 const loading = ref(true)
 
@@ -101,18 +101,6 @@ const scrollBar = ref<InstanceType<typeof ElScrollbar>>()
 let data = reactive<AynuCardData[]>([])
 
 onMounted(() => {
-
-    function getUser(uid: number, callback: (u: User) => void) {
-        axios({
-                url: "/api/user/get?uid=" + uid,
-                method: 'get'
-            }
-        ).then(res => {
-            callback(res.data.user)
-        }).catch(err => {
-            ElMessage.error("获取用户信息失败:" + err)
-        })
-    }
 
     function parseDate(date: string): Date {
         //2023-09-13T09:32:02.000+00:00
@@ -138,14 +126,11 @@ onMounted(() => {
                 console.log(res)
                 for (const item of res.data.data as Msg[]) {
                     console.log(item)
-                    getUser(item.uid, (u) => {
-                        let time = parseDate(item.time)
-                        data.push({
-                            ...u,
-                            img: '/img/avatar.svg',
-                            ...item,
-                            time
-                        })
+                    let time = parseDate(item.time)
+                    data.push({
+                        img: '/img/avatar.svg',
+                        ...item,
+                        time
                     })
                 }
                 loading.value = false

@@ -153,6 +153,8 @@ components:
       properties:
         uid:
           $ref: '#/components/schemas/uid'
+        name:
+          $ref: '#/components/schemas/user-name'
         msg:
           type: string
         time:

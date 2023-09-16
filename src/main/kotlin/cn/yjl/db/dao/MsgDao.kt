@@ -5,6 +5,6 @@ import org.apache.ibatis.annotations.Select
 
 interface MsgDao {
 
-    @Select("select * from leave_words order by time desc")
+    @Select("select id,name,uid, msg, time  from leave_words natural join user order by time desc")
     fun getAll():Array<Msg>
 }
