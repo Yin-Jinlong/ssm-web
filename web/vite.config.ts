@@ -24,6 +24,7 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': path.resolve(__dirname, './src/'),
+            'Global': path.resolve(__dirname, './src/Global.ts'),
             '@components': path.resolve(__dirname, './src/components'),
             '@pages': path.resolve(__dirname, './src/pages'),
             '@types': path.resolve(__dirname, './src/types'),

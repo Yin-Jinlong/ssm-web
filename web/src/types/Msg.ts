@@ -1,7 +1,7 @@
-interface Msg {
-    uid: number
-    msg: string
-    time: string
+declare module '@types'{
+    interface Msg {
+        uid: number
+        msg: string
+        time: string
+    }
 }
-
-export default Msg;

@@ -90,8 +90,7 @@ import {onMounted, reactive, ref} from "vue";
 import gsap from "gsap";
 import {Callback, ElMessage, ElScrollbar} from "element-plus";
 import axios from "axios";
-import User from "@types/User.ts";
-import Msg from "@types/Msg.ts";
+import {User, Msg} from "@types";
 
 const loading = ref(true)
 
@@ -115,7 +114,7 @@ onMounted(() => {
         })
     }
 
-    function parseDate(date: string): Date | null {
+    function parseDate(date: string): Date {
         //2023-09-13T09:32:02.000+00:00
         let dateReg = /(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}).(\d{3}).(\d{2}):(\d{2})/
         if (dateReg.test(date)) {
@@ -130,7 +129,7 @@ onMounted(() => {
             let timezone = +gs[8]
             return new Date(year, month, day, hour + timezone + 8, minute, second, millisecond)
         }
-        return null
+        throw data
     }
 
     function initAdd() {
@@ -145,7 +144,7 @@ onMounted(() => {
                             ...u,
                             img: '/img/avatar.svg',
                             ...item,
-                            time: time
+                            time
                         })
                     })
                 }

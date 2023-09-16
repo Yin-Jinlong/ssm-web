@@ -1,6 +1,9 @@
-interface User {
-    uid: number
-    name: string
+
+declare module '@types'{
+    interface User {
+        uid: number
+        name: string
+    }
 }
 
-export default User;
+

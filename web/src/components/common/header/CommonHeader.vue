@@ -117,7 +117,7 @@ html.dark {
 <script setup lang="ts">
 
 import {ref, watch} from "vue";
-import {isSystemDarkTheme} from "@/Global.ts";
+import {isSystemDarkTheme} from "Global";
 import {MoonNight, Sunny} from "@element-plus/icons-vue";
 
 const dark = ref<boolean>(isSystemDarkTheme())
