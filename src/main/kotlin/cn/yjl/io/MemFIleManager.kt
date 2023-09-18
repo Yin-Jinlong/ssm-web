@@ -3,7 +3,6 @@ package cn.yjl.io
 import cn.yjl.log.util.getLogger
 import java.io.File
 import java.util.*
-import java.util.logging.Logger
 
 /**
  *
@@ -19,7 +18,14 @@ class MemFileManager(baseDir: String) {
         val log = getLogger()
     }
 
+    /**
+     * 基础文件夹
+     */
     private val baseFile = File(baseDir)
+
+    /**
+     * 映射表
+     */
     private val fileMap = Hashtable<String, MemFile>()
 
     init {
@@ -32,7 +38,13 @@ class MemFileManager(baseDir: String) {
         }
     }
 
-    // 添加到缓存
+    /**
+     * 添加内存缓存
+     *
+     * @param file 要缓存的物理文件
+     *
+     * @return 缓存的文件或null（不存在）
+     */
     private fun addCache(file: String): MemFile? {
         runCatching {
             val mf = MemFile.simple(baseFile, file)
@@ -44,6 +56,13 @@ class MemFileManager(baseDir: String) {
         return null
     }
 
+    /**
+     * 获取内存文件
+     *
+     * @param name 文件名（相对路径）
+     *
+     * @return 文件或null（不存在）
+     */
     operator fun get(name: String): MemFile? {
         // 先从缓存中取
         val cache = fileMap[name] ?:
