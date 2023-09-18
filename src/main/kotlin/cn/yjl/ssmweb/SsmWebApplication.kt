@@ -29,17 +29,15 @@ class SsmWebApplication {
     fun static(req: HttpServletRequest, resp: HttpServletResponse) {
         val path = run {
             val p = req.requestURI.substring(1)
-            p.ifEmpty { "index.html" }.let {
-                if (it.endsWith("/")) {
+            p.ifEmpty { "index.html" }.apply {
+                if (endsWith("/")) {
                     resp.status = SC_FORBIDDEN
                     req.log(SC_FORBIDDEN)
                     return
                 }
-                it
             }
         }
-        val acceptEncoding: String? = req.getHeader(HttpHeaders.ACCEPT_ENCODING)
-        path.openMemFileForEncoding(resp, acceptEncoding)?.apply {
+        path.openMemFileForEncoding(req, resp)?.apply {
             resp.status = SC_OK
             resp.setHeader(HttpHeaders.CONTENT_TYPE, req.servletContext.getMimeType(path))
             writeTo(resp)
@@ -53,10 +51,9 @@ class SsmWebApplication {
     /**
      * 打开请求的文件，如果gz存在则返回gz文件
      */
-    private fun String.openMemFileForEncoding(resp: HttpServletResponse, acceptEncoding: String?): MemFile? {
-        if (acceptEncoding != null && acceptEncoding.contains("gzip")) {
-            val gz = memFileManager["$this.gz"]
-            gz?.apply {
+    private fun String.openMemFileForEncoding(req: HttpServletRequest, resp: HttpServletResponse): MemFile? {
+        if (req.getHeader(HttpHeaders.ACCEPT_ENCODING)?.contains("gzip") == true) {
+            memFileManager["$this.gz"]?.apply {
                 resp.addHeader(HttpHeaders.CONTENT_ENCODING, "gzip")
                 return this
             }
