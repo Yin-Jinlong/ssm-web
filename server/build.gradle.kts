@@ -37,18 +37,18 @@ configurations.all {
 
 dependencies {
     // spring-boot-jdbc
-    implementation("org.springframework.boot:spring-boot-starter-jdbc")
+    implementation("org.springframework.boot:spring-boot-starter-jdbc:3.0.4")
     // spring-boot-web
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-web:3.1.0")
     // druid
     // https://mvnrepository.com/artifact/com.alibaba/druid-spring-boot-starter
     implementation("com.alibaba:druid-spring-boot-starter:1.2.19")
 
     // spring-validation
-    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-validation:3.0.4")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.10")
 
     // servlet-api
     implementation("jakarta.servlet:jakarta.servlet-api:5.0.0")
@@ -60,11 +60,11 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
 
     // mysql
-    runtimeOnly("com.mysql:mysql-connector-j")
+    runtimeOnly("com.mysql:mysql-connector-j:8.0.32")
 
-    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat:3.1.0")
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:3.1.0")
 }
 
 tasks.withType<KotlinCompile> {
