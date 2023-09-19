@@ -1,4 +1,4 @@
-package cn.yjl.ssmweb
+package cn.yjl.test.ssmweb
 
 import org.springframework.boot.test.context.SpringBootTest
 

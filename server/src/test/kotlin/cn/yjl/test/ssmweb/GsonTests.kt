@@ -1,4 +1,4 @@
-package cn.yjl.ssmweb
+package cn.yjl.test.ssmweb
 
 import com.google.gson.Gson
 import org.junit.jupiter.api.Test
@@ -16,7 +16,7 @@ class GsonTests {
      */
     @Test
     fun testGson() {
-        val gt=gson.fromJson("{name:'gson',age:20}",GsonTestClass::class.java)
+        val gt=gson.fromJson("{name:'gson',age:20}", GsonTestClass::class.java)
         assert(gt.name=="gson")
         assert(gt.age==20)
     }

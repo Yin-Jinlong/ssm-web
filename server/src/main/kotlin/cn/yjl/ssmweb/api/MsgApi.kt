@@ -1,10 +1,8 @@
 package cn.yjl.ssmweb.api
 
-import cn.yjl.db.dao.MsgDao
-import cn.yjl.log.util.getLogger
 import cn.yjl.resp.ResponseJson
 import cn.yjl.resp.msg.MsgRespJson
-import org.apache.ibatis.session.SqlSession
+import cn.yjl.service.MsgService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PostMapping
@@ -17,15 +15,12 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/msg", method = [RequestMethod.GET])
 class MsgApi {
 
-    val log = getLogger()
-
     @Autowired
-    lateinit var sqlSession: SqlSession
+    lateinit var msgService: MsgService
 
     @PostMapping("/all")
     fun getAll(): ResponseJson {
-        val dao = sqlSession.getMapper(MsgDao::class.java)
-        val msgs = dao.getAll()
+        val msgs = msgService.getAll()
         return MsgRespJson(msgs)
     }
 
