@@ -8,14 +8,26 @@
                     <div class="logo-text-en">ANYANG NORMAL UNIVERSITY</div>
                 </div>
             </div>
-            <div class="theme-btn">
-                <el-switch
-                        :inactive-action-icon="Sunny"
-                        :active-action-icon="MoonNight"
-                        :inline-prompt="true"
-                        active-color="#111"
-                        inactive-color="#eee"
-                        v-model="dark"/>
+
+            <div class="right-controller">
+                <top-tooltip
+                        :content="user?user.name:'请先登录'">
+                    <div @click="onClickAvatar">
+                        <el-avatar
+                                :src="user?'/img/avatar.svg':''"/>
+                    </div>
+                </top-tooltip>
+
+                <div class="theme-btn">
+                    <el-switch
+                            size="large"
+                            :inactive-action-icon="Sunny"
+                            :active-action-icon="MoonNight"
+                            :inline-prompt="true"
+                            active-color="#111"
+                            inactive-color="#eee"
+                            v-model="dark"/>
+                </div>
             </div>
 
         </div>
@@ -98,9 +110,17 @@ html.dark {
 
 }
 
+.right-controller {
+  display        : flex;
+  flex-direction : row-reverse;
+  position       : absolute;
+  right          : 0;
+  height         : 100%;
+  align-items    : center;
+}
+
 .theme-btn {
-  position : absolute;
-  right    : 0;
+  margin : 5px;
 }
 
 :deep(.el-switch__core .el-switch__action) {
@@ -119,6 +139,23 @@ html.dark {
 import {ref, watch} from "vue";
 import {isSystemDarkTheme} from "Global";
 import {MoonNight, Sunny} from "@element-plus/icons-vue";
+import {TopTooltip} from "@components";
+
+const props = defineProps<{
+    user?: {
+        uid: number
+        name: string
+    }
+}>()
+
+const emits = defineEmits(["onUserLogin"])
+
+function onClickAvatar() {
+    if (!props.user) {
+        emits("onUserLogin")
+    }
+}
+
 
 const dark = ref<boolean>(isSystemDarkTheme())
 if (dark.value) {

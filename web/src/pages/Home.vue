@@ -7,7 +7,36 @@
             height="100vh"
             max-height="100vh"
             style="padding: 0 1em">
-        <common-header/>
+        <common-header
+                @on-user-login="showLoginDialog=true"/>
+        <el-dialog
+                v-model="showLoginDialog">
+            <template #header>
+                <div style="width: 100%;text-align: center"><h3>登录</h3></div>
+            </template>
+            <template #default>
+                <el-form label-width="80"
+                         v-model="logUser">
+                    <el-form-item label="用户id"
+                                  required>
+                        <el-input
+                                v-model="logUser.uid"
+                                type="number"/>
+                    </el-form-item>
+                    <el-form-item label="密码"
+                                  required>
+                        <el-input type="password"
+                                  v-model="logUser.pwd"/>
+                    </el-form-item>
+                </el-form>
+            </template>
+            <template #footer>
+                <el-button style="width: 100%;height: 4em"
+                           @click.stop="login"
+                           :loading="isLogining"
+                           type="primary"><span>{{ isLogining ? '登陆中...' : '登录'}}</span></el-button>
+            </template>
+        </el-dialog>
         <div class="contents">
             <el-skeleton
                     :count="3"
@@ -91,14 +120,45 @@ import gsap from "gsap";
 import {Callback, ElMessage, ElScrollbar} from "element-plus";
 import axios from "axios";
 import {Msg} from "@types";
+import {is} from "immutable";
 
 const loading = ref(true)
 
 const showAddDialog = ref(false)
+const showLoginDialog = ref(false)
 
 const scrollBar = ref<InstanceType<typeof ElScrollbar>>()
 
 let data = reactive<AynuCardData[]>([])
+
+const isLogining = ref(false)
+
+let logUser = ref<{
+    uid: number
+    pwd: string
+}>({
+    uid: 0,
+    pwd: ""
+})
+
+function login() {
+    isLogining.value = true
+    axios.post("/api/user/login", `uid=${logUser.value.uid}&pwd=${logUser.value.pwd}`).then(res => {
+        if (res.data.code == '0') {
+            ElMessage.success(res.data.msg)
+        } else {
+            ElMessage.error(res.data.msg)
+        }
+
+    }).catch(err => {
+        ElMessage.error(msg)
+    }).finally(() => {
+        setTimeout(() => {
+            isLogining.value = false
+        }, 500)
+
+    })
+}
 
 onMounted(() => {
 
