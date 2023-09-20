@@ -1,6 +1,5 @@
 package cn.yjl.io
 
-import cn.yjl.util.ArrayUtil.Companion.get
 import cn.yjl.util.sync
 import jakarta.servlet.ServletResponse
 import java.io.OutputStream
@@ -31,9 +30,9 @@ abstract class AbstractMemFile : MemFile {
 
     override fun get(index: UInt): Byte = updateRun { data[index.int] }
 
-    override fun get(start: UInt, end: UInt) = updateRun { data[start..end] }
+    override fun get(start: UInt, end: UInt) = updateRun { data.copyOfRange(start.int, end.int) }
 
-    override fun rangeTo(end: UInt) = updateRun { data[0u..end] }
+    override fun rangeTo(end: UInt) = updateRun { data.copyOfRange(0, end.int) }
 
     override fun buffer(): ByteArray = updateRun { data.clone() }
 

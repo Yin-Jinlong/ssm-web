@@ -7,5 +7,5 @@ enum class RespCode(val code: Int, val msg: String) {
     USER_FAILED_LOGIN(100, "用户名或密码错误"),
     USER_NOT_FOUND(110, "用户不存在"),
 
-    SERVER_ERROR(1000, "服务器错误"),
+//    SERVER_ERROR(1000, "服务器错误"),
 }

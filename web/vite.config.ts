@@ -5,8 +5,8 @@ import Components from 'unplugin-vue-components/vite'
 import {ElementPlusResolver} from 'unplugin-vue-components/resolvers'
 import viteCompression from 'vite-plugin-compression'
 import * as path from 'path'
-import {PreRenderedAsset, PreRenderedChunk} from "rollup";
-import {ComponentResolveResult} from "unplugin-vue-components/types";
+import {PreRenderedAsset} from "rollup";
+// import {ComponentResolveResult} from "unplugin-vue-components/types";
 
 // https://vitejs.dev/config/
 export default defineConfig({

@@ -8,7 +8,6 @@ import cn.yjl.resp.user.UserLoginRespJson
 import cn.yjl.resp.user.UserRespJson
 import cn.yjl.service.UserService
 import cn.yjl.ssmweb.validater.Uid
-import org.apache.ibatis.session.SqlSession
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
@@ -19,9 +18,6 @@ import org.springframework.web.bind.annotation.*
 class UserApi {
 
     val log = getLogger()
-
-    @Autowired
-    lateinit var sqlSession: SqlSession
 
     @Autowired
     lateinit var userService: UserService

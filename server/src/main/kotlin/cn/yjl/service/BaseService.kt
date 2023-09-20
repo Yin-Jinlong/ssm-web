@@ -1,5 +1,3 @@
 package cn.yjl.service
 
-open class BaseService : Service {
-
-}
+open class BaseService : Service

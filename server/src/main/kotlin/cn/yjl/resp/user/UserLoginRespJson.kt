@@ -7,5 +7,4 @@ import cn.yjl.resp.RespCode
 class UserLoginRespJson(
     respCode: RespCode,
     val user: User
-) : BaseRespJson(respCode.code, respCode.msg) {
-}
+) : BaseRespJson(respCode.code, respCode.msg)

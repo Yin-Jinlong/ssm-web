@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package cn.yjl.security
 
 import java.security.MessageDigest
@@ -22,7 +24,7 @@ enum class MD(algorithm: String) {
     SHA3_384("SHA3-384"),
     SHA3_512("SHA3-512");
 
-    val INSTANCE: MessageDigest = getInstance(algorithm)
+    private val INSTANCE: MessageDigest = getInstance(algorithm)
 
     fun gen(msg: String) = gen(msg.toByteArray())
 

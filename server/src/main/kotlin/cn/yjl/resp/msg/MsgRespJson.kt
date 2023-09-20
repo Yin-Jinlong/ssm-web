@@ -6,5 +6,4 @@ import cn.yjl.resp.RespCode
 
 class MsgRespJson(
     val data: Array<Msg>,
-) : ErrorRespJson(RespCode.OK) {
-}
+) : ErrorRespJson(RespCode.OK)
