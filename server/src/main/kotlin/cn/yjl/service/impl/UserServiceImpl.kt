@@ -2,6 +2,7 @@ package cn.yjl.service.impl
 
 import cn.yjl.db.User
 import cn.yjl.db.dao.UserDao
+import cn.yjl.security.sha1_512
 import cn.yjl.service.BaseService
 import cn.yjl.service.UserService
 import org.apache.ibatis.session.SqlSession
@@ -16,7 +17,7 @@ class UserServiceImpl : BaseService(), UserService {
 
     override fun login(uid: Int, pwd: String): User? {
         val dao = sqlSession.getMapper(UserDao::class.java)
-        return dao.getUserByUidPwd(uid, genSha512String(pwd))
+        return dao.getUserByUidPwd(uid, pwd.sha1_512)
     }
 
     override fun getUser(uid: Int): User? {
