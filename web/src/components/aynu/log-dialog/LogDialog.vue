@@ -1,44 +1,66 @@
 <template>
     <el-dialog
-           :model-value="props.modalValue"
+            class="noheader"
+            :model-value="props.modalValue"
+            :show-close="false"
             width="400">
-        <template #header>
-            <div style="width: 100%;text-align: center"><h3>登录</h3></div>
-        </template>
-        <template #default>
-            <el-form ref="form"
-                     :model="logUser"
-                     :rules="formRules"
-                     label-width="80">
-                <el-form-item label="用户id"
-                              prop="uid"
-                              required>
-                    <el-input
-                            v-model="logUser.uid"
-                            maxlength="12"
-                            type="text"/>
-                </el-form-item>
-                <el-form-item label="密码"
-                              prop="pwd"
-                              required>
-                    <el-input v-model="logUser.pwd"
-                              :show-password="true"
-                              maxlength="18"
-                              type="password"/>
-                </el-form-item>
-            </el-form>
-        </template>
-        <template #footer>
-            <el-button :loading="isLogining"
-                       style="width: 100%;height: 4em"
-                       type="primary"
-                       @click.stop="login"><span>{{ isLogining ? '登陆中...' : '登录' }}</span></el-button>
-        </template>
+        <el-tabs :stretch="true">
+            <el-tab-pane label="登录">
+                <el-form ref="form"
+                         :model="logUser"
+                         :rules="formRules"
+                         label-width="80">
+                    <el-form-item label="用户id"
+                                  prop="uid"
+                                  required>
+                        <el-input
+                                v-model="logUser.uid"
+                                maxlength="12"
+                                type="text"/>
+                    </el-form-item>
+                    <el-form-item label="密码"
+                                  prop="pwd"
+                                  required>
+                        <el-input v-model="logUser.pwd"
+                                  :show-password="true"
+                                  maxlength="18"
+                                  type="password"/>
+                    </el-form-item>
+                </el-form>
+                <el-button :loading="isLogining"
+                           style="width: 100%;height: 4em"
+                           type="primary"
+                           @click.stop="login"><span>{{ isLogining ? '登陆中...' : '登录' }}</span></el-button>
+            </el-tab-pane>
+            <el-tab-pane label="注册">
+                <el-form label-width="80">
+                    <el-form-item required label="用户名">
+                        <el-input/>
+                    </el-form-item>
+                    <el-form-item required label="密码">
+                        <el-input type="password"/>
+                    </el-form-item>
+                    <el-form-item required label="确认密码">
+                        <el-input type="password"/>
+                    </el-form-item>
+                </el-form>
+                <el-button :loading="isLogining"
+                           style="width: 100%;height: 4em"
+                           type="primary"
+                           @click.stop="login"><span>{{ isLogining ? '请稍后...' : '注册' }}</span></el-button>
+            </el-tab-pane>
+        </el-tabs>
     </el-dialog>
 </template>
 
 <style scoped lang="scss">
 
+</style>
+
+<style>
+.noheader .el-dialog__header {
+    padding: 0;
+}
 </style>
 
 <script setup lang="ts">
@@ -54,7 +76,7 @@ const emits = defineEmits(["login"])
 
 const isLogining = ref(false)
 
-const form=ref<InstanceType<typeof ElForm>>()
+const form = ref<InstanceType<typeof ElForm>>()
 
 let logUser = ref<{
     uid: string
