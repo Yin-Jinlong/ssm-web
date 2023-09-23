@@ -1,7 +1,7 @@
 import java.io.FileOutputStream
-import java.text.DecimalFormat
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
+
 
 rootProject.apply {
     group = "cn.yjl"
@@ -11,7 +11,7 @@ rootProject.apply {
 task("pkg-src") {
     group = "zip"
     doLast {
-        val file = buildDir.resolve("src.zip")
+        val file = buildDir.resolve(project.name + "-src.zip")
         ZipOutputStream(FileOutputStream(file)).use {
             it.setLevel(9)
             it.setComment("yjl-ssm-web-src")
@@ -34,9 +34,9 @@ fun File.zipEntry(): ZipEntry {
 
 fun ZipOutputStream.zipSub(dir: File) {
     dir.listFiles()?.filter {
-        !it.name.matches(Regex("\\.gradle|build|dist|node_modules"))
+        !it.name.matches(Regex("\\.gradle|.idea|build|dist|node_modules|bin|out"))
     }?.forEach { file ->
-        val entry=file.zipEntry()
+        val entry = file.zipEntry()
         println("zip $entry")
         putNextEntry(entry)
         if (file.isDirectory) {
@@ -51,14 +51,22 @@ fun ZipOutputStream.zipSub(dir: File) {
     }
 }
 
+val SIZE_UNITS = arrayOf("B", "KB", "MB", "GB", "TB", "PB")
+
 val File.size: String
     get() {
-        val us = arrayOf("B", "KB", "MB", "GB", "TB")
         var i = 0
         var s = length().toDouble()
         while (s > 1024) {
             s /= 1024
             i++
         }
-        return "${DecimalFormat("###.00").format(s)} ${us[i]}"
+        return "${(s + "000")..6} ${SIZE_UNITS[i]}"
     }
+
+operator fun CharSequence.rangeTo(endIndex: Int): String = substring(0, endIndex)
+
+val Any.str
+    get() = toString()
+
+operator fun Any.plus(s: Any): String = str + s.str
