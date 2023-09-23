@@ -157,12 +157,12 @@ let logUser = ref<{
 })
 
 interface FormData {
-    name: string,
+    uid: string,
     pwd: string
 }
 
 const formRules = reactive<FormRules<FormData>>({
-    name: [
+    uid: [
         {required: true, message: '请输入用户名', trigger: 'change'},
         {min: 3, max: 12, message: '长度在 3 到 12 个字符', trigger: 'change'}
     ],
@@ -247,7 +247,12 @@ function del(i: number) {
 }
 
 function add() {
-    showAddDialog.value = true
+    if (user.value)
+        showAddDialog.value = true
+    else {
+        showLoginDialog.value=true
+        ElMessage.warning("请先登录")
+    }
 }
 
 function onAdd(v: AynuCardData) {
