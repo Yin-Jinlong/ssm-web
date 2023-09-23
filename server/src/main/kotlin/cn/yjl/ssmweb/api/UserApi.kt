@@ -22,6 +22,16 @@ class UserApi {
     @Autowired
     lateinit var userService: UserService
 
+    @PostMapping("/logon")
+    fun logon(name: String, pwd: String): ResponseJson {
+        if (name.length !in 3..12 && name.matches(Regex("\\d{6}")))
+            return ErrorRespJson(RespCode.USER_NAME_ERROR)
+        if (pwd.length !in 6..18)
+            return ErrorRespJson(RespCode.USER_PWD_ERROR)
+        userService.logon(name, pwd)
+        return ErrorRespJson(0, "注册成功")
+    }
+
     @PostMapping("/login")
     fun login(
         @RequestParam

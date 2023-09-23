@@ -28,4 +28,10 @@ class UserServiceTest {
         user sameAs testUser
     }
 
+    @Test
+    fun testLogon() {
+        // TODO 使用前请先删除原有用户!!!
+        userService.logon("test1", "666666").name sameAs "test1"
+    }
+
 }

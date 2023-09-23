@@ -24,6 +24,20 @@ paths:
                   - $ref: '#/components/schemas/ResponseJson'
                   - $ref: '#/components/schemas/UserJson'
 
+  /user/logon:
+    post:
+      summary: 注册
+      description: ''
+      parameters:
+        - $ref: '#/components/schemas/user-name'
+        - $ref: '#/components/schemas/user-pwd'
+      responses:
+        200:
+          description: '注册成功'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseJson'
 
   /user/login:
     post:
@@ -114,7 +128,7 @@ components:
 
     user-pwd:
       type: string
-      format: sha-256
+      format: sha-512
       pattern: '[0-9a-fA-F]{128}'
       minLength: 128
       maxLength: 128
