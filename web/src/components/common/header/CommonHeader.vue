@@ -151,7 +151,7 @@ const props = defineProps<{
 const emits = defineEmits(["onUserLogin"])
 
 function onClickAvatar() {
-    if (!props.user) {
+    if (!props.user.uid) {
         emits("onUserLogin")
     }
 }

@@ -9,43 +9,9 @@
             style="padding: 0 1em">
         <common-header
                 :user="user"
-                @on-user-login="showLoginDialog=true"/>
-        <el-dialog
-                v-model="showLoginDialog"
-                width="400">
-            <template #header>
-                <div style="width: 100%;text-align: center"><h3>登录</h3></div>
-            </template>
-            <template #default>
-                <el-form ref="form"
-                         :model="logUser"
-                         :rules="formRules"
-                         label-width="80">
-                    <el-form-item label="用户id"
-                                  prop="uid"
-                                  required>
-                        <el-input
-                                v-model="logUser.uid"
-                                maxlength="12"
-                                type="text"/>
-                    </el-form-item>
-                    <el-form-item label="密码"
-                                  prop="pwd"
-                                  required>
-                        <el-input v-model="logUser.pwd"
-                                  :show-password="true"
-                                  maxlength="18"
-                                  type="password"/>
-                    </el-form-item>
-                </el-form>
-            </template>
-            <template #footer>
-                <el-button :loading="isLogining"
-                           style="width: 100%;height: 4em"
-                           type="primary"
-                           @click.stop="login"><span>{{ isLogining ? '登陆中...' : '登录' }}</span></el-button>
-            </template>
-        </el-dialog>
+                @on-user-login="log"/>
+        <log-dialog v-model="showLoginDialog"
+                    @login="login"/>
         <div class="contents">
             <el-skeleton
                     :animated="true"
@@ -124,12 +90,12 @@
 
 <script lang="ts" setup>
 
-import {AddButton, AddMsgDialog, AynuCard, AynuCardData, CommonHeader} from "@components";
+import {AddButton, AddMsgDialog, AynuCard, AynuCardData, CommonHeader,LogDialog} from "@components";
 import {onMounted, reactive, ref} from "vue";
 import gsap from "gsap";
-import {Callback, ElForm, ElMessage, ElScrollbar, FormRules} from "element-plus";
+import {Callback, ElMessage, ElScrollbar} from "element-plus";
 import axios from "axios";
-import {Msg} from "@types";
+import {Msg, User} from "@types";
 
 const loading = ref(true)
 
@@ -140,8 +106,6 @@ const scrollBar = ref<InstanceType<typeof ElScrollbar>>()
 
 let data = reactive<AynuCardData[]>([])
 
-const form = ref<InstanceType<typeof ElForm>>()
-
 let user = ref<{
     uid: number|undefined,
     name: string,
@@ -150,56 +114,9 @@ let user = ref<{
     name: ""
 })
 
-const isLogining = ref(false)
-
-let logUser = ref<{
-    uid: string
-    pwd: string
-}>({
-    uid: '',
-    pwd: ''
-})
-
-interface FormData {
-    uid: string,
-    pwd: string
-}
-
-const formRules = reactive<FormRules<FormData>>({
-    uid: [
-        {required: true, message: '请输入用户名', trigger: 'change'},
-        {min: 3, max: 12, message: '长度在 3 到 12 个字符', trigger: 'change'}
-    ],
-    pwd: [
-        {required: true, message: '请输入密码', trigger: 'change'},
-        {min: 6, max: 18, message: '密码长度6-18', trigger: 'change'}
-    ]
-})
-
-function login() {
-    form.value!.validate((valid: boolean) => {
-        if (valid) {
-            isLogining.value = true
-            axios.post("/api/user/login", `uid=${logUser.value.uid}&pwd=${logUser.value.pwd}`).then(res => {
-                if (res.data.code == '0') {
-                    ElMessage.success(res.data.msg)
-                    user.value = res.data.user
-                    showLoginDialog.value = false
-                } else {
-                    ElMessage.error(res.data.msg)
-                }
-
-            }).catch(err => {
-                ElMessage.error(err)
-            }).finally(() => {
-                setTimeout(() => {
-                    isLogining.value = false
-                }, 500)
-
-            })
-        }
-    })
-
+function login(u: User) {
+    user.value = u
+    showLoginDialog.value = false
 }
 
 onMounted(() => {
@@ -250,22 +167,26 @@ function del(i: number) {
     data.splice(i, 1)
 }
 
+function log(){
+    showLoginDialog.value=true
+}
+
 function add() {
     if (user.value.uid)
         showAddDialog.value = true
     else {
-        showLoginDialog.value=true
+        showLoginDialog.value = true
         ElMessage.warning("请先登录")
     }
 }
 
 function onAdd(v: string) {
     data.splice(0, 0, {
-        uid:user.value?.uid,
-        name:user.value?.name,
-        time:new Date(),
-        img:'/img/avatar.svg',
-        msg:v
+        uid: user.value?.uid,
+        name: user.value?.name,
+        time: new Date(),
+        img: '/img/avatar.svg',
+        msg: v
     })
     showAddDialog.value = false
 }
