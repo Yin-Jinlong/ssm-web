@@ -96,7 +96,8 @@
     </el-scrollbar>
     <add-msg-dialog
             v-model="showAddDialog"
-            @on-add="(v : AynuCardData) =>onAdd(v)"/>
+            :user="user"
+            @on-add="(v : string) =>onAdd(v)"/>
 </template>
 
 <style lang="scss" scoped>
@@ -142,9 +143,12 @@ let data = reactive<AynuCardData[]>([])
 const form = ref<InstanceType<typeof ElForm>>()
 
 let user = ref<{
-    uid: number,
+    uid: number|undefined,
     name: string,
-}>()
+}>({
+    uid:undefined,
+    name: ""
+})
 
 const isLogining = ref(false)
 
@@ -247,7 +251,7 @@ function del(i: number) {
 }
 
 function add() {
-    if (user.value)
+    if (user.value.uid)
         showAddDialog.value = true
     else {
         showLoginDialog.value=true
@@ -255,8 +259,14 @@ function add() {
     }
 }
 
-function onAdd(v: AynuCardData) {
-    data.splice(0, 0, v)
+function onAdd(v: string) {
+    data.splice(0, 0, {
+        uid:user.value?.uid,
+        name:user.value?.name,
+        time:new Date(),
+        img:'/img/avatar.svg',
+        msg:v
+    })
     showAddDialog.value = false
 }
 

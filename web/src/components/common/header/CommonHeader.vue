@@ -11,10 +11,10 @@
 
             <div class="right-controller">
                 <top-tooltip
-                        :content="user?user.name:'请先登录'">
+                        :content="user.uid?user.name:'请先登录'">
                     <div @click="onClickAvatar">
                         <el-avatar
-                                :src="user?'/img/avatar.svg':''"/>
+                                :src="user.uid?'/img/avatar.svg':''"/>
                     </div>
                 </top-tooltip>
 
@@ -142,8 +142,8 @@ import {MoonNight, Sunny} from "@element-plus/icons-vue";
 import {TopTooltip} from "@components";
 
 const props = defineProps<{
-    user?: {
-        uid: number
+    user: {
+        uid?: number
         name: string
     }
 }>()

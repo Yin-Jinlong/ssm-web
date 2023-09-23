@@ -11,19 +11,14 @@
                     :model="data"
                     :rules="formRules"
                     label-width="120px">
-                <el-form-item style="display:flex;width: 100%">
+                <div style="display:flex;align-items: center">
                     <el-image
                             class="avatar"
                             :src="data.img"/>
-                    <el-form-item
-                            prop="name"
-                            style="margin-left:20px;width: calc(100% - 80px)"
-                            :required="true"
-                            label="用户名">
-                        <el-input
-                                v-model="data.name"/>
-                    </el-form-item>
-                </el-form-item>
+                    <div style="padding: 1em">
+                        <h3 style="">{{user.name}}</h3>
+                    </div>
+                </div>
                 <el-form-item
                         prop="msg"
                         :required="true"
@@ -51,9 +46,9 @@
 
 <style scoped lang="scss">
 .avatar {
-  width  : 60px;
-  height : 60px;
-  border-radius: 30px;
+  width         : 60px;
+  height        : 60px;
+  border-radius : 30px;
 }
 </style>
 
@@ -65,6 +60,10 @@ import {TopTooltip} from "@components";
 
 const props = defineProps<{
     modalValue?: boolean,
+    user: {
+        uid?: number
+        name: string
+    }
 }>()
 
 const emits = defineEmits(['onAdd'])
@@ -109,12 +108,8 @@ watch(data, () => {
 function onsubmit() {
     form.value!.validate((valid: boolean) => {
         if (valid) {
-            emits('onAdd', {
-                ...data,
-                time:new Date()
-            })
+            emits('onAdd', data.msg)
             data.img = '/img/avatar.svg'
-            data.name = ''
             data.msg = ''
         } else {
             return false
