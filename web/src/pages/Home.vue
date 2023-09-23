@@ -8,41 +8,50 @@
             max-height="100vh"
             style="padding: 0 1em">
         <common-header
+                :user="user"
                 @on-user-login="showLoginDialog=true"/>
         <el-dialog
-                v-model="showLoginDialog">
+                v-model="showLoginDialog"
+                width="400">
             <template #header>
                 <div style="width: 100%;text-align: center"><h3>登录</h3></div>
             </template>
             <template #default>
-                <el-form label-width="80"
-                         v-model="logUser">
+                <el-form ref="form"
+                         :model="logUser"
+                         :rules="formRules"
+                         label-width="80">
                     <el-form-item label="用户id"
+                                  prop="uid"
                                   required>
                         <el-input
                                 v-model="logUser.uid"
-                                type="number"/>
+                                maxlength="12"
+                                type="text"/>
                     </el-form-item>
                     <el-form-item label="密码"
+                                  prop="pwd"
                                   required>
-                        <el-input type="password"
-                                  v-model="logUser.pwd"/>
+                        <el-input v-model="logUser.pwd"
+                                  :show-password="true"
+                                  maxlength="18"
+                                  type="password"/>
                     </el-form-item>
                 </el-form>
             </template>
             <template #footer>
-                <el-button style="width: 100%;height: 4em"
-                           @click.stop="login"
-                           :loading="isLogining"
-                           type="primary"><span>{{ isLogining ? '登陆中...' : '登录'}}</span></el-button>
+                <el-button :loading="isLogining"
+                           style="width: 100%;height: 4em"
+                           type="primary"
+                           @click.stop="login"><span>{{ isLogining ? '登陆中...' : '登录' }}</span></el-button>
             </template>
         </el-dialog>
         <div class="contents">
             <el-skeleton
-                    :count="3"
-                    style="--el-skeleton-circle-size: 100px"
                     :animated="true"
-                    :loading="loading">
+                    :count="3"
+                    :loading="loading"
+                    style="--el-skeleton-circle-size: 100px">
                 <template #template>
                     <div style="display: flex;width: 1000px;margin: 10px auto;align-items: center;justify-content: center">
                         <div style="width: 120px">
@@ -117,10 +126,9 @@
 import {AddButton, AddMsgDialog, AynuCard, AynuCardData, CommonHeader} from "@components";
 import {onMounted, reactive, ref} from "vue";
 import gsap from "gsap";
-import {Callback, ElMessage, ElScrollbar} from "element-plus";
+import {Callback, ElForm, ElMessage, ElScrollbar, FormRules} from "element-plus";
 import axios from "axios";
 import {Msg} from "@types";
-import {is} from "immutable";
 
 const loading = ref(true)
 
@@ -131,33 +139,63 @@ const scrollBar = ref<InstanceType<typeof ElScrollbar>>()
 
 let data = reactive<AynuCardData[]>([])
 
+const form = ref<InstanceType<typeof ElForm>>()
+
+let user = ref<{
+    uid: number,
+    name: string,
+}>()
+
 const isLogining = ref(false)
 
 let logUser = ref<{
-    uid: number
+    uid: string
     pwd: string
 }>({
-    uid: 0,
-    pwd: ""
+    uid: '',
+    pwd: ''
+})
+
+interface FormData {
+    name: string,
+    pwd: string
+}
+
+const formRules = reactive<FormRules<FormData>>({
+    name: [
+        {required: true, message: '请输入用户名', trigger: 'change'},
+        {min: 3, max: 12, message: '长度在 3 到 12 个字符', trigger: 'change'}
+    ],
+    pwd: [
+        {required: true, message: '请输入密码', trigger: 'change'},
+        {min: 6, max: 18, message: '密码长度6-18', trigger: 'change'}
+    ]
 })
 
 function login() {
-    isLogining.value = true
-    axios.post("/api/user/login", `uid=${logUser.value.uid}&pwd=${logUser.value.pwd}`).then(res => {
-        if (res.data.code == '0') {
-            ElMessage.success(res.data.msg)
-        } else {
-            ElMessage.error(res.data.msg)
+    form.value!.validate((valid: boolean) => {
+        if (valid) {
+            isLogining.value = true
+            axios.post("/api/user/login", `uid=${logUser.value.uid}&pwd=${logUser.value.pwd}`).then(res => {
+                if (res.data.code == '0') {
+                    ElMessage.success(res.data.msg)
+                    user.value = res.data.user
+                    showLoginDialog.value = false
+                } else {
+                    ElMessage.error(res.data.msg)
+                }
+
+            }).catch(err => {
+                ElMessage.error(err)
+            }).finally(() => {
+                setTimeout(() => {
+                    isLogining.value = false
+                }, 500)
+
+            })
         }
-
-    }).catch(err => {
-        ElMessage.error(msg)
-    }).finally(() => {
-        setTimeout(() => {
-            isLogining.value = false
-        }, 500)
-
     })
+
 }
 
 onMounted(() => {
