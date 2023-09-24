@@ -45,7 +45,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.10")
 
     // servlet-api
-    implementation("jakarta.servlet:jakarta.servlet-api:5.0.0")
+    implementation("jakarta.servlet:jakarta.servlet-api:6.0.0")
 
     // mybatis
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.2")

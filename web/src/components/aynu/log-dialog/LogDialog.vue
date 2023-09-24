@@ -86,9 +86,10 @@
 
 <script lang="ts" setup>
 import {ElForm, ElMessage} from "element-plus";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import axios, {AxiosError} from "axios";
 import {initFromRules, LogUser, loginRules, logonRules} from "./FormRules.ts";
+import {User} from "@types";
 
 const props = defineProps<{
     modalValue?: boolean
@@ -123,22 +124,40 @@ function catchError(err: any) {
     ElMessage.error(err)
 }
 
+enum LS {
+    USER_NAME = "user"
+}
+
+async function postLogin(logid: string, pwd: string | undefined = undefined): Promise<User> {
+    let args = 'logid=' + logid
+    if (pwd)
+        args += '&pwd=' + pwd
+    return new Promise<User>((resolve: (u: User) => void, reject: (r: any) => void) => {
+        axios.post("/api/user/login", args).then(res => {
+            if (res.data.code == '0') {
+                let user = res.data.user as User
+                resolve(user)
+            } else {
+                reject(res.data.msg)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+
 function login() {
     form.value!.validate((valid: boolean) => {
         if (valid) {
             isLogining.value = true
-            axios.post("/api/user/login", `logid=${logUser.value.logid}&pwd=${logUser.value.pwd}`).then(res => {
-                if (res.data.code == '0') {
-                    ElMessage.success(res.data.msg)
-                    emits("login", res.data.user)
-                } else {
-                    ElMessage.error(res.data.msg)
-                }
+            postLogin(logUser.value.logid, logUser.value.pwd).then(user => {
+                localStorage.setItem(LS.USER_NAME, user.uid.toString())
+                ElMessage.success("登录成功")
+                emits("login", user)
             }).catch(catchError).finally(() => {
                 setTimeout(() => {
                     isLogining.value = false
                 }, 500)
-
             })
         }
     })
@@ -164,5 +183,15 @@ function logon() {
         }
     })
 }
+
+onMounted(() => {
+    let un = localStorage.getItem(LS.USER_NAME);
+    if (un) {
+        postLogin(un).then(user => {
+            emits("login", user)
+        }).catch(() => {
+        })
+    }
+})
 
 </script>
