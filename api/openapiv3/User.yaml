@@ -88,6 +88,18 @@ paths:
                 code: 1000
                 msg: 服务器错误
 
+  /user/logout:
+    post:
+      summary: 登出
+      description: 登出
+      responses:
+        200:
+          description: 登出成功
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseJson'
+
   /msg/all:
     get:
       summary: 获取所有消息
