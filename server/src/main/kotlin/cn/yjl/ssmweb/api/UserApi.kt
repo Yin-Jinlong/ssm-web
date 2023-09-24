@@ -25,6 +25,7 @@ class UserApi {
 
     companion object {
         const val SESSION_LOGGED_TIME = "logged-time"
+        const val SESSION_USER_ID = "user-id"
         const val SESSION_USER_PWD = "user-pwd"
     }
 
@@ -47,6 +48,11 @@ class UserApi {
      */
     private fun HttpSession.getPwd() = getAttribute(SESSION_USER_PWD) as String?
 
+    /**
+     * 从Session获取用户名
+     */
+    private fun HttpSession.getUid() = getAttribute(SESSION_USER_ID) as String?
+
     private fun HttpSession.isOutOfDate(): Boolean {
         val time: Long? = getAttribute(SESSION_LOGGED_TIME) as Long?
         return time == null || now() - time > 5 * 60 * 1000L
@@ -68,8 +74,13 @@ class UserApi {
         if (pwd == null) {
             val session = req.session
             // 还在时效内
-            if (!session.isOutOfDate())
-                upwd = session.getPwd()
+            if (!session.isOutOfDate()) {
+                // 到此logid应该是uid，且应与session的uid相同
+                // 否则可能为不同用户的相同密码登录
+                if (session.getUid() == logid) {
+                    upwd = session.getPwd()
+                }
+            }
         }
         upwd?.let {// 有密码
             val user = userService.login(logid, upwd)
@@ -77,6 +88,7 @@ class UserApi {
                 // 保存一下
                 req.getSession(true).apply {
                     setAttribute(SESSION_LOGGED_TIME, now())
+                    setAttribute(SESSION_USER_ID, user.uid.toString())
                     setAttribute(SESSION_USER_PWD, upwd)
                 }
                 return UserLoginRespJson(RespCode.USER_LOGIN_SUCCESS, user)

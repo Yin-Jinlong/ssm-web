@@ -53,6 +53,8 @@ dependencies {
     // gson
     implementation("com.google.code.gson:gson:2.10.1")
 
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+
     // mysql
     runtimeOnly("com.mysql:mysql-connector-j:8.0.32")
 
