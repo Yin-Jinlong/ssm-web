@@ -1,21 +1,23 @@
 <template>
     <el-dialog
-            class="noheader"
             :model-value="props.modalValue"
             :show-close="false"
+            class="noheader"
             width="400">
         <el-tabs :stretch="true">
             <el-tab-pane label="登录">
                 <el-form ref="form"
                          :model="logUser"
-                         :rules="formRules"
+                         :rules="loginRules"
                          label-width="80">
-                    <el-form-item label="用户id"
-                                  prop="uid"
+                    <el-form-item label="账号"
+                                  prop="logid"
                                   required>
                         <el-input
-                                v-model="logUser.uid"
+                                v-model="logUser.logid"
+                                :formatter="(v:string)=>{return v.replace(/\s+/,'')}"
                                 maxlength="12"
+                                placeholder="用户名或id"
                                 type="text"/>
                     </el-form-item>
                     <el-form-item label="密码"
@@ -24,6 +26,7 @@
                         <el-input v-model="logUser.pwd"
                                   :show-password="true"
                                   maxlength="18"
+                                  placeholder="密码"
                                   type="password"/>
                     </el-form-item>
                 </el-form>
@@ -33,27 +36,45 @@
                            @click.stop="login"><span>{{ isLogining ? '登陆中...' : '登录' }}</span></el-button>
             </el-tab-pane>
             <el-tab-pane label="注册">
-                <el-form label-width="80">
-                    <el-form-item required label="用户名">
-                        <el-input/>
+                <el-form :model="logUser"
+                         :rules="logonRules"
+                         ref="logonForm"
+                         label-width="80">
+                    <el-form-item label="用户名"
+                                  prop="logid"
+                                  required>
+                        <el-input v-model="logUser.logid"
+                                  maxlength="12"
+                                  placeholder="用户名"/>
                     </el-form-item>
-                    <el-form-item required label="密码">
-                        <el-input type="password"/>
+                    <el-form-item label="密码"
+                                  prop="pwd1"
+                                  required>
+                        <el-input v-model="logUser.pwd1"
+                                  :show-password="true"
+                                  maxlength="18"
+                                  placeholder="密码"
+                                  type="password"/>
                     </el-form-item>
-                    <el-form-item required label="确认密码">
-                        <el-input type="password"/>
+                    <el-form-item label="确认密码"
+                                  prop="pwd2"
+                                  required>
+                        <el-input v-model="logUser.pwd2"
+                                  maxlength="18"
+                                  placeholder="确认"
+                                  type="password"/>
                     </el-form-item>
                 </el-form>
-                <el-button :loading="isLogining"
+                <el-button :loading="isLogoning"
                            style="width: 100%;height: 4em"
                            type="primary"
-                           @click.stop="login"><span>{{ isLogining ? '请稍后...' : '注册' }}</span></el-button>
+                           @click.stop="logon"><span>{{ isLogoning ? '请稍后...' : '注册' }}</span></el-button>
             </el-tab-pane>
         </el-tabs>
     </el-dialog>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 
 </style>
 
@@ -63,10 +84,11 @@
 }
 </style>
 
-<script setup lang="ts">
-import {ElForm, ElMessage, FormRules} from "element-plus";
-import {reactive, ref} from "vue";
-import axios from "axios";
+<script lang="ts" setup>
+import {ElForm, ElMessage} from "element-plus";
+import {ref} from "vue";
+import axios, {AxiosError} from "axios";
+import {initFromRules, LogUser, loginRules, logonRules} from "./FormRules.ts";
 
 const props = defineProps<{
     modalValue?: boolean
@@ -75,49 +97,67 @@ const props = defineProps<{
 const emits = defineEmits(["login"])
 
 const isLogining = ref(false)
+const isLogoning = ref(false)
 
 const form = ref<InstanceType<typeof ElForm>>()
+const logonForm = ref<InstanceType<typeof ElForm>>()
 
-let logUser = ref<{
-    uid: string
-    pwd: string
-}>({
-    uid: '',
-    pwd: ''
+let logUser = ref<LogUser>({
+    logid: '',
+    name: '',
+    pwd: '',
+    pwd1: '',
+    pwd2: ''
 })
 
-interface FormData {
-    uid: string,
-    pwd: string
+initFromRules(logUser)
+
+function catchError(err: any) {
+    if (err instanceof AxiosError) {
+        let rd = err?.response?.data
+        if (rd) {
+            ElMessage.error(rd.msg)
+            return
+        }
+    }
+    ElMessage.error(err)
 }
-
-const formRules = reactive<FormRules<FormData>>({
-    uid: [
-        {required: true, message: '请输入用户名', trigger: 'change'},
-        {min: 3, max: 12, message: '长度在 3 到 12 个字符', trigger: 'change'}
-    ],
-    pwd: [
-        {required: true, message: '请输入密码', trigger: 'change'},
-        {min: 6, max: 18, message: '密码长度6-18', trigger: 'change'}
-    ]
-})
 
 function login() {
     form.value!.validate((valid: boolean) => {
         if (valid) {
             isLogining.value = true
-            axios.post("/api/user/login", `uid=${logUser.value.uid}&pwd=${logUser.value.pwd}`).then(res => {
+            axios.post("/api/user/login", `logid=${logUser.value.logid}&pwd=${logUser.value.pwd}`).then(res => {
                 if (res.data.code == '0') {
                     ElMessage.success(res.data.msg)
                     emits("login", res.data.user)
                 } else {
                     ElMessage.error(res.data.msg)
                 }
-            }).catch(err => {
-                ElMessage.error(err)
-            }).finally(() => {
+            }).catch(catchError).finally(() => {
                 setTimeout(() => {
                     isLogining.value = false
+                }, 500)
+
+            })
+        }
+    })
+}
+
+function logon() {
+    logonForm.value?.validate(v => {
+        if (v) {
+            isLogoning.value = true
+            axios.post("/api/user/logon", `uname=${logUser.value.logid}&pwd=${logUser.value.pwd1}`).then(res => {
+                if (res.data.code == '0') {
+                    ElMessage.success(res.data.msg)
+                    emits("login", res.data.user)
+                } else {
+                    ElMessage.error(res.data.msg)
+                }
+            }).catch(catchError).finally(() => {
+                setTimeout(() => {
+                    isLogoning.value = false
                 }, 500)
 
             })

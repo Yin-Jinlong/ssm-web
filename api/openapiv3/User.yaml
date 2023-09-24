@@ -29,8 +29,8 @@ paths:
       summary: 注册
       description: ''
       parameters:
-        - $ref: '#/components/schemas/user-name'
-        - $ref: '#/components/schemas/user-pwd'
+        - $ref: '#/components/parameters/p-uname'
+        - $ref: '#/components/parameters/p-pwd'
       responses:
         200:
           description: '注册成功'
@@ -49,11 +49,11 @@ paths:
       - 带pwd参数时为常规登录
       '
       parameters:
-        - $ref: '#/components/parameters/uid'
-        - $ref: '#/components/parameters/pwd'
+        - $ref: '#/components/parameters/p-logid'
+        - $ref: '#/components/parameters/p-pwd'
 
       responses:
-        '200':
+        200:
           description: 登录成功
           content:
             'application/json':
@@ -67,7 +67,8 @@ paths:
                 user:
                   uid: 732418
                   name: user
-        '400':
+
+        400:
           description: 登录失败
           content:
             'application/json':
@@ -76,6 +77,7 @@ paths:
               example:
                 code: 101
                 msg: 用户名或密码错误
+
         default:
           description: 服务器错误
           content:
@@ -102,18 +104,35 @@ paths:
 
 components:
   parameters:
-    uid:
+    p-logid:
       in: query
-      name: uid
+      name: logid]
+      description: 登录id，可以是uid和用户名等唯一标识用户的
       required: true
       schema:
-        $ref: '#/components/schemas/uid'
-    pwd:
+        type: string
+        format: string
+        pattern: \d{6} \S{3,12}
+
+    p-uname:
+      in: query
+      name: uname
+      description: 用户名
+      required: true
+      schema:
+        type: string
+        format: string
+        pattern: \S{3,12}
+
+    p-pwd:
       in: query
       name: pwd
-      required: false
+      description: 密码
+      required: true
       schema:
-        $ref: '#/components/schemas/user-pwd'
+        type: string
+        format: string
+        pattern: \S{6,18}
 
   schemas:
 

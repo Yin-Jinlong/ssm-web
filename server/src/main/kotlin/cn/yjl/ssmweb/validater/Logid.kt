@@ -9,32 +9,40 @@ import kotlin.reflect.KClass
 
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Constraint(validatedBy = [UidValidator::class])
-annotation class Uid(
+annotation class Logid(
     val min: Int = 3,
     val max: Int = 24,
     val message: String = "",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<Payload>> = [],
     val code: RespCode = RespCode.VALIDATE_FAILED
-)
+) {
+    companion object {
+        val UidReg = Regex("\\d{6}")
+        val UnameReg = Regex("\\S{3,12}")
+    }
+}
 
-object UidValidator : ConstraintValidator<Uid, String> {
+object UidValidator : ConstraintValidator<Logid, String> {
 
-    private lateinit var uid: Uid
+    private lateinit var logid: Logid
 
-    override fun initialize(constraintAnnotation: Uid?) {
-        uid = constraintAnnotation!!
+    override fun initialize(constraintAnnotation: Logid?) {
+        logid = constraintAnnotation!!
     }
 
+    val num=Regex("\\d+")
+
     private fun valid(value: String?): Boolean {
-        val v = value?.toIntOrNull() ?: return false
-        return v.toString().length in uid.min..uid.max
+        return if (value == null) false
+        else if (value.matches(Logid.UidReg)) true
+        else value.matches(Logid.UnameReg)&&!value.matches(num)
     }
 
     override fun isValid(value: String?, context: ConstraintValidatorContext?): Boolean {
         if (valid(value))
             return true
-        throw ValidateException(uid.code)
+        throw ValidateException(logid.code)
     }
 
 }

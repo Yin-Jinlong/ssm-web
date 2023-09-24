@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Select
 interface UserDao {
 
     @Insert("insert into user(name,pwd) values(#{name},#{pwdsha})")
-    fun logon(name: String, pwdsha: String)
+    fun newUser(name: String, pwdsha: String)
 
     @Select("select * from user where uid = #{uid} and pwd = #{pwd}")
     fun getUserByUidPwd(uid: Int, pwd: String): User?
@@ -19,6 +19,9 @@ interface UserDao {
 
     @ServerUse
     @Select("select * from user where name=#{name}")
-    fun getUserByName(name: String): ServerUser
+    fun getUserByName(name: String): ServerUser?
+
+    @Select("select * from user where name=#{name} and pwd=#{pwd}")
+    fun getUserByNamePwd(name: String, pwd: String): User?
 
 }

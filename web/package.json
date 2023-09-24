@@ -19,6 +19,7 @@
   "devDependencies": {
     "@types/node": "^20.6.0",
     "@vitejs/plugin-vue": "^4.2.3",
+    "async-validator": "^4.2.5",
     "lightningcss": "^1.21.7",
     "rollup": "^3.29.0",
     "sass": "^1.66.1",

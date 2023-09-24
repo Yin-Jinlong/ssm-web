@@ -7,7 +7,8 @@ import cn.yjl.resp.ResponseJson
 import cn.yjl.resp.user.UserLoginRespJson
 import cn.yjl.resp.user.UserRespJson
 import cn.yjl.service.UserService
-import cn.yjl.ssmweb.validater.Uid
+import cn.yjl.ssmweb.validater.Logid
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
@@ -23,38 +24,42 @@ class UserApi {
     lateinit var userService: UserService
 
     @PostMapping("/logon")
-    fun logon(name: String, pwd: String): ResponseJson {
-        if (name.length !in 3..12 && name.matches(Regex("\\d{6}")))
+    fun logon(uname: String, pwd: String, resp: HttpServletResponse): ResponseJson {
+        if (uname.length !in 3..12 && uname.matches(Regex("\\d{6}")))
             return ErrorRespJson(RespCode.USER_NAME_ERROR)
-        if (pwd.length !in 6..18)
-            return ErrorRespJson(RespCode.USER_PWD_ERROR)
-        userService.logon(name, pwd)
-        return ErrorRespJson(0, "注册成功")
+        val r= userService.logon(uname, pwd)
+        if (r.code!=0){
+            resp.status=HttpServletResponse.SC_BAD_REQUEST
+        }
+        return r
     }
 
     @PostMapping("/login")
     fun login(
         @RequestParam
-        @Uid
-        uid: String,
+        @Logid
+        logid: String,
         @RequestParam
-        pwd: String
+        pwd: String,
+        resp: HttpServletResponse
     ): ResponseJson {
-        log.info("login:$uid - $pwd")
-        val user = userService.login(uid.toInt(), pwd)
+        log.info("login:$logid - $pwd")
+        val user = userService.login(logid, pwd)
         return if (user != null)
             UserLoginRespJson(RespCode.USER_LOGIN_SUCCESS, user)
-        else
+        else {
+            resp.status = HttpServletResponse.SC_BAD_REQUEST
             ErrorRespJson(RespCode.USER_FAILED_LOGIN)
+        }
     }
 
     @GetMapping("/get")
     fun getUserName(
         @RequestParam
-        @Uid
-        uid: String
+        @Logid
+        logid: String
     ): ResponseJson {
-        val user = userService.getUser(uid.toInt())
+        val user = userService.getUser(logid.toInt())
         return if (user != null)
             UserRespJson(user)
         else
