@@ -5,6 +5,9 @@ package cn.yjl.security
 import java.security.MessageDigest
 import java.security.MessageDigest.getInstance
 
+/**
+ * 消息摘要
+ */
 enum class MD(algorithm: String) {
 
     MD2("MD2"),

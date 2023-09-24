@@ -32,7 +32,6 @@
                                     style="height: 60px"/>
                         </div>
                     </div>
-
                 </template>
                 <template #default>
                     <el-empty
@@ -141,27 +140,24 @@ onMounted(() => {
         throw data
     }
 
-    function initAdd() {
-        setTimeout(() => {
-            axios.get('/api/msg/all').then(res => {
-                console.log(res)
-                for (const item of res.data.data as Msg[]) {
-                    console.log(item)
-                    let time = parseDate(item.time)
-                    data.push({
-                        img: '/img/avatar.svg',
-                        ...item,
-                        time
-                    })
-                }
-                loading.value = false
-            }).catch(err => {
-                ElMessage.error("获取数据失败: " + err)
-            })
-        }, 1000)
-    }
+    setTimeout(() => {
+        axios.get('/api/msg/all').then(res => {
+            console.log(res)
+            for (const item of res.data.data as Msg[]) {
+                console.log(item)
+                let time = parseDate(item.time)
+                data.push({
+                    img: '/img/avatar.svg',
+                    ...item,
+                    time
+                })
+            }
+            loading.value = false
+        }).catch(err => {
+            ElMessage.error("获取数据失败: " + err)
+        })
+    }, 1000)
 
-    initAdd()
 })
 
 
@@ -234,7 +230,7 @@ function onLeave(el: Element, done: Callback) {
         opacity: 0,
         marginTop: '-1em',
         transform: 'scale(0,0)',
-        height: '0px',
+        height: '0',
         duration: 0.4,
         onComplete: done
     })

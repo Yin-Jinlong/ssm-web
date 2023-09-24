@@ -6,6 +6,9 @@ import cn.yjl.db.server.ServerUser
 import org.apache.ibatis.annotations.Insert
 import org.apache.ibatis.annotations.Select
 
+/**
+ * 用户表操作接口
+ */
 interface UserDao {
 
     @Insert("insert into user(name,pwd) values(#{name},#{pwdsha})")

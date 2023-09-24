@@ -1,5 +1,8 @@
 package cn.yjl.resp
 
+/**
+ * 预定义的返回代码和消息
+ */
 enum class RespCode(val code: Int, val msg: String) {
     OK(0, "OK"),
     NOTHING(0, "Nothing"),

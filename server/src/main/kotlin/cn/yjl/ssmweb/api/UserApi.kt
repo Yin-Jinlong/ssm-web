@@ -20,10 +20,8 @@ import java.lang.System.currentTimeMillis
 @RestController
 @RequestMapping("/api/user", method = [RequestMethod.POST, RequestMethod.GET])
 class UserApi {
-
-    val log = getLogger()
-
     companion object {
+        val LOGGER = getLogger()
         const val SESSION_LOGGED_TIME = "logged-time"
         const val SESSION_USER_ID = "user-id"
         const val SESSION_USER_PWD = "user-pwd"
@@ -68,7 +66,7 @@ class UserApi {
         req: HttpServletRequest,
         resp: HttpServletResponse
     ): ResponseJson {
-        log.info("login:$logid - $pwd")
+        LOGGER.info("login:$logid - $pwd")
         // 用户密码
         var upwd = pwd
         if (pwd == null) {
