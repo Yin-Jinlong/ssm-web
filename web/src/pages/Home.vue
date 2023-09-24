@@ -9,6 +9,7 @@
             style="padding: 0 1em">
         <common-header
                 :user="user"
+                @logout="logout"
                 @on-user-login="log"/>
         <log-dialog v-model="showLoginDialog"
                     @login="login"/>
@@ -90,12 +91,13 @@
 
 <script lang="ts" setup>
 
-import {AddButton, AddMsgDialog, AynuCard, AynuCardData, CommonHeader,LogDialog} from "@components";
+import {AddButton, AddMsgDialog, AynuCard, AynuCardData, CommonHeader, LogDialog} from "@components";
 import {onMounted, reactive, ref} from "vue";
 import gsap from "gsap";
 import {Callback, ElMessage, ElScrollbar} from "element-plus";
 import axios from "axios";
 import {Msg, User} from "@types";
+import {LS} from "Global";
 
 const loading = ref(true)
 
@@ -107,10 +109,10 @@ const scrollBar = ref<InstanceType<typeof ElScrollbar>>()
 let data = reactive<AynuCardData[]>([])
 
 let user = ref<{
-    uid: number|undefined,
+    uid: number | undefined,
     name: string,
 }>({
-    uid:undefined,
+    uid: undefined,
     name: ""
 })
 
@@ -167,8 +169,23 @@ function del(i: number) {
     data.splice(i, 1)
 }
 
-function log(){
-    showLoginDialog.value=true
+function log() {
+    showLoginDialog.value = true
+}
+
+function logout() {
+    axios.post('/api/user/logout', `uid=${user.value.uid}`).then((err) => {
+        if (err.data.code == 0) {
+            user.value.uid = undefined
+            user.value.name = ''
+            localStorage.removeItem(LS.USER_NAME)
+            ElMessage.success("登出成功")
+        } else {
+            ElMessage.error(err.data.msg)
+        }
+    }).catch(err => {
+        ElMessage.error(err)
+    })
 }
 
 function add() {

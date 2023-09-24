@@ -90,6 +90,7 @@ import {onMounted, ref} from "vue";
 import axios, {AxiosError} from "axios";
 import {initFromRules, LogUser, loginRules, logonRules} from "./FormRules.ts";
 import {User} from "@types";
+import {LS} from "Global";
 
 const props = defineProps<{
     modalValue?: boolean
@@ -122,10 +123,6 @@ function catchError(err: any) {
         }
     }
     ElMessage.error(err)
-}
-
-enum LS {
-    USER_NAME = "user"
 }
 
 async function postLogin(logid: string, pwd: string | undefined = undefined): Promise<User> {

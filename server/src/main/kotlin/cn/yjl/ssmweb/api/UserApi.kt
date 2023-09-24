@@ -98,6 +98,21 @@ class UserApi {
         return ErrorRespJson(RespCode.USER_FAILED_LOGIN)
     }
 
+    /**
+     * 登出
+     */
+    @PostMapping("/logout")
+    fun logout(uid: String, req: HttpServletRequest, resp: HttpServletResponse): ResponseJson {
+        if (!uid.matches(Logid.UidReg))
+            return ErrorRespJson(RespCode.VALIDATE_FAILED)
+        val session = req.session
+        if (uid == session.getUid()) {
+            session.clearAll()
+            return ErrorRespJson(RespCode.OK)
+        }
+        return ErrorRespJson(RespCode.NOTHING)
+    }
+
     @GetMapping("/get")
     fun getUserName(
         @RequestParam
@@ -114,3 +129,12 @@ class UserApi {
 }
 
 fun now() = currentTimeMillis()
+
+/**
+ * 清除所有保存信息
+ */
+fun HttpSession.clearAll() {
+    removeAttribute(UserApi.SESSION_USER_ID)
+    removeAttribute(UserApi.SESSION_USER_PWD)
+    removeAttribute(UserApi.SESSION_LOGGED_TIME)
+}
