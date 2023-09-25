@@ -23,9 +23,14 @@ configurations.all {
 
 dependencies {
     // spring-boot-jdbc
-    implementation("org.springframework.boot:spring-boot-starter-jdbc:3.0.4")
+    implementation("org.springframework.boot:spring-boot-starter-jdbc:3.1.4")
     // spring-boot-web
-    implementation("org.springframework.boot:spring-boot-starter-web:3.1.0")
+    implementation("org.springframework.boot:spring-boot-starter-web:3.1.0") {
+        exclude("com.fasterxml.jackson.core", "jackson-databind")
+        exclude("com.fasterxml.jackson.datatype", "jackson-datatype-jdk8")
+        exclude("com.fasterxml.jackson.datatype", "jackson-datatype-jsr310")
+        exclude("com.fasterxml.jackson.module", "jackson-module-parameter-names")
+    }
     // druid
     // https://mvnrepository.com/artifact/com.alibaba/druid-spring-boot-starter
     implementation("com.alibaba:druid-spring-boot-starter:1.2.19")
@@ -33,7 +38,6 @@ dependencies {
     // spring-validation
     implementation("org.springframework.boot:spring-boot-starter-validation:3.0.4")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.10")
 
     // servlet-api
@@ -45,7 +49,7 @@ dependencies {
     // gson
     implementation("com.google.code.gson:gson:2.10.1")
 
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-actuator:3.1.0")
 
     // mysql
     runtimeOnly("com.mysql:mysql-connector-j:8.0.32")
