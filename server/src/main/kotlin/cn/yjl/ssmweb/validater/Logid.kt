@@ -10,8 +10,6 @@ import kotlin.reflect.KClass
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Constraint(validatedBy = [UidValidator::class])
 annotation class Logid(
-    val min: Int = 3,
-    val max: Int = 24,
     val message: String = "",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<Payload>> = [],
@@ -19,7 +17,7 @@ annotation class Logid(
 ) {
     companion object {
         val UidReg = Regex("\\d{6}")
-        val UnameReg = Regex("\\S{3,12}")
+        val UnameReg = Regex("\\S{1,12}")
     }
 }
 

@@ -3,7 +3,9 @@ create table user
     uid  int unsigned default ((uuid_short() % 1000000)) not null comment '用户id'
         primary key,
     name char(24)                                        not null comment '用户名',
-    pwd  varchar(128)                                    null comment '密码hash'
+    pwd  varchar(128)                                    null comment '密码hash',
+    constraint user_pk2
+        unique (name)
 )
     comment '用户';
 

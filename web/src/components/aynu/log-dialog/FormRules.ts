@@ -35,9 +35,9 @@ function checkLogid(
         return callback()
     if (value.match(/^\d+$/))
         return callback("id应为6位数字")
-    if (value.match(/^.{3,12}$/))
+    if (value.match(/^.{1,12}$/))
         return callback()
-    return callback("用户名长度3-12")
+    return callback("用户名长度1-12")
 }
 
 function checkUname(
@@ -48,9 +48,9 @@ function checkUname(
     options: ValidateOption): SyncValidateResult | void {
     if (value.match(/^\d+$/))
         return callback("用户名不能全为数字")
-    if (value.match(/^.{3,12}$/))
+    if (value.match(/^.{1,12}$/))
         return callback()
-    return callback("用户名长度3-12")
+    return callback("用户名长度1-12")
 }
 
 function checkPwd2(
