@@ -1,4 +1,4 @@
-package cn.yjl.ssmweb.api
+package cn.yjl.api
 
 import cn.yjl.log.util.getLogger
 import cn.yjl.resp.ErrorRespJson
@@ -7,7 +7,7 @@ import cn.yjl.resp.ResponseJson
 import cn.yjl.resp.user.UserLoginRespJson
 import cn.yjl.resp.user.UserRespJson
 import cn.yjl.service.UserService
-import cn.yjl.ssmweb.validater.Logid
+import cn.yjl.validater.Logid
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.servlet.http.HttpSession

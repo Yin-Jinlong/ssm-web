@@ -1,4 +1,4 @@
-package cn.yjl.ssmweb.api
+package cn.yjl.api
 
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController

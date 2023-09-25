@@ -1,4 +1,4 @@
-package cn.yjl.ssmweb.validater
+package cn.yjl.validater
 
 import cn.yjl.resp.RespCode
 

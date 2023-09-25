@@ -1,4 +1,4 @@
-package cn.yjl.ssmweb.api
+package cn.yjl.api
 
 import cn.yjl.resp.ResponseJson
 import cn.yjl.resp.msg.MsgRespJson

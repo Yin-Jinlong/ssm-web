@@ -10,7 +10,7 @@ import cn.yjl.resp.user.UserLogonRespJson
 import cn.yjl.security.sha1_512
 import cn.yjl.service.BaseService
 import cn.yjl.service.UserService
-import cn.yjl.ssmweb.validater.Logid
+import cn.yjl.validater.Logid
 import org.apache.ibatis.session.SqlSession
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean

@@ -2,7 +2,7 @@ package cn.yjl.ssmweb
 
 import cn.yjl.resp.BaseRespJson
 import cn.yjl.resp.ResponseJson
-import cn.yjl.ssmweb.validater.ValidateException
+import cn.yjl.validater.ValidateException
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
