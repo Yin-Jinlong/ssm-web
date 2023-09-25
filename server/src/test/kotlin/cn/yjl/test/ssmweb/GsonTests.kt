@@ -1,24 +1,27 @@
 package cn.yjl.test.ssmweb
 
+import cn.yjl.ssmweb.SsmWebApplication
+import cn.yjl.test.annotation.SSMTest
+import cn.yjl.test.util.sameAs
 import com.google.gson.Gson
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
-@SpringBootTest
+@SSMTest([SsmWebApplication::class])
 class GsonTests {
 
     @Autowired
-    lateinit var gson:Gson
+    lateinit var gson: Gson
 
     /**
      * 测试Gson是否正常
      */
     @Test
     fun testGson() {
-        val gt=gson.fromJson("{name:'gson',age:20}", GsonTestClass::class.java)
-        assert(gt.name=="gson")
-        assert(gt.age==20)
+        val gt = gson.fromJson("{name:'gson',age:20}", GsonTestClass::class.java)
+        gt.name sameAs "gson"
+        gt.age sameAs 20
     }
 
 }

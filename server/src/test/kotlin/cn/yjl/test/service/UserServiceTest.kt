@@ -1,6 +1,7 @@
 package cn.yjl.test.service
 
 import cn.yjl.db.User
+import cn.yjl.resp.user.UserLogonRespJson
 import cn.yjl.service.UserService
 import cn.yjl.ssmweb.SsmWebApplication
 import cn.yjl.test.annotation.SSMTest
@@ -23,15 +24,23 @@ class UserServiceTest {
     }
 
     @Test
-    fun testLogin() {
-        val user = userService.login(732418, "123456") ?: return assert(false)
-        user sameAs testUser
+    fun testUidLogin() {
+        userService.login("732418", "123456") sameAs testUser
+    }
+
+    @Test
+    fun testUnameLogin() {
+        userService.login("user", "123456") sameAs testUser
     }
 
     @Test
     fun testLogon() {
         // TODO 使用前请先删除原有用户!!!
-        userService.logon("test1", "666666").name sameAs "test1"
+        val r = userService.logon("test1", "666666")
+        if (r is UserLogonRespJson) {
+            r.user.name sameAs "test1"
+        } else
+            throw IllegalStateException("logon failed")
     }
 
 }
