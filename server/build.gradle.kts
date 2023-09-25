@@ -4,7 +4,6 @@ plugins {
     war
     id("org.springframework.boot") version "3.1.3"
     id("io.spring.dependency-management") version "1.1.3"
-    kotlin("jvm") version "1.9.10"
     kotlin("plugin.spring") version "1.9.10"
 }
 
@@ -15,14 +14,6 @@ rootProject.apply {
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
-}
-
-repositories {
-    mavenLocal()
-    maven("https://maven.aliyun.com/repository/public")
-    maven("https://maven.aliyun.com/repository/central")
-    maven("https://maven.aliyun.com/repository/gradle-plugin/")
-    mavenCentral()
 }
 
 configurations.all {
