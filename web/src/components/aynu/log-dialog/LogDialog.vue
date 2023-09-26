@@ -88,7 +88,7 @@
 import {ElForm, ElMessage} from "element-plus";
 import {onMounted, ref} from "vue";
 import axios, {AxiosError} from "axios";
-import {initFromRules, LogUser, loginRules, logonRules} from "./FormRules.ts";
+import {initFromRules, loginRules, logonRules, LogUser} from "./FormRules.ts";
 import {User} from "@types";
 import {LS} from "Global";
 
@@ -143,11 +143,19 @@ async function postLogin(logid: string, pwd: string | undefined = undefined): Pr
     })
 }
 
+function clearPwds() {
+    logUser.value.pwd = ''
+    logUser.value.pwd1 = ''
+    logUser.value.pwd2 = ''
+}
+
 function login() {
     form.value!.validate((valid: boolean) => {
         if (valid) {
             isLogining.value = true
             postLogin(logUser.value.logid, logUser.value.pwd).then(user => {
+                // 清除密码，避免泄露
+                clearPwds()
                 ElMessage.success("登录成功")
                 emits("login", user)
             }).catch(catchError).finally(() => {
@@ -165,6 +173,8 @@ function logon() {
             isLogoning.value = true
             axios.post("/api/user/logon", `uname=${logUser.value.logid}&pwd=${logUser.value.pwd1}`).then(res => {
                 if (res.data.code == '0') {
+                    // 清楚密码，避免泄露
+                    clearPwds()
                     ElMessage.success(res.data.msg)
                     emits("login", res.data.user)
                 } else {
