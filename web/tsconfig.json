@@ -19,7 +19,7 @@
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
+//    "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
@@ -34,6 +34,9 @@
       ],
       "@pages/*": [
         "./src/pages/*"
+      ],
+      "@icons": [
+        "./src/icons"
       ],
       "@types/*": [
         "./src/types/*"

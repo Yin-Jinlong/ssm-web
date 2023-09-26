@@ -12,6 +12,9 @@ app.use(createRouter({
         {
             path: '/',
             component: () => import('@pages/Home.vue')
+        }, {
+            path: '/:pathMatch(.*)',
+            component: () => import('@pages/NotFoundPage.vue')
         }
     ]
 }))

@@ -13,7 +13,7 @@ export default defineConfig({
     server: {
         port: 2222,
         open: true,
-        proxy:{
+        proxy: {
             '/api': {
                 target: 'http://127.0.0.9:2233/api',
                 changeOrigin: true,
@@ -27,6 +27,7 @@ export default defineConfig({
             'Global': path.resolve(__dirname, './src/Global.ts'),
             '@components': path.resolve(__dirname, './src/components'),
             '@pages': path.resolve(__dirname, './src/pages'),
+            '@icons': path.resolve(__dirname, './src/icons'),
             '@types': path.resolve(__dirname, './src/types'),
         }
     },
@@ -39,10 +40,10 @@ export default defineConfig({
         }),
         Components({
             // exclude:[/.*\.vue/i],
-            types:[
+            types: [
                 {
-                    from:'@components',
-                    names:['CommonHeader','AynuCard']
+                    from: '@components',
+                    names: ['CommonHeader', 'AynuCard']
                 }
             ],
             resolvers: [

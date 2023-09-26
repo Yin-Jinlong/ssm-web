@@ -7,6 +7,7 @@ interface Props {
 }
 
 declare interface Data {
+    uid: number | undefined
     name: string
     img: string
     msg: string
