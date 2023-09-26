@@ -148,7 +148,6 @@ function login() {
         if (valid) {
             isLogining.value = true
             postLogin(logUser.value.logid, logUser.value.pwd).then(user => {
-                localStorage.setItem(LS.USER_NAME, user.uid.toString())
                 ElMessage.success("登录成功")
                 emits("login", user)
             }).catch(catchError).finally(() => {

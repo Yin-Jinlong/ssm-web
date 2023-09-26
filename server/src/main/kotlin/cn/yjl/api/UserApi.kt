@@ -5,11 +5,12 @@ import cn.yjl.resp.ErrorRespJson
 import cn.yjl.resp.RespCode
 import cn.yjl.resp.ResponseJson
 import cn.yjl.resp.user.UserLoginRespJson
+import cn.yjl.resp.user.UserLogonRespJson
 import cn.yjl.resp.user.UserRespJson
 import cn.yjl.service.UserService
 import cn.yjl.validater.Logid
-import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpServletResponse.SC_BAD_REQUEST
 import jakarta.servlet.http.HttpSession
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.annotation.Validated
@@ -31,12 +32,18 @@ class UserApi {
     lateinit var userService: UserService
 
     @PostMapping("/logon")
-    fun logon(uname: String, pwd: String, resp: HttpServletResponse): ResponseJson {
+    fun logon(
+        uname: String, pwd: String,
+        session: HttpSession,
+        resp: HttpServletResponse
+    ): ResponseJson {
         if (uname.length !in 3..12 && uname.matches(Regex("\\d{6}")))
             return ErrorRespJson(RespCode.USER_NAME_ERROR)
         val r = userService.logon(uname, pwd)
         if (r.code != 0) {
-            resp.status = HttpServletResponse.SC_BAD_REQUEST
+            resp.status = SC_BAD_REQUEST
+        } else if (r is UserLogonRespJson) {
+            session.save(r.user.uid, pwd)
         }
         return r
     }
@@ -63,14 +70,13 @@ class UserApi {
         logid: String,
         @RequestParam
         pwd: String?,
-        req: HttpServletRequest,
+        session: HttpSession,
         resp: HttpServletResponse
     ): ResponseJson {
         LOGGER.info("login:$logid - $pwd")
         // 用户密码
         var upwd = pwd
         if (pwd == null) {
-            val session = req.session
             // 还在时效内
             if (!session.isOutOfDate()) {
                 // 到此logid应该是uid，且应与session的uid相同
@@ -84,11 +90,7 @@ class UserApi {
             val user = userService.login(logid, upwd)
             if (user != null) {
                 // 保存一下
-                req.getSession(true).apply {
-                    setAttribute(SESSION_LOGGED_TIME, now())
-                    setAttribute(SESSION_USER_ID, user.uid.toString())
-                    setAttribute(SESSION_USER_PWD, upwd)
-                }
+                session.save(user.uid, upwd)
                 return UserLoginRespJson(RespCode.USER_LOGIN_SUCCESS, user)
             }
         }
@@ -100,10 +102,9 @@ class UserApi {
      * 登出
      */
     @PostMapping("/logout")
-    fun logout(uid: String, req: HttpServletRequest, resp: HttpServletResponse): ResponseJson {
+    fun logout(uid: String, session: HttpSession, resp: HttpServletResponse): ResponseJson {
         if (!uid.matches(Logid.UidReg))
             return ErrorRespJson(RespCode.VALIDATE_FAILED)
-        val session = req.session
         if (uid == session.getUid()) {
             session.clearAll()
             return ErrorRespJson(RespCode.OK)
@@ -124,15 +125,22 @@ class UserApi {
             ErrorRespJson(RespCode.USER_NOT_FOUND)
     }
 
-}
+    fun now() = currentTimeMillis()
 
-fun now() = currentTimeMillis()
+    fun HttpSession.save(uid: Int, pwd: String) {
+        setAttribute(SESSION_LOGGED_TIME, now())
+        setAttribute(SESSION_USER_ID, uid.toString())
+        setAttribute(SESSION_USER_PWD, pwd)
+    }
 
-/**
- * 清除所有保存信息
- */
-fun HttpSession.clearAll() {
-    removeAttribute(UserApi.SESSION_USER_ID)
-    removeAttribute(UserApi.SESSION_USER_PWD)
-    removeAttribute(UserApi.SESSION_LOGGED_TIME)
+
+    /**
+     * 清除所有保存信息
+     */
+    fun HttpSession.clearAll() {
+        removeAttribute(SESSION_USER_ID)
+        removeAttribute(SESSION_USER_PWD)
+        removeAttribute(SESSION_LOGGED_TIME)
+    }
+
 }

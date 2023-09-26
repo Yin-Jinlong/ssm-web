@@ -10,7 +10,7 @@
             </div>
 
             <div class="right-controller">
-                <el-dropdown>
+                <el-dropdown @command="onCommand">
                     <template #default>
                         <div style="cursor: pointer;">
                             <el-avatar
@@ -23,14 +23,15 @@
                         </div>
                     </template>
                     <template #dropdown>
-                        <el-dropdown-menu>
-                            <el-dropdown-item>
-                                <el-button
-                                        v-if="user.uid"
-                                        @click.stop="emits('logout')"><span>登出</span></el-button>
-                                <el-button
-                                        v-else
-                                        @click.stop="onClickAvatar"><span>登录</span></el-button>
+                        <el-dropdown-menu class="user-avatar-menu">
+                            <div v-if="user.uid" style="inset: 0;text-align: center;font-size: 16px;margin: 5px">
+                                {{ user.name }}
+                            </div>
+                            <el-dropdown-item v-if="user.uid" command="logout">
+                                <span>登出</span>
+                            </el-dropdown-item>
+                            <el-dropdown-item v-else command="login">
+                                <span>登录</span>
                             </el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
@@ -175,9 +176,18 @@ const props = defineProps<{
 
 const emits = defineEmits(["onUserLogin", "logout"])
 
-function onClickAvatar() {
-    if (!props.user.uid) {
-        emits("onUserLogin")
+function onCommand(c: string | number) {
+    switch (c) {
+        case 'logout': {
+            emits('logout')
+            break
+        }
+        case 'login': {
+            if (!props.user.uid) {
+                emits("onUserLogin")
+            }
+            break
+        }
     }
 }
 

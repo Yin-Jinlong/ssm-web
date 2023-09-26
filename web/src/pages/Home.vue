@@ -116,6 +116,7 @@ let user = ref<{
 })
 
 function login(u: User) {
+    localStorage.setItem(LS.USER_NAME, u.uid.toString())
     user.value = u
     showLoginDialog.value = false
 }
