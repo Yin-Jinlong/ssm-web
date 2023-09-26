@@ -173,7 +173,7 @@ function logon() {
             isLogoning.value = true
             axios.post("/api/user/logon", `uname=${logUser.value.logid}&pwd=${logUser.value.pwd1}`).then(res => {
                 if (res.data.code == '0') {
-                    // 清楚密码，避免泄露
+                    // 清除密码，避免泄露
                     clearPwds()
                     ElMessage.success(res.data.msg)
                     emits("login", res.data.user)
