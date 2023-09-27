@@ -6,4 +6,6 @@ interface MsgService : Service {
 
     fun getAll(): Array<Msg>
 
+    fun addMsg(uid: Int, msg: String)
+
 }

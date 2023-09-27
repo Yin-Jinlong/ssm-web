@@ -1,5 +1,6 @@
 package cn.yjl.api
 
+import cn.yjl.api.uitl.*
 import cn.yjl.log.util.getLogger
 import cn.yjl.resp.ErrorRespJson
 import cn.yjl.resp.RespCode
@@ -8,6 +9,7 @@ import cn.yjl.resp.user.UserLoginRespJson
 import cn.yjl.resp.user.UserLogonRespJson
 import cn.yjl.resp.user.UserRespJson
 import cn.yjl.service.UserService
+import cn.yjl.util.now
 import cn.yjl.validater.Logid
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.servlet.http.HttpServletResponse.SC_BAD_REQUEST
@@ -15,7 +17,6 @@ import jakarta.servlet.http.HttpSession
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import java.lang.System.currentTimeMillis
 
 @Validated
 @RestController
@@ -48,20 +49,6 @@ class UserApi {
         return r
     }
 
-    /**
-     * 从Session获取密码
-     */
-    private fun HttpSession.getPwd() = getAttribute(SESSION_USER_PWD) as String?
-
-    /**
-     * 从Session获取用户名
-     */
-    private fun HttpSession.getUid() = getAttribute(SESSION_USER_ID) as String?
-
-    private fun HttpSession.isOutOfDate(): Boolean {
-        val time: Long? = getAttribute(SESSION_LOGGED_TIME) as Long?
-        return time == null || now() - time > 5 * 60 * 1000L
-    }
 
     @PostMapping("/login")
     fun login(
@@ -123,24 +110,6 @@ class UserApi {
             UserRespJson(user)
         else
             ErrorRespJson(RespCode.USER_NOT_FOUND)
-    }
-
-    fun now() = currentTimeMillis()
-
-    fun HttpSession.save(uid: Int, pwd: String) {
-        setAttribute(SESSION_LOGGED_TIME, now())
-        setAttribute(SESSION_USER_ID, uid.toString())
-        setAttribute(SESSION_USER_PWD, pwd)
-    }
-
-
-    /**
-     * 清除所有保存信息
-     */
-    fun HttpSession.clearAll() {
-        removeAttribute(SESSION_USER_ID)
-        removeAttribute(SESSION_USER_PWD)
-        removeAttribute(SESSION_LOGGED_TIME)
     }
 
 }

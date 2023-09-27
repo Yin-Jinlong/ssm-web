@@ -13,6 +13,9 @@ enum class RespCode(val code: Int, val msg: String) {
     USER_NAME_ERROR(120, "用户名错误"),
     USER_PWD_ERROR(121, "密码格式错误"),
 
+    USER_MSG_SEND_OK(0, "提交成功"),
+    USER_NOT_LOGIN(130, "用户名未登录"),
+
     USER_LOGON_OK(0, "注册成功"),
     USER_LOGON_UNAME_EXISTS(130, "用户名已存在"),
 

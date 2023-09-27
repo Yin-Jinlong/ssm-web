@@ -121,43 +121,49 @@ function login(u: User) {
     showLoginDialog.value = false
 }
 
+function parseDate(date: string): Date {
+    //2023-09-13T09:32:02.000+00:00
+    let dateReg = /(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}).(\d{3}).(\d{2}):(\d{2})/
+    if (dateReg.test(date)) {
+        let gs = dateReg.exec(date)!
+        let year = +gs[1]
+        let month = +gs[2]
+        let day = +[3]
+        let hour = +gs[4]
+        let minute = +gs[5]
+        let second = +gs[6]
+        let millisecond = +gs[7]
+        let timezone = +gs[8]
+        return new Date(year, month, day, hour + timezone + 8, minute, second, millisecond)
+    }
+    throw data
+}
+
+function getAll() {
+    axios.get('/api/msg/all').then(res => {
+        console.log(res)
+        for (const item of res.data.data as Msg[]) {
+            console.log(item)
+            let time = parseDate(item.time)
+            data.push({
+                img: '/img/avatar.svg',
+                ...item,
+                time
+            })
+        }
+        setTimeout(() => {
+            loading.value = false
+        }, 400)
+    }).catch(err => {
+        ElMessage.error("获取数据失败: " + err)
+    })
+}
+
 onMounted(() => {
 
-    function parseDate(date: string): Date {
-        //2023-09-13T09:32:02.000+00:00
-        let dateReg = /(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}).(\d{3}).(\d{2}):(\d{2})/
-        if (dateReg.test(date)) {
-            let gs = dateReg.exec(date)!
-            let year = +gs[1]
-            let month = +gs[2]
-            let day = +[3]
-            let hour = +gs[4]
-            let minute = +gs[5]
-            let second = +gs[6]
-            let millisecond = +gs[7]
-            let timezone = +gs[8]
-            return new Date(year, month, day, hour + timezone + 8, minute, second, millisecond)
-        }
-        throw data
-    }
-
     setTimeout(() => {
-        axios.get('/api/msg/all').then(res => {
-            console.log(res)
-            for (const item of res.data.data as Msg[]) {
-                console.log(item)
-                let time = parseDate(item.time)
-                data.push({
-                    img: '/img/avatar.svg',
-                    ...item,
-                    time
-                })
-            }
-            loading.value = false
-        }).catch(err => {
-            ElMessage.error("获取数据失败: " + err)
-        })
-    }, 1000)
+        getAll()
+    }, 500)
 
 })
 
@@ -195,6 +201,18 @@ function add() {
 }
 
 function onAdd(v: string) {
+
+    axios.post('/api/msg/send', `uid=${user.value.uid}&msg=${v}`).then((res) => {
+        if (res.data.code == '0') {
+            data.splice(0, data.length)
+            loading.value = true
+            getAll()
+        } else {
+            ElMessage.error(res.data.msg)
+        }
+    }).catch(err => {
+        ElMessage.error(err)
+    })
     data.splice(0, 0, {
         uid: user.value?.uid,
         name: user.value?.name,

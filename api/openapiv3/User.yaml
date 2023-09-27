@@ -100,6 +100,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/ResponseJson'
 
+  /msg/send:
+    post:
+      summary: 提交留言
+      description: 提交留言
+      parameters:
+        - $ref: '#/components/parameters/p-uid'
+        - $ref: '#/components/parameters/p-msg'
+      responses:
+        200:
+          description: 提交成功
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseJson'
+
   /msg/all:
     get:
       summary: 获取所有消息
@@ -126,6 +141,16 @@ components:
         format: string
         pattern: \d{6} \S{3,12}
 
+    p-uid:
+      in: query
+      name: uid
+      description: 用户id
+      required: true
+      schema:
+        type: number
+        format: number
+        pattern: \d{6}
+
     p-uname:
       in: query
       name: uname
@@ -145,6 +170,14 @@ components:
         type: string
         format: string
         pattern: \S{6,18}
+
+    p-msg:
+      in: query
+      name: msg
+      description: 消息内容
+      required: true
+      schema:
+        type: string
 
   schemas:
 
