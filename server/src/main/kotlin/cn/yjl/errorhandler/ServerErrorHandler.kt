@@ -1,4 +1,4 @@
-package cn.yjl.ssmweb
+package cn.yjl.errorhandler
 
 import cn.yjl.log.util.getLogger
 import cn.yjl.resp.ErrorRespJson

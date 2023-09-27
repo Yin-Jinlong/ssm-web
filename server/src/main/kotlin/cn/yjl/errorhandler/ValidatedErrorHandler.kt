@@ -1,4 +1,4 @@
-package cn.yjl.ssmweb
+package cn.yjl.errorhandler
 
 import cn.yjl.resp.BaseRespJson
 import cn.yjl.resp.ResponseJson
