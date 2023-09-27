@@ -31,6 +31,10 @@ abstract class ZipSrcTask : DefaultTask() {
 
     @TaskAction
     fun run() {
+        if (!file.exists()){
+            file.parentFile.mkdirs()
+            file.createNewFile()
+        }
         ZipOutputStream(FileOutputStream(file)).use { out ->
             out.apply {
                 setLevel(zipLevel)
