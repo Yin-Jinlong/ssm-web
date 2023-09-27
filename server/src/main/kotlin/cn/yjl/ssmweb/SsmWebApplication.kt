@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.http.HttpHeaders
+import org.springframework.scheduling.annotation.Async
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -25,6 +26,7 @@ class SsmWebApplication {
     private fun HttpServletRequest.log(res: Any) =
         log.info("GET $requestURI -> $res")
 
+    @Async
     @RequestMapping("/**")
     fun static(req: HttpServletRequest, resp: HttpServletResponse) {
         val path = run {
