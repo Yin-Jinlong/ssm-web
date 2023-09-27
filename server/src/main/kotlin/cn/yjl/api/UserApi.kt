@@ -11,6 +11,7 @@ import cn.yjl.resp.user.UserRespJson
 import cn.yjl.service.UserService
 import cn.yjl.util.now
 import cn.yjl.validater.Logid
+import cn.yjl.validater.Uid
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.servlet.http.HttpServletResponse.SC_BAD_REQUEST
 import jakarta.servlet.http.HttpSession
@@ -89,9 +90,13 @@ class UserApi {
      * 登出
      */
     @PostMapping("/logout")
-    fun logout(uid: String, session: HttpSession, resp: HttpServletResponse): ResponseJson {
-        if (!uid.matches(Logid.UidReg))
-            return ErrorRespJson(RespCode.VALIDATE_FAILED)
+    fun logout(
+        @Uid
+        @RequestParam
+        uid: String,
+        session: HttpSession,
+        resp: HttpServletResponse
+    ): ResponseJson {
         if (uid == session.getUid()) {
             session.clearAll()
             return ErrorRespJson(RespCode.OK)

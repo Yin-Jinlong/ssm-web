@@ -2,25 +2,25 @@ package cn.yjl.validater
 
 import cn.yjl.resp.RespCode
 import jakarta.validation.Constraint
-import jakarta.validation.ConstraintValidator
-import jakarta.validation.ConstraintValidatorContext
 import jakarta.validation.Payload
 import kotlin.reflect.KClass
 
 @Target(AnnotationTarget.VALUE_PARAMETER)
-@Constraint(validatedBy = [LogidValidator::class])
-annotation class Logid(
+@Constraint(validatedBy = [UidValidator::class])
+annotation class Uid(
     val message: String = "",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<Payload>> = [],
     val code: RespCode = RespCode.VALIDATE_FAILED
-)
+) {
+    companion object {
+        val UidReg = Regex("\\d{6}")
+    }
+}
 
-object LogidValidator : BaseValidator<Logid>() {
+object UidValidator : BaseValidator<Uid>() {
 
     override fun valid(value: String?): Boolean {
-        return if (value == null) false
-        else UidValidator.valid(value) || UnameValidator.valid(value)
+        return value?.matches(Uid.UidReg) ?: false
     }
-
 }

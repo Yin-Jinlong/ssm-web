@@ -11,6 +11,8 @@ import cn.yjl.security.sha1_512
 import cn.yjl.service.BaseService
 import cn.yjl.service.UserService
 import cn.yjl.validater.Logid
+import cn.yjl.validater.Uid
+import cn.yjl.validater.Uname
 import org.apache.ibatis.session.SqlSession
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
@@ -43,9 +45,9 @@ class UserServiceImpl : BaseService(), UserService {
     }
 
     override fun login(logid: String, pwd: String): User? {
-        return if (logid.matches(Logid.UidReg))
+        return if (logid.matches(Uid.UidReg))
             dao.getUserByUidPwd(logid.toInt(), pwd.sha1_512)
-        else if (logid.matches(Logid.UnameReg))
+        else if (logid.matches(Uname.UnameReg))
             dao.getUserByNamePwd(logid, pwd.sha1_512)
         else
             throw IllegalArgumentException("No format way to login:$logid $pwd")

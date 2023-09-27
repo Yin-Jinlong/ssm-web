@@ -6,6 +6,8 @@ import cn.yjl.resp.RespCode
 import cn.yjl.resp.ResponseJson
 import cn.yjl.resp.msg.MsgRespJson
 import cn.yjl.service.MsgService
+import cn.yjl.validater.NotEmpty
+import cn.yjl.validater.Uid
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.servlet.http.HttpServletResponse.SC_BAD_REQUEST
 import jakarta.servlet.http.HttpSession
@@ -29,8 +31,10 @@ class MsgApi {
 
     @PostMapping("/send")
     fun send(
+        @Uid
         @RequestParam
         uid: String,
+        @NotEmpty
         @RequestParam
         msg: String,
         session: HttpSession,
