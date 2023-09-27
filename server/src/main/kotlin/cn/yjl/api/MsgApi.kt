@@ -1,6 +1,7 @@
 package cn.yjl.api
 
 import cn.yjl.api.uitl.getUid
+import cn.yjl.api.uitl.updateTime
 import cn.yjl.resp.ErrorRespJson
 import cn.yjl.resp.RespCode
 import cn.yjl.resp.ResponseJson
@@ -42,6 +43,8 @@ class MsgApi {
     ): ResponseJson {
         session.getUid()?.let {
             msgService.addMsg(it.toInt(), msg)
+            // 有活动，更新超时
+            session.updateTime()
             return ErrorRespJson(RespCode.USER_MSG_SEND_OK)
         }
         resp.status = SC_BAD_REQUEST

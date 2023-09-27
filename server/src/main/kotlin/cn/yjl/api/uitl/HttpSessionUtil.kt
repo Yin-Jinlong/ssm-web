@@ -36,3 +36,5 @@ fun HttpSession.isOutOfDate(): Boolean {
     val time: Long? = getAttribute(UserApi.SESSION_LOGGED_TIME) as Long?
     return time == null || now() - time > 5 * 60 * 1000L
 }
+
+fun HttpSession.updateTime() = setAttribute(UserApi.SESSION_LOGGED_TIME, now())
