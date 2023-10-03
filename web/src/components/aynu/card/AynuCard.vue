@@ -67,6 +67,7 @@
   padding    : 3em 1em 1em 1em;
   position   : relative;
   width      : calc(100% - 2em);
+  margin     : 0 auto;
   height     : 178px;
   box-sizing : border-box
 }
@@ -143,7 +144,9 @@ html.dark {
   height           : 178px;
   align-items      : center;
   background-color : #fafafa;
-  border-radius    : 10px
+  border-radius    : 10px;
+  width            : calc(100% - 2em);
+  margin           : 0 auto;
 }
 
 html.dark .skeleton-box {
