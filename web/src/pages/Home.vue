@@ -1,65 +1,43 @@
 <template>
     <add-button @click.stop="add"/>
-    <el-scrollbar
-            ref="scrollBar"
-            :always="true"
-            :min-size="20"
-            height="100vh"
-            max-height="100vh"
-            style="padding: 0 1em">
-        <common-header
-                :user="user"
-                @logout="logout"
-                @on-user-login="log"/>
-        <log-dialog v-model="showLoginDialog"
-                    @login="login"/>
-        <div class="contents">
-            <el-skeleton
-                    :animated="true"
-                    :count="3"
-                    :loading="loading"
-                    style="--el-skeleton-circle-size: 100px">
-                <template #template>
-                    <div style="display: flex;width: 1000px;margin: 10px auto;align-items: center;justify-content: center">
-                        <div style="width: 120px">
-                            <el-skeleton-item variant="circle"/>
-                            <el-skeleton-item variant="text"/>
-                        </div>
-                        <div style="width: 100%;padding: 1em">
-                            <el-skeleton-item
-                                    style="height: 20px;width: 30%;margin: 5px 0"/>
-                            <el-skeleton-item
-                                    style="height: 60px"/>
-                        </div>
+    <common-header
+            :user="user"
+            @logout="logout"
+            @on-user-login="log"/>
+    <log-dialog v-model="showLoginDialog"
+                @login="login"/>
+    <div class="contents">
+        <el-empty
+                v-if="!loading&&data.length==0"
+                class="empty"
+                description="空空如也"/>
+        <el-scrollbar
+                ref="msgScrollBar"
+                style="height: calc(100vh - 100px)"
+                @scroll="scroll">
+            <div v-infinite-scroll="load" style="overflow-x:hidden ">
+                <transition-group
+                        :css="false"
+                        tag="div"
+                        @enter="onEnter"
+                        @leave="onLeave"
+                        @before-enter="beforeEnter"
+                        @before-leave="beforeLeave">
+                    <div
+                            v-for="(v,i) in data"
+                            :key="i"
+                            :data-index="i"
+                            style="margin: 1em 0;">
+                        <aynu-card
+                                :data='v'
+                                :on-delete="() =>{del(i)} "
+                                class="aynu-card"/>
                     </div>
-                </template>
-                <template #default>
-                    <el-empty
-                            v-if="!loading&&data.length==0"
-                            class="empty"
-                            description="空空如也"/>
-                    <transition-group
-                            :css="false"
-                            tag="div"
-                            @enter="onEnter"
-                            @leave="onLeave"
-                            @before-enter="beforeEnter"
-                            @before-leave="beforeLeave">
-                        <div
-                                v-for="(v,i) in data"
-                                :key="v.time.toString()"
-                                :data-index="i"
-                                style="margin: 1em 0;">
-                            <aynu-card
-                                    :data='v'
-                                    :on-delete="() =>{del(i)} "
-                                    class="aynu-card"/>
-                        </div>
-                    </transition-group>
-                </template>
-            </el-skeleton>
-        </div>
-    </el-scrollbar>
+                </transition-group>
+                <div v-if="noMore" style="display:flex;align-items: center;justify-content: center;opacity: 0.8;">没有更多了X_X</div>
+            </div>
+        </el-scrollbar>
+    </div>
     <add-msg-dialog
             v-model="showAddDialog"
             :user="user"
@@ -103,9 +81,13 @@ const loading = ref(true)
 const showAddDialog = ref(false)
 const showLoginDialog = ref(false)
 
-const scrollBar = ref<InstanceType<typeof ElScrollbar>>()
+const msgScrollBar = ref<InstanceType<typeof ElScrollbar>>()
 
-let data = reactive<AynuCardData[]>([])
+let data = reactive<(AynuCardData | null)[]>([])
+
+const noMore = ref(false)
+
+const loadCount=2
 
 let user = ref<{
     uid: number | undefined,
@@ -128,7 +110,7 @@ function parseDate(date: string): Date {
         let gs = dateReg.exec(date)!
         let year = +gs[1]
         let month = +gs[2]
-        let day = +[3]
+        let day = +gs[3]
         let hour = +gs[4]
         let minute = +gs[5]
         let second = +gs[6]
@@ -139,34 +121,65 @@ function parseDate(date: string): Date {
     throw data
 }
 
-function getAll() {
-    axios.get('/api/msg/all').then(res => {
-        console.log(res)
-        for (const item of res.data.data as Msg[]) {
-            console.log(item)
-            let time = parseDate(item.time)
-            data.push({
-                img: '/img/avatar.svg',
-                ...item,
-                time
-            })
-        }
-        setTimeout(() => {
-            loading.value = false
-        }, 400)
-    }).catch(err => {
-        ElMessage.error("获取数据失败: " + err)
-    })
+
+function scroll(sd: { scrollLeft: number, scrollTop: number }): void {
+    let {scrollTop} = sd
+    let div = msgScrollBar.value?.wrapRef as HTMLDivElement
+    let max = div?.scrollHeight - div.clientHeight ?? 0
+    if (scrollTop > max - 5) {
+        load()
+    }
 }
 
 onMounted(() => {
-
-    setTimeout(() => {
-        getAll()
-    }, 500)
-
+    load()
 })
 
+let lastId = undefined as number | undefined
+
+function load() {
+    if (data.length > 0 && data[data.length - 1] == null)
+        return;
+    if (noMore.value)
+        return;
+    for (let i = 0; i < loadCount; i++) {
+        data.push(null)
+    }
+    let args = ''
+    if (lastId)
+        args += 'lastId=' + lastId + '&'
+    axios.get(`/api/msg/get?${args}count=${loadCount}`).then(res => {
+        let ms = res.data.data as Msg[]
+        for (let i = 0; i < ms.length; i++) {
+            let item = ms[i]
+            let time = parseDate(item.time)
+            let v = {
+                img: '/img/avatar.svg',
+                ...item,
+                time
+            };
+            setTimeout(() => {
+                data[data.length - loadCount + i] = v
+            }, 500)
+            if (v.id < (lastId ?? Number.MAX_VALUE)) {
+                lastId = v.id
+            }
+        }
+        setTimeout(() => {
+            loading.value = false
+            if (ms.length < loadCount) {
+                noMore.value = true
+                let c = loadCount - ms.length
+                data.splice(data.length - c, c)
+            }
+        }, 500)
+
+
+    }).catch(err => {
+        ElMessage.error("获取数据失败: " + err)
+    }).finally(() => {
+    })
+}
 
 function del(i: number) {
     data.splice(i, 1)
@@ -204,9 +217,7 @@ function onAdd(v: string) {
 
     axios.post('/api/msg/send', `uid=${user.value.uid}&msg=${v}`).then((res) => {
         if (res.data.code == '0') {
-            data.splice(0, data.length)
             loading.value = true
-            getAll()
         } else {
             ElMessage.error(res.data.msg)
         }
@@ -214,6 +225,7 @@ function onAdd(v: string) {
         ElMessage.error(err)
     })
     data.splice(0, 0, {
+        id: 9999,
         uid: user.value?.uid,
         name: user.value?.name,
         time: new Date(),

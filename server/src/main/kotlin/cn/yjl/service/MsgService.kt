@@ -22,4 +22,6 @@ interface MsgService : Service {
      */
     fun addMsg(uid: Int, msg: String)
 
+    fun getMsgBefore(id: Int, count: Int):Array<Msg>
+
 }

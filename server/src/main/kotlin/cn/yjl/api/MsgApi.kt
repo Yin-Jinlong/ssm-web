@@ -68,4 +68,16 @@ class MsgApi {
         return ErrorRespJson(RespCode.USER_NOT_LOGIN)
     }
 
+    @GetMapping("/get")
+    fun getMsgs(
+        @RequestParam
+        count: String,
+        @RequestParam(required = false, defaultValue = Int.MAX_VALUE.toString())
+        lastId: String,
+        resp: HttpServletResponse
+    ): ResponseJson {
+        val msgs = msgService.getMsgBefore(lastId.toInt(), count.toInt())
+        return MsgRespJson(msgs)
+    }
+
 }

@@ -30,4 +30,8 @@ class MsgServiceImpl : BaseService<MsgDao>(), MsgService {
     override fun addMsg(uid: Int, msg: String) {
         dao.insertMsg(uid, msg)
     }
+
+    override fun getMsgBefore(id: Int, count: Int): Array<Msg> {
+        return dao.getMsgBeforeIdLimitCount(id, count)
+    }
 }

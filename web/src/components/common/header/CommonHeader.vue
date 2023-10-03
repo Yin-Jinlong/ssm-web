@@ -164,7 +164,7 @@ html.dark {
 <script setup lang="ts">
 
 import {ref, watch} from "vue";
-import {isSystemDarkTheme} from "Global";
+import {getTheme, setTheme} from "Global";
 import {MoonNight, Sunny} from "@element-plus/icons-vue";
 
 const props = defineProps<{
@@ -192,13 +192,10 @@ function onCommand(c: string | number) {
 }
 
 
-const dark = ref<boolean>(isSystemDarkTheme())
-if (dark.value) {
-    document.documentElement.classList.add("dark")
-} else {
-    document.documentElement.classList.remove("dark")
-}
+const dark = ref<boolean>(getTheme())
+
 watch(dark, (nv) => {
+    setTheme(nv)
     if (nv) {
         document.documentElement.classList.add("dark")
     } else {

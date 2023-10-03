@@ -28,4 +28,10 @@ interface MsgDao : Dao {
     @Insert("insert into leave_words(uid, msg) VALUES (#{uid},#{msg})")
     fun insertMsg(uid: Int, msg: String)
 
+    /**
+     * 获取小于id的消息count个
+     */
+    @Select("select id,name,uid, msg, time from leave_words natural join user where id < #{id} order by id desc limit #{count}")
+    fun getMsgBeforeIdLimitCount(id: Int, count: Int): Array<Msg>
+
 }

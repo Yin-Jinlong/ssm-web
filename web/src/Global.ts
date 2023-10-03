@@ -3,5 +3,17 @@ export function isSystemDarkTheme() {
 }
 
 export enum LS {
-    USER_NAME = "user"
+    USER_NAME = "user",
+    DARK = "dark"
+}
+
+export function getTheme(): boolean {
+    return localStorage.getItem(LS.DARK) != null
+}
+
+export function setTheme(dark: boolean) {
+    if (dark)
+        localStorage.setItem(LS.DARK, "true")
+    else
+        localStorage.removeItem(LS.DARK)
 }

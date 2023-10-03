@@ -2,7 +2,7 @@ import {createApp} from 'vue'
 import './style.scss'
 import App from './App.vue'
 import {createRouter, createWebHashHistory} from "vue-router";
-import {isSystemDarkTheme} from "Global";
+import {getTheme} from "Global";
 
 
 const app = createApp(App)
@@ -20,6 +20,5 @@ app.use(createRouter({
 }))
 app.mount(document.body)
 
-if (isSystemDarkTheme()) {
+if (getTheme())
     document.documentElement.classList.add("dark")
-}
