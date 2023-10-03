@@ -14,8 +14,8 @@
         <el-scrollbar
                 ref="msgScrollBar"
                 style="height: calc(100vh - 100px)"
-                @scroll="scroll">
-            <div v-infinite-scroll="load" style="overflow-x:hidden ">
+                @wheel="scroll">
+            <div style="overflow-x:hidden ">
                 <transition-group
                         :css="false"
                         tag="div"
@@ -34,7 +34,9 @@
                                 class="aynu-card"/>
                     </div>
                 </transition-group>
-                <div v-if="noMore" style="display:flex;align-items: center;justify-content: center;opacity: 0.8;">没有更多了X_X</div>
+                <div v-if="noMore" style="display:flex;align-items: center;justify-content: center;opacity: 0.8;">
+                    没有更多了X_X
+                </div>
             </div>
         </el-scrollbar>
     </div>
@@ -87,7 +89,7 @@ let data = reactive<(AynuCardData | null)[]>([])
 
 const noMore = ref(false)
 
-const loadCount=2
+const loadCount = 2
 
 let user = ref<{
     uid: number | undefined,
@@ -122,9 +124,11 @@ function parseDate(date: string): Date {
 }
 
 
-function scroll(sd: { scrollLeft: number, scrollTop: number }): void {
-    let {scrollTop} = sd
+function scroll(e: WheelEvent): void {
+    if (e.deltaY < 0)
+        return
     let div = msgScrollBar.value?.wrapRef as HTMLDivElement
+    let scrollTop = div.scrollTop
     let max = div?.scrollHeight - div.clientHeight ?? 0
     if (scrollTop > max - 5) {
         load()
@@ -132,7 +136,8 @@ function scroll(sd: { scrollLeft: number, scrollTop: number }): void {
 }
 
 onMounted(() => {
-    load()
+    if (data.length == 0)
+        load()
 })
 
 let lastId = undefined as number | undefined
@@ -172,6 +177,9 @@ function load() {
                 let c = loadCount - ms.length
                 data.splice(data.length - c, c)
             }
+            let div = msgScrollBar.value?.wrapRef as HTMLDivElement
+            if (div.scrollHeight-div.clientHeight < 1)
+                load()
         }, 500)
 
 
