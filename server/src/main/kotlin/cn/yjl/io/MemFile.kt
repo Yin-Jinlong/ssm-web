@@ -12,6 +12,8 @@ import java.nio.file.Path
  * @property lastModified 最后修改时间
  * @property fileName 文件名
  * @property filePath 文件路径
+ *
+ * @author YJL
  */
 interface MemFile {
 

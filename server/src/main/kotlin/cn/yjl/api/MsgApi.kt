@@ -16,20 +16,37 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
+/**
+ * 消息接口
+ *
+ * @author YJL
+ */
 @Validated
 @RestController
 @RequestMapping("/api/msg", method = [RequestMethod.GET])
 class MsgApi {
 
+    /**
+     * 消息服务
+     */
     @Autowired
     lateinit var msgService: MsgService
 
+    /**
+     * 获取所有消息
+     */
     @PostMapping("/all")
     fun getAll(): ResponseJson {
         val msgs = msgService.getAll()
         return MsgRespJson(msgs)
     }
 
+    /**
+     * 向服务器发送消息
+     *
+     * @param uid 用户id，必须已登录
+     * @param msg 消息，不能为空
+     */
     @PostMapping("/send")
     fun send(
         @Uid

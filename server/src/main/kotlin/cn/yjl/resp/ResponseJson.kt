@@ -4,6 +4,8 @@ package cn.yjl.resp
  * 返回的json基础模板
  *
  * 只能在该接口上扩充
+ *
+ * @author YJL
  */
 interface ResponseJson {
     /**

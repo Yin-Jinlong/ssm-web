@@ -5,6 +5,8 @@ import cn.yjl.db.User
 
 /**
  * 服务端用户
+ *
+ * @author YJL
  */
 @ServerUse
 class ServerUser(

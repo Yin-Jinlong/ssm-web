@@ -4,11 +4,14 @@ import cn.yjl.resp.RespCode
 import jakarta.validation.ConstraintValidator
 import jakarta.validation.ConstraintValidatorContext
 
+/**
+ * @author YJL
+ */
 abstract class BaseValidator<T : Annotation?> : ConstraintValidator<T, String> {
 
     abstract fun valid(value: String?): Boolean
 
-    open val errorCode: RespCode=RespCode.VALIDATE_FAILED
+    open val errorCode: RespCode = RespCode.VALIDATE_FAILED
 
     override fun isValid(value: String?, context: ConstraintValidatorContext?): Boolean {
         if (valid(value))

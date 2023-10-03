@@ -5,6 +5,11 @@ import jakarta.validation.Constraint
 import jakarta.validation.Payload
 import kotlin.reflect.KClass
 
+/**
+ * 不为空验证
+ *
+ * @author YJL
+ */
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Constraint(validatedBy = [NotEmptyValidator::class])
 annotation class NotEmpty(

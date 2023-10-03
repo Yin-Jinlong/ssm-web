@@ -5,7 +5,9 @@ import jakarta.servlet.ServletResponse
 import java.io.OutputStream
 import kotlin.reflect.KProperty
 
-
+/**
+ * @author YJL
+ */
 abstract class AbstractMemFile : MemFile {
 
     internal var data by AtomicData()

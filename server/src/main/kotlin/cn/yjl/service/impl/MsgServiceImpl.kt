@@ -10,6 +10,9 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 
+/**
+ * @author YJL
+ */
 @Service
 class MsgServiceImpl : BaseService(), MsgService {
 

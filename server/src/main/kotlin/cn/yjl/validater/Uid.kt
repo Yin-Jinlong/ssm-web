@@ -5,6 +5,11 @@ import jakarta.validation.Constraint
 import jakarta.validation.Payload
 import kotlin.reflect.KClass
 
+/**
+ * Uid验证
+ *
+ * @author YJL
+ */
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Constraint(validatedBy = [UidValidator::class])
 annotation class Uid(

@@ -5,6 +5,9 @@ import java.io.FileNotFoundException
 import java.lang.RuntimeException
 import java.nio.file.Path
 
+/**
+ * @author YJL
+ */
 class SimpleMemFile(baseDir: File, watchFile: String) : AbstractMemFile() {
 
     private val webDir = baseDir

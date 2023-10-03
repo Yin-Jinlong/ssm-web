@@ -15,7 +15,7 @@ class MemFileManager(baseDir: String) {
 
     companion object {
         @JvmStatic
-        val log = getLogger()
+        private val LOGGER = getLogger()
     }
 
     /**
@@ -30,11 +30,11 @@ class MemFileManager(baseDir: String) {
 
     init {
         if (!baseFile.exists()) {
-            log.warning("baseDir $baseFile not exist")
+            LOGGER.warning("baseDir $baseFile not exist")
         } else if (!baseFile.isDirectory) {
-            log.warning("baseDir $baseFile is not a directory")
+            LOGGER.warning("baseDir $baseFile is not a directory")
         } else if (!baseFile.canRead()) {
-            log.warning("baseDir $baseFile can not read")
+            LOGGER.warning("baseDir $baseFile can not read")
         }
     }
 
@@ -51,7 +51,7 @@ class MemFileManager(baseDir: String) {
             fileMap[file] = mf
             return mf
         }.onFailure {
-            log.info("addCache $file failed -> ${it.message}")
+            LOGGER.info("addCache $file failed -> ${it.message}")
         }
         return null
     }
@@ -71,7 +71,7 @@ class MemFileManager(baseDir: String) {
         return if (cache.exists())// 物理文件存在
             cache
         else {// 物理文件不存在
-            log.warning("file $name in disk not exist")
+            LOGGER.warning("file $name in disk not exist")
             fileMap -= name
             null
         }

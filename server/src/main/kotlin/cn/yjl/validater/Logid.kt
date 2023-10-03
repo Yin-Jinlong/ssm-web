@@ -7,6 +7,11 @@ import jakarta.validation.ConstraintValidatorContext
 import jakarta.validation.Payload
 import kotlin.reflect.KClass
 
+/**
+ * Logid验证
+ *
+ * @author YJL
+ */
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Constraint(validatedBy = [LogidValidator::class])
 annotation class Logid(

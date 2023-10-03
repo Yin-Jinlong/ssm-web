@@ -5,6 +5,11 @@ import jakarta.validation.Constraint
 import jakarta.validation.Payload
 import kotlin.reflect.KClass
 
+/**
+ * 用户名验证
+ *
+ * @author YJL
+ */
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Constraint(validatedBy = [UnameValidator::class])
 annotation class Uname(

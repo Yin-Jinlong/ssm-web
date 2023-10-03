@@ -6,6 +6,8 @@ import cn.yjl.resp.RespCode
  * 验证异常
  *
  * 附带返回码和消息
+ *
+ * @author YJL
  */
 class ValidateException(
     val code: Int,

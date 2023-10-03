@@ -7,6 +7,8 @@ import java.security.MessageDigest.getInstance
 
 /**
  * 消息摘要
+ *
+ * @author YJL
  */
 enum class MD(algorithm: String) {
 

@@ -19,6 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
+/**
+ * 用户接口
+ *
+ * @author YJL
+ */
 @Validated
 @RestController
 @RequestMapping("/api/user", method = [RequestMethod.POST, RequestMethod.GET])
@@ -30,9 +35,18 @@ class UserApi {
         const val SESSION_USER_PWD = "user-pwd"
     }
 
+    /**
+     * 用户服务
+     */
     @Autowired
     lateinit var userService: UserService
 
+    /**
+     * 注册
+     *
+     * @param uname 用户名
+     * @param pwd 密码
+     */
     @PostMapping("/logon")
     fun logon(
         uname: String, pwd: String,
@@ -50,7 +64,13 @@ class UserApi {
         return r
     }
 
-
+    /**
+     * 登录
+     *
+     * @param logid 登录的唯一标识，可以是uid或用户名
+     * @param pwd 密码，为空时是保持登录状态后的请求登录
+     *
+     */
     @PostMapping("/login")
     fun login(
         @RequestParam
@@ -82,12 +102,14 @@ class UserApi {
                 return UserLoginRespJson(RespCode.USER_LOGIN_SUCCESS, user)
             }
         }
-        resp.status = HttpServletResponse.SC_BAD_REQUEST
+        resp.status = SC_BAD_REQUEST
         return ErrorRespJson(RespCode.USER_FAILED_LOGIN)
     }
 
     /**
      * 登出
+     *
+     * @param uid 用户id
      */
     @PostMapping("/logout")
     fun logout(
@@ -104,6 +126,9 @@ class UserApi {
         return ErrorRespJson(RespCode.NOTHING)
     }
 
+    /**
+     * 获取用户名（测试通道）
+     */
     @GetMapping("/get")
     fun getUserName(
         @RequestParam
