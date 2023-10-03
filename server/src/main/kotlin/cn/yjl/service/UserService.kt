@@ -2,7 +2,6 @@ package cn.yjl.service
 
 import cn.yjl.db.User
 import cn.yjl.resp.ResponseJson
-import cn.yjl.resp.user.UserLogonRespJson
 
 /**
  * 用户服务

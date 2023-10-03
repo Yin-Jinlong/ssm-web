@@ -21,10 +21,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 @RestControllerAdvice
 class ServerErrorHandler {
 
-    companion object {
-        private val LOGGER = getLogger()
-    }
-
+    private val LOGGER = getLogger()
 
     /**
      * 处理所有

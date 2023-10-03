@@ -6,7 +6,6 @@ import cn.yjl.test.util.sameAs
 import com.google.gson.Gson
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 
 @SSMTest([SsmWebApplication::class])
 class GsonTests {

@@ -13,10 +13,7 @@ import java.util.*
  */
 class MemFileManager(baseDir: String) {
 
-    companion object {
-        @JvmStatic
-        private val LOGGER = getLogger()
-    }
+    private val LOGGER = getLogger()
 
     /**
      * 基础文件夹

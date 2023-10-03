@@ -2,8 +2,6 @@ package cn.yjl.validater
 
 import cn.yjl.resp.RespCode
 import jakarta.validation.Constraint
-import jakarta.validation.ConstraintValidator
-import jakarta.validation.ConstraintValidatorContext
 import jakarta.validation.Payload
 import kotlin.reflect.KClass
 

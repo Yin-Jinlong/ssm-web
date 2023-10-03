@@ -9,7 +9,6 @@ import cn.yjl.resp.user.UserLoginRespJson
 import cn.yjl.resp.user.UserLogonRespJson
 import cn.yjl.resp.user.UserRespJson
 import cn.yjl.service.UserService
-import cn.yjl.util.now
 import cn.yjl.validater.Logid
 import cn.yjl.validater.Uid
 import jakarta.servlet.http.HttpServletResponse
@@ -28,8 +27,9 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/user", method = [RequestMethod.POST, RequestMethod.GET])
 class UserApi {
+
+    val LOGGER = getLogger()
     companion object {
-        val LOGGER = getLogger()
         const val SESSION_LOGGED_TIME = "logged-time"
         const val SESSION_USER_ID = "user-id"
         const val SESSION_USER_PWD = "user-pwd"
