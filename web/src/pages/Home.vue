@@ -165,7 +165,7 @@ function load() {
             };
             setTimeout(() => {
                 data[data.length - loadCount + i] = v
-            }, 500)
+            }, 500 + 200 * (i + 1))
             if (v.id < (lastId ?? Number.MAX_VALUE)) {
                 lastId = v.id
             }
@@ -178,9 +178,9 @@ function load() {
                 data.splice(data.length - c, c)
             }
             let div = msgScrollBar.value?.wrapRef as HTMLDivElement
-            if (div.scrollHeight-div.clientHeight < 1)
+            if (div.scrollHeight - div.clientHeight < 1)
                 load()
-        }, 500)
+        }, 500 + 200 * (ms.length + 1))
 
 
     }).catch(err => {

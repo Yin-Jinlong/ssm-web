@@ -16,7 +16,7 @@
             </div>
         </template>
         <template #default>
-            <el-card style="padding: 3em 1em 1em 1em;position: relative;width: calc(100% - 2em)">
+            <el-card class="card">
                 <div class="card-content">
                     <div class="base-info">
                         <el-image
@@ -62,6 +62,14 @@
 <style scoped lang="scss">
 @use '../../../yjl-fun' as f;
 @use 'element-plus/theme-chalk/src/card';
+
+.card {
+  padding    : 3em 1em 1em 1em;
+  position   : relative;
+  width      : calc(100% - 2em);
+  height     : 178px;
+  box-sizing : border-box
+}
 
 .card-content {
   display : flex;
