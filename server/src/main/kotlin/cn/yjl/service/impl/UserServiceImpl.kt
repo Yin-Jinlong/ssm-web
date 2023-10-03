@@ -10,32 +10,26 @@ import cn.yjl.resp.user.UserLogonRespJson
 import cn.yjl.security.sha1_512
 import cn.yjl.service.BaseService
 import cn.yjl.service.UserService
-import cn.yjl.validater.Logid
+import cn.yjl.service.util.getDao
 import cn.yjl.validater.Uid
 import cn.yjl.validater.Uname
-import org.apache.ibatis.session.SqlSession
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
-import java.lang.IllegalArgumentException
 
 /**
  * @author YJL
  */
 @Service
-class UserServiceImpl : BaseService(), UserService {
+class UserServiceImpl : BaseService<UserDao>(), UserService {
 
-    @Autowired
-    final lateinit var sqlSession: SqlSession
-
-
-    @Autowired
     @Lazy
-    lateinit var dao: UserDao
+    @Autowired
+    override lateinit var dao: UserDao
 
     @Bean
-    fun getUserDao(): UserDao = sqlSession.getMapper(UserDao::class.java)
+    fun getUserDao() = getDao()
 
     override fun logon(name: String, pwd: String): ResponseJson {
         if (dao.getUserByName(name) != null)

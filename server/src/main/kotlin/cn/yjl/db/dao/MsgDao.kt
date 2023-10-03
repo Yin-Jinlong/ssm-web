@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Select
  *
  * @author YJL
  */
-interface MsgDao {
+interface MsgDao : Dao {
 
     /**
      * 查出所有消息

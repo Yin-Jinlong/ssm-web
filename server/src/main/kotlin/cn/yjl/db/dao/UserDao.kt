@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Select
  *
  * @author YJL
  */
-interface UserDao {
+interface UserDao : Dao {
 
     /**
      * 新用户
