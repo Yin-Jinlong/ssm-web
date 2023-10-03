@@ -1,5 +1,5 @@
 <template>
-    <add-button @click.stop="add"/>
+    <add-button @click="add"/>
     <common-header
             :user="user"
             @logout="logout"

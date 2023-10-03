@@ -2,6 +2,7 @@
 import {Plus} from "@element-plus/icons-vue";
 import {TopTooltip} from "@components";
 
+const emits = defineEmits(["click"])
 </script>
 
 <template>
@@ -11,6 +12,7 @@ import {TopTooltip} from "@components";
                 <top-tooltip
                         content="添加">
                     <el-button
+                            @click.stop="emits('click')"
                             class="add-btn"
                             type="primary">
                         <el-icon class="max-size">
