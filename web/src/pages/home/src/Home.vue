@@ -1,20 +1,20 @@
 <template>
     <add-button @click="add"/>
-    <common-header
-            :user="user"
-            @logout="logout"
-            @on-user-login="log"/>
     <log-dialog v-model="showLoginDialog"
                 @login="login"/>
-    <div class="contents">
-        <el-empty
-                v-if="!loading&&data.length==0"
-                class="empty"
-                description="空空如也"/>
-        <el-scrollbar
-                ref="msgScrollBar"
-                style="height: calc(100vh - 100px)"
-                @wheel="scroll">
+    <el-scrollbar
+            ref="msgScrollBar"
+            style="height: 100vh"
+            @wheel="scroll">
+        <common-header
+                :user="user"
+                @logout="logout"
+                @on-user-login="log"/>
+        <div class="contents">
+            <el-empty
+                    v-if="!loading&&data.length==0"
+                    class="empty"
+                    description="空空如也"/>
             <div style="overflow-x:hidden ">
                 <transition-group
                         :css="false"
@@ -38,8 +38,8 @@
                     没有更多了X_X
                 </div>
             </div>
-        </el-scrollbar>
-    </div>
+        </div>
+    </el-scrollbar>
     <add-msg-dialog
             v-model="showAddDialog"
             :user="user"
