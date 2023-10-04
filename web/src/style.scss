@@ -40,7 +40,8 @@ $colors:(
 @use 'element-plus/theme-chalk/src/tabs';
 @use 'element-plus/theme-chalk/src/tab-pane';
 @use 'element-plus/theme-chalk/src/dropdown';
-//@use 'element-plus/theme-chalk/src';
+@use 'element-plus/theme-chalk/src/checkbox';
+//@use 'element-plus/theme-chalk/src/';
 
 * {
   padding : 0;

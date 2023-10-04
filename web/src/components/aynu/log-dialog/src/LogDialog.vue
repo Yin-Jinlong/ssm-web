@@ -30,6 +30,13 @@
                                   type="password"/>
                     </el-form-item>
                 </el-form>
+                <div class="options">
+                    <el-checkbox
+                            v-model="autoLogin">
+                        自动登录
+                    </el-checkbox>
+                </div>
+
                 <el-button :loading="isLogining"
                            style="width: 100%;height: 4em"
                            type="primary"
@@ -75,7 +82,7 @@
 </template>
 
 <style lang="scss" scoped>
-
+@use 'style/LogDialog';
 </style>
 
 <style>
@@ -86,11 +93,11 @@
 
 <script lang="ts" setup>
 import {ElForm, ElMessage} from "element-plus";
-import {onMounted, reactive, ref} from "vue";
+import {onMounted, reactive, ref, watch} from "vue";
 import axios, {AxiosError} from "axios";
 import {initFromRules, loginRulesDefine, logonRulesDefine, LogUser} from "./FormRules.ts";
 import {User} from "@types";
-import {LS} from "Global";
+import {getAutoLogin, LS, setAutoLogin} from "Global";
 
 const props = defineProps<{
     modalValue?: boolean
@@ -100,6 +107,7 @@ const emits = defineEmits(["login"])
 
 const isLogining = ref(false)
 const isLogoning = ref(false)
+const autoLogin = ref(getAutoLogin())
 
 const form = ref<InstanceType<typeof ElForm>>()
 const logonForm = ref<InstanceType<typeof ElForm>>()
@@ -193,13 +201,20 @@ function logon() {
 }
 
 onMounted(() => {
-    let un = localStorage.getItem(LS.USER_NAME);
-    if (un) {
-        postLogin(un).then(user => {
-            emits("login", user)
-        }).catch(() => {
-        })
+    if (autoLogin.value) {
+        let un = localStorage.getItem(LS.USER_NAME);
+        if (un) {
+            postLogin(un).then(user => {
+                ElMessage.success(user.name + " 欢迎回来！")
+                emits("login", user)
+            }).catch(() => {
+            })
+        }
     }
+})
+
+watch(autoLogin, (nv) => {
+    setAutoLogin(nv)
 })
 
 </script>
