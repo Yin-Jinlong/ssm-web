@@ -118,6 +118,14 @@ onMounted(() => {
 })
 
 let lastId = undefined as number | undefined
+/**
+ * 至少要等的时间（观看动画）
+ */
+let minWaitTime = 200
+/**
+ * 每个卡片加载后等待时长（距离上个卡片）
+ */
+let cardLoadedWaitTime = 150
 
 function load() {
     if (data.length > 0 && data[data.length - 1] == null)
@@ -142,7 +150,7 @@ function load() {
             };
             setTimeout(() => {
                 data[data.length - loadCount + i] = v
-            }, 500 + 200 * (i + 1))
+            }, minWaitTime + cardLoadedWaitTime * (i + 1))
             if (v.id < (lastId ?? Number.MAX_VALUE)) {
                 lastId = v.id
             }
@@ -157,7 +165,7 @@ function load() {
             let div = msgScrollBar.value?.wrapRef as HTMLDivElement
             if (div.scrollHeight - div.clientHeight < 1)
                 load()
-        }, 500 + 200 * (ms.length + 1))
+        }, minWaitTime + cardLoadedWaitTime * (ms.length + 1))
 
 
     }).catch(err => {
@@ -167,7 +175,7 @@ function load() {
 }
 
 function del(i: number) {
-    data.splice(i, 1)
+    // data.splice(i, 1)
 }
 
 function log() {
