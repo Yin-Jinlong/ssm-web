@@ -47,25 +47,7 @@
 </template>
 
 <style lang="scss" scoped>
-
-.contents {
-  min-width : var(--min-width);
-  max-width : var(--max-width);
-  margin    : auto;
-  position  : relative;
-}
-
-.aynu-card {
-  width : 100%;
-}
-
-.empty:not(:has(.is-checked)) {
-  position : absolute;
-  margin   : auto;
-  width    : 100%;
-  filter   : hue-rotate(170deg) brightness(0.9) saturate(3);
-  opacity  : 80%;
-}
+@use 'style/Home';
 </style>
 
 <script lang="ts" setup>
@@ -91,17 +73,12 @@ const noMore = ref(false)
 
 const loadCount = 2
 
-let user = ref<{
-    uid: number | undefined,
-    name: string,
-}>({
-    uid: undefined,
-    name: ""
-})
+let user = ref<User | null>(null)
 
 function login(u: User) {
     localStorage.setItem(LS.USER_NAME, u.uid.toString())
     user.value = u
+    user.value.img = "/img/avatar.svg"
     showLoginDialog.value = false
 }
 
@@ -198,10 +175,11 @@ function log() {
 }
 
 function logout() {
+    if (!user.value)
+        return
     axios.post('/api/user/logout', `uid=${user.value.uid}`).then((err) => {
         if (err.data.code == 0) {
-            user.value.uid = undefined
-            user.value.name = ''
+            user.value = null
             localStorage.removeItem(LS.USER_NAME)
             ElMessage.success("登出成功")
         } else {
@@ -213,7 +191,7 @@ function logout() {
 }
 
 function add() {
-    if (user.value.uid)
+    if (user.value)
         showAddDialog.value = true
     else {
         showLoginDialog.value = true
@@ -222,7 +200,8 @@ function add() {
 }
 
 function onAdd(v: string) {
-
+    if (!user.value)
+        return
     axios.post('/api/msg/send', `uid=${user.value.uid}&msg=${v}`).then((res) => {
         if (res.data.code == '0') {
             loading.value = true

@@ -6,12 +6,8 @@
 
 </style>
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent} from "vue";
 import {NotFound} from "@icons";
 
-export default defineComponent({
-    components: {NotFound}
-})
 </script>

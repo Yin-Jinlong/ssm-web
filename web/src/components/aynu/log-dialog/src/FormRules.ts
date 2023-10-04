@@ -1,7 +1,6 @@
 import {InternalRuleItem, SyncValidateResult, ValidateOption, Values} from "async-validator";
 import {Ref} from "vue";
 import {FormItemRule, FormRules} from "element-plus";
-import {reactive} from "vue";
 
 export interface FormData {
     logid: string,
@@ -70,16 +69,16 @@ const pwdRule = [
     {min: 6, max: 18, message: '密码长度6-18', trigger: 'change'}
 ] as FormItemRule[]
 
-export const loginRules = reactive<FormRules<FormData>>({
+export const loginRulesDefine = {
     logid: [
         {required: true, message: '请输用户名或id', trigger: 'change'},
         {validator: checkLogid, trigger: 'change'},
     ],
     pwd: pwdRule
-})
+} as FormRules<FormData>
 
 
-export const logonRules = reactive<FormRules<FormData>>({
+export const logonRulesDefine = {
     logid: [
         {required: true, message: '请输用户名', trigger: 'change'},
         {validator: checkUname, trigger: 'change'},
@@ -89,4 +88,4 @@ export const logonRules = reactive<FormRules<FormData>>({
         {required: true, message: '请输入密码', trigger: 'change'},
         {validator: checkPwd2, trigger: 'change'}
     ]
-})
+} as FormRules<FormData>

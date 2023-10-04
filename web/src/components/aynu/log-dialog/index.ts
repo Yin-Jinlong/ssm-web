@@ -1,3 +1,3 @@
-import LogDialog from "./LogDialog.vue";
+import LogDialog from "./src/LogDialog.vue";
 
 export {LogDialog}

@@ -1,5 +1,6 @@
 <template>
     <el-dialog
+            v-if="user"
             :model-value="props.modalValue">
         <template #header>
             <h3 style="display:block;width: 100%;text-align: center"><span>添加留言</span></h3>
@@ -14,9 +15,9 @@
                 <div style="display:flex;align-items: center">
                     <el-image
                             class="avatar"
-                            :src="data.img"/>
+                            :src="user.img"/>
                     <div style="padding: 1em">
-                        <h3 style="">{{user.name}}</h3>
+                        <h3 style="">{{ user.name }}</h3>
                     </div>
                 </div>
                 <el-form-item
@@ -37,7 +38,7 @@
                     :content="disableSubmit?'请先完成表单！':'提交'">
                 <el-button
                         :disabled="disableSubmit"
-                        @click.stop="onsubmit()"
+                        @click.stop="onsubmit"
                         type="primary"><span>完成</span></el-button>
             </top-tooltip>
         </template>
@@ -45,26 +46,17 @@
 </template>
 
 <style scoped lang="scss">
-.avatar {
-  width         : 60px;
-  height        : 60px;
-  border-radius : 30px;
-}
+@use 'style/add-msg-dialog';
 </style>
 
 <script setup lang="ts">
 
 import {reactive, ref, watch} from "vue";
-import {ElForm, FormRules} from "element-plus";
+import {ElForm} from "element-plus";
 import {TopTooltip} from "@components";
+import {Props, formRulesDefine, FormData} from "./add-msg-dialog.ts";
 
-const props = defineProps<{
-    modalValue?: boolean,
-    user: {
-        uid?: number
-        name: string
-    }
-}>()
+const props = defineProps<Props>()
 
 const emits = defineEmits(['onAdd'])
 
@@ -72,30 +64,11 @@ const form = ref<InstanceType<typeof ElForm>>()
 
 const disableSubmit = ref(true)
 
-interface FormData {
-    img?: string,
-    name: string,
-    msg: string,
-}
-
 const data = reactive<FormData>({
     msg: "",
-    name: "",
-    img: '/img/avatar.svg'
 })
 
-const formRules = reactive<FormRules<FormData>>({
-    name: [
-        {required: true, message: '请输入用户名', trigger: 'change'},
-        {min: 3, max: 12, message: '长度在 3 到 12 个字符', trigger: 'change'}
-    ],
-    msg: [
-        {required: true, message: '请输入留言', trigger: 'change'}
-    ],
-    img: [
-        {required: false, message: '请上传头像', trigger: 'blur'}
-    ]
-})
+const formRules = reactive(formRulesDefine)
 
 watch(data, () => {
     form.value!.validate((valid: boolean) => {
@@ -109,7 +82,6 @@ function onsubmit() {
     form.value!.validate((valid: boolean) => {
         if (valid) {
             emits('onAdd', data.msg)
-            data.img = '/img/avatar.svg'
             data.msg = ''
         } else {
             return false

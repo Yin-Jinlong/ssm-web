@@ -15,8 +15,7 @@
 
 <script setup lang="ts">
 
-const props = defineProps<{
-    content: string,
-    delay?: number
-}>()
+import {Props} from "./TopTooltip.ts";
+
+const props = defineProps<Props>()
 </script>

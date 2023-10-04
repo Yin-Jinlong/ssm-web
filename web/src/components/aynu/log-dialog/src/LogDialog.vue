@@ -86,9 +86,9 @@
 
 <script lang="ts" setup>
 import {ElForm, ElMessage} from "element-plus";
-import {onMounted, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import axios, {AxiosError} from "axios";
-import {initFromRules, loginRules, logonRules, LogUser} from "./FormRules.ts";
+import {initFromRules, loginRulesDefine, logonRulesDefine, LogUser} from "./FormRules.ts";
 import {User} from "@types";
 import {LS} from "Global";
 
@@ -103,6 +103,9 @@ const isLogoning = ref(false)
 
 const form = ref<InstanceType<typeof ElForm>>()
 const logonForm = ref<InstanceType<typeof ElForm>>()
+
+const loginRules = reactive(loginRulesDefine)
+const logonRules = reactive(logonRulesDefine)
 
 let logUser = ref<LogUser>({
     logid: '',

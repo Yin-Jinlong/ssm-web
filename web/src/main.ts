@@ -11,10 +11,10 @@ app.use(createRouter({
     routes: [
         {
             path: '/',
-            component: () => import('@pages/Home.vue')
+            component: () => import('@pages/home')
         }, {
             path: '/:pathMatch(.*)',
-            component: () => import('@pages/NotFoundPage.vue')
+            component: () => import('@pages/not-found')
         }
     ]
 }))

@@ -1,3 +1,3 @@
-import AddButton from "./AddButton.vue";
+import AddButton from "./src/AddButton.vue";
 
 export {AddButton}
