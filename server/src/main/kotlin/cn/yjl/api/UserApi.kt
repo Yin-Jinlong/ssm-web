@@ -9,9 +9,7 @@ import cn.yjl.resp.user.UserLoginRespJson
 import cn.yjl.resp.user.UserLogonRespJson
 import cn.yjl.resp.user.UserRespJson
 import cn.yjl.service.UserService
-import cn.yjl.validater.Logid
-import cn.yjl.validater.Uid
-import cn.yjl.validater.Uname
+import cn.yjl.validater.*
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.servlet.http.HttpServletResponse.SC_BAD_REQUEST
 import jakarta.servlet.http.HttpSession
@@ -53,18 +51,16 @@ class UserApi {
         @Uname
         @RequestParam
         uname: String,
+        @Pwd
+        @RequestParam
         pwd: String,
         session: HttpSession,
         resp: HttpServletResponse
-    ): ResponseJson {
-        if (uname.matches(Regex("\\d{6}")))
-            return ErrorRespJson(RespCode.USER_NAME_ERROR)
-        return userService.logon(uname, pwd).apply {
-            if (code == 0)
-                resp.status = SC_BAD_REQUEST
-            else if (this is UserLogonRespJson)
-                session.save(user.uid, pwd)
-        }
+    ): ResponseJson = userService.logon(uname, pwd).apply {
+        if (code == 0)
+            resp.status = SC_BAD_REQUEST
+        else if (this is UserLogonRespJson)
+            session.save(user.uid, pwd)
     }
 
     /**
@@ -95,6 +91,11 @@ class UserApi {
             null
 
         upwd?.let {// 有密码
+            // 密码格式验证一下
+            if (!PwdValidator.valid(upwd)) {
+                resp.status = SC_BAD_REQUEST
+                return ErrorRespJson(RespCode.USER_PWD_ERROR)
+            }
             userService.login(logid, upwd)?.let {
                 // 保存一下
                 session.save(it.uid, upwd)
