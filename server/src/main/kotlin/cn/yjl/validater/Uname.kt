@@ -27,6 +27,8 @@ object UnameValidator : BaseValidator<Uname>() {
 
     private val num = Regex("\\d+")
 
+    override val errorCode: RespCode = RespCode.USER_NAME_ERROR
+
     override fun valid(value: String?): Boolean {
         return if (value == null || value.matches(num) || value.matches(Uid.UidReg)) false
         else value.matches(Uname.UnameReg)

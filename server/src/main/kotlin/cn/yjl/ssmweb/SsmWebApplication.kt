@@ -23,10 +23,10 @@ class SsmWebApplication {
     @Autowired
     lateinit var memFileManager: MemFileManager
 
-    val log = getLogger()
+    private val LOGGER = getLogger()
 
     private fun HttpServletRequest.log(res: Any) =
-        log.info("GET $requestURI -> $res")
+        LOGGER.info("GET $requestURI -> $res")
 
     @Async
     @RequestMapping("/**")
