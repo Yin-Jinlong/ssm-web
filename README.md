@@ -11,6 +11,10 @@ ssm-web 作业
 - server
     - 服务端项目
 
+## 配置server
+
+[配置Server](server/README.md#配置server)
+
 ## 前端Web
 
 ### install
