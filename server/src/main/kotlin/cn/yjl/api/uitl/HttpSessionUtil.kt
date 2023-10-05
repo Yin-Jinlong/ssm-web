@@ -50,3 +50,6 @@ fun HttpSession.isOutOfDate(): Boolean {
  * 更新活跃时间
  */
 fun HttpSession.updateTime() = setAttribute(UserApi.SESSION_LOGGED_TIME, now())
+
+fun HttpSession.isLogin() = getAttribute(UserApi.SESSION_USER_ID) != null &&
+        !isOutOfDate()

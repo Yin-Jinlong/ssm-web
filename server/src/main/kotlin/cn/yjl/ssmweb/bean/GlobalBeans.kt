@@ -11,13 +11,14 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class GlobalBeans {
 
-    val globalGson = Gson()
+    companion object {
+        val globalGson = Gson()
+        val defaultMemFileManager = MemFileManager(System.getProperty("yjl.web-dir") ?: "./web/dist")
+    }
+
 
     @Bean
     fun globalGson() = globalGson
-
-
-    val defaultMemFileManager = MemFileManager(System.getProperty("yjl.web-dir") ?: "./web/dist")
 
     @Bean
     fun memFileManager(): MemFileManager = defaultMemFileManager

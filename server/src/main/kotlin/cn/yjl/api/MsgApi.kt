@@ -1,5 +1,6 @@
 package cn.yjl.api
 
+import cn.yjl.annotations.ShouldLogin
 import cn.yjl.api.uitl.getUid
 import cn.yjl.api.uitl.updateTime
 import cn.yjl.resp.ErrorRespJson
@@ -47,6 +48,7 @@ class MsgApi {
      * @param uid 用户id，必须已登录
      * @param msg 消息，不能为空
      */
+    @ShouldLogin
     @PostMapping("/send")
     fun send(
         @Uid
@@ -58,14 +60,10 @@ class MsgApi {
         session: HttpSession,
         resp: HttpServletResponse
     ): ResponseJson {
-        session.getUid()?.let {
-            msgService.addMsg(it.toInt(), msg)
-            // 有活动，更新超时
-            session.updateTime()
-            return ErrorRespJson(RespCode.USER_MSG_SEND_OK)
-        }
-        resp.status = SC_BAD_REQUEST
-        return ErrorRespJson(RespCode.USER_NOT_LOGIN)
+        msgService.addMsg(uid.toInt(), msg)
+        // 有活动，更新超时
+        session.updateTime()
+        return ErrorRespJson(RespCode.USER_MSG_SEND_OK)
     }
 
     @GetMapping("/get")
