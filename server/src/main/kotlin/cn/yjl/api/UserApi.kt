@@ -29,8 +29,8 @@ import org.springframework.web.bind.annotation.*
 class UserApi {
 
     val LOGGER = getLogger()
+
     companion object {
-        const val SESSION_LOGGED_TIME = "logged-time"
         const val SESSION_USER_ID = "user-id"
         const val SESSION_USER_PWD = "user-pwd"
     }
@@ -85,13 +85,10 @@ class UserApi {
         // 用户密码
         var upwd = pwd
         if (pwd == null) {
-            // 还在时效内
-            if (!session.isOutOfDate()) {
-                // 到此logid应该是uid，且应与session的uid相同
-                // 否则可能为不同用户的相同密码登录
-                if (session.getUid() == logid) {
-                    upwd = session.getPwd()
-                }
+            // 到此logid应该是uid，且应与session的uid相同
+            // 否则可能为不同用户的相同密码登录
+            if (session.getUid() == logid) {
+                upwd = session.getPwd()
             }
         }
         upwd?.let {// 有密码

@@ -1,8 +1,6 @@
 package cn.yjl.api
 
 import cn.yjl.annotations.ShouldLogin
-import cn.yjl.api.uitl.getUid
-import cn.yjl.api.uitl.updateTime
 import cn.yjl.resp.ErrorRespJson
 import cn.yjl.resp.RespCode
 import cn.yjl.resp.ResponseJson
@@ -11,7 +9,6 @@ import cn.yjl.service.MsgService
 import cn.yjl.validater.NotEmpty
 import cn.yjl.validater.Uid
 import jakarta.servlet.http.HttpServletResponse
-import jakarta.servlet.http.HttpServletResponse.SC_BAD_REQUEST
 import jakarta.servlet.http.HttpSession
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.annotation.Validated
@@ -61,8 +58,6 @@ class MsgApi {
         resp: HttpServletResponse
     ): ResponseJson {
         msgService.addMsg(uid.toInt(), msg)
-        // 有活动，更新超时
-        session.updateTime()
         return ErrorRespJson(RespCode.USER_MSG_SEND_OK)
     }
 
