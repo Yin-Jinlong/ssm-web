@@ -1,4 +1,4 @@
-package cn.yjl.ssmweb.comfig
+package cn.yjl.ssmweb.config
 
 import cn.yjl.interceptor.ApiInterceptor
 import org.springframework.context.annotation.Configuration
