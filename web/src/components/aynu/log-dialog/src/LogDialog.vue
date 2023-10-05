@@ -94,10 +94,10 @@
 <script lang="ts" setup>
 import {ElForm, ElMessage} from "element-plus";
 import {onMounted, reactive, ref, watch} from "vue";
-import axios, {AxiosError} from "axios";
+import axios from "axios";
 import {initFromRules, loginRulesDefine, logonRulesDefine, LogUser} from "./FormRules.ts";
 import {User} from "@types";
-import {getAutoLogin, LS, setAutoLogin} from "Global";
+import {getAutoLogin, getErrorMessage, LS, setAutoLogin} from "Global";
 
 const props = defineProps<{
     modalValue?: boolean
@@ -126,14 +126,7 @@ let logUser = ref<LogUser>({
 initFromRules(logUser)
 
 function catchError(err: any) {
-    if (err instanceof AxiosError) {
-        let rd = err?.response?.data
-        if (rd) {
-            ElMessage.error(rd.msg)
-            return
-        }
-    }
-    ElMessage.error(err)
+    ElMessage.error(getErrorMessage(err))
 }
 
 async function postLogin(logid: string, pwd: string | undefined = undefined): Promise<User> {
@@ -207,7 +200,8 @@ onMounted(() => {
             postLogin(un).then(user => {
                 ElMessage.success(user.name + " 欢迎回来！")
                 emits("login", user)
-            }).catch(() => {
+            }).catch((err) => {
+                console.error(err)
             })
         }
     }

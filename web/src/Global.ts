@@ -1,3 +1,5 @@
+import {AxiosError} from "axios";
+
 export function isSystemDarkTheme() {
     return window.matchMedia('(prefers-color-scheme : dark)').matches
 }
@@ -29,4 +31,14 @@ export function getAutoLogin() {
 
 export function setAutoLogin(autoLogin: boolean) {
     setBoolean(LS.AUTO_LOGIN, autoLogin)
+}
+
+export function getErrorMessage(err: any): string {
+    if (err instanceof AxiosError) {
+        let msg = err?.response?.data?.msg;
+        if (msg) {
+            return msg
+        }
+    }
+    return err.toString()
 }

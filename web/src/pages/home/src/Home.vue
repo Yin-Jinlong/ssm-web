@@ -58,7 +58,7 @@ import gsap from "gsap";
 import {Callback, ElMessage, ElScrollbar} from "element-plus";
 import axios from "axios";
 import {Msg, User} from "@types";
-import {LS} from "Global";
+import {getErrorMessage, LS} from "Global";
 
 const loading = ref(true)
 
@@ -169,8 +169,7 @@ function load() {
 
 
     }).catch(err => {
-        ElMessage.error("获取数据失败: " + err)
-    }).finally(() => {
+        ElMessage.error("获取数据失败: " + getErrorMessage(err))
     })
 }
 
@@ -194,7 +193,7 @@ function logout() {
             ElMessage.error(err.data.msg)
         }
     }).catch(err => {
-        ElMessage.error(err)
+        ElMessage.error(getErrorMessage(err))
     })
 }
 
@@ -217,7 +216,7 @@ function onAdd(v: string) {
             ElMessage.error(res.data.msg)
         }
     }).catch(err => {
-        ElMessage.error(err)
+        ElMessage.error(getErrorMessage(err))
     })
     data.splice(0, 0, {
         id: 9999,
