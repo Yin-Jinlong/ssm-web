@@ -4,6 +4,7 @@ import cn.yjl.annotations.ServerUse
 import cn.yjl.db.User
 import cn.yjl.db.server.ServerUser
 import org.apache.ibatis.annotations.Insert
+import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Select
 
 /**
@@ -11,6 +12,7 @@ import org.apache.ibatis.annotations.Select
  *
  * @author YJL
  */
+@Mapper
 interface UserDao : Dao {
 
     /**

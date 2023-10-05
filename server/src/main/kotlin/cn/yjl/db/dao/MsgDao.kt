@@ -2,6 +2,7 @@ package cn.yjl.db.dao
 
 import cn.yjl.db.Msg
 import org.apache.ibatis.annotations.Insert
+import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Select
 
 /**
@@ -9,6 +10,7 @@ import org.apache.ibatis.annotations.Select
  *
  * @author YJL
  */
+@Mapper
 interface MsgDao : Dao {
 
     /**

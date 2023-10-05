@@ -6,6 +6,7 @@ import cn.yjl.log.util.getLogger
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.servlet.http.HttpServletResponse.*
+import org.mybatis.spring.annotation.MapperScan
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
+@MapperScan("cn.yjl.db.dao")
 @SpringBootApplication(scanBasePackages = ["cn.yjl"])
 class SsmWebApplication {
 
