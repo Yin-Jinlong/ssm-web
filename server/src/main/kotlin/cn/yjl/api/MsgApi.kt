@@ -30,14 +30,14 @@ class MsgApi {
     @Autowired
     lateinit var msgService: MsgService
 
-    /**
-     * 获取所有消息
-     */
-    @PostMapping("/all")
-    fun getAll(): ResponseJson {
-        val msgs = msgService.getAll()
-        return MsgRespJson(msgs)
-    }
+//    /**
+//     * 获取所有消息
+//     */
+//    @PostMapping("/all")
+//    fun getAll(): ResponseJson {
+//        val msgs = msgService.getAll()
+//        return MsgRespJson(msgs)
+//    }
 
     /**
      * 向服务器发送消息
