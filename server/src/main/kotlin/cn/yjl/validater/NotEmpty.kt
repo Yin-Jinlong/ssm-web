@@ -19,6 +19,9 @@ annotation class NotEmpty(
     val code: RespCode = RespCode.VALIDATE_FAILED
 )
 
+/**
+ * @author YJL
+ */
 object NotEmptyValidator : BaseValidator<NotEmpty>() {
 
     override fun valid(value: String?): Boolean {

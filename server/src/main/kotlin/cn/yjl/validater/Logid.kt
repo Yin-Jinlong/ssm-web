@@ -19,6 +19,11 @@ annotation class Logid(
     val code: RespCode = RespCode.VALIDATE_FAILED
 )
 
+/**
+ * 登录id验证器
+ *
+ * @author YJL
+ */
 object LogidValidator : BaseValidator<Logid>() {
 
     override fun valid(value: String?): Boolean {

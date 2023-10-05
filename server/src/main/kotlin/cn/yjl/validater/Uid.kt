@@ -23,6 +23,11 @@ annotation class Uid(
     }
 }
 
+/**
+ * 用户id验证器
+ *
+ * @author YJL
+ */
 object UidValidator : BaseValidator<Uid>() {
 
     override fun valid(value: String?): Boolean {

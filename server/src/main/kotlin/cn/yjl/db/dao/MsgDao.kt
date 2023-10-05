@@ -4,6 +4,7 @@ import cn.yjl.db.Msg
 import org.apache.ibatis.annotations.Insert
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Select
+import org.springframework.stereotype.Repository
 
 /**
  * 消息表操作接口
@@ -11,6 +12,7 @@ import org.apache.ibatis.annotations.Select
  * @author YJL
  */
 @Mapper
+@Repository
 interface MsgDao : Dao {
 
     /**

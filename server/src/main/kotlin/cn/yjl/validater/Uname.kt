@@ -23,6 +23,11 @@ annotation class Uname(
     }
 }
 
+/**
+ * 用户名验证器
+ *
+ * @author YJL
+ */
 object UnameValidator : BaseValidator<Uname>() {
 
     private val num = Regex("\\d+")

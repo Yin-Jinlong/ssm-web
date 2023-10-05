@@ -22,6 +22,9 @@ interface MsgService : Service {
      */
     fun addMsg(uid: Int, msg: String)
 
-    fun getMsgBefore(id: Int, count: Int):Array<Msg>
+    /**
+     * 获取小于id（以前的）的消息
+     */
+    fun getMsgBefore(id: Int, count: Int): Array<Msg>
 
 }

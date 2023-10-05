@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Configuration
 
 /**
  * 全局单实例Bean
+ *
+ * @author YJL
  */
 @Configuration
 @YamlPropertySource(["application-mem-file.yaml"])

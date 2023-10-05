@@ -10,11 +10,9 @@ import cn.yjl.resp.user.UserLogonRespJson
 import cn.yjl.security.sha1_512
 import cn.yjl.service.BaseService
 import cn.yjl.service.UserService
-import cn.yjl.service.util.getDao
 import cn.yjl.validater.Uid
 import cn.yjl.validater.Uname
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 
@@ -22,14 +20,11 @@ import org.springframework.stereotype.Service
  * @author YJL
  */
 @Service
-class UserServiceImpl : BaseService<UserDao>(), UserService {
+class UserServiceImpl : BaseService(), UserService {
 
     @Lazy
     @Autowired
-    override lateinit var dao: UserDao
-
-    @Bean
-    fun getUserDao() = getDao()
+    lateinit var dao: UserDao
 
     override fun logon(name: String, pwd: String): ResponseJson {
         if (dao.getUserByName(name) != null)

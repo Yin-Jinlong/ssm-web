@@ -4,9 +4,7 @@ import cn.yjl.db.Msg
 import cn.yjl.db.dao.MsgDao
 import cn.yjl.service.BaseService
 import cn.yjl.service.MsgService
-import cn.yjl.service.util.getDao
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 
@@ -14,14 +12,11 @@ import org.springframework.stereotype.Service
  * @author YJL
  */
 @Service
-class MsgServiceImpl : BaseService<MsgDao>(), MsgService {
+class MsgServiceImpl : BaseService(), MsgService {
 
     @Lazy
     @Autowired
-    override lateinit var dao: MsgDao
-
-    @Bean
-    fun getMsgDao() = getDao()
+    lateinit var dao: MsgDao
 
     override fun getAll(): Array<Msg> {
         return dao.getAll()

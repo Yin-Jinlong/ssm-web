@@ -61,6 +61,12 @@ class MsgApi {
         return ErrorRespJson(RespCode.USER_MSG_SEND_OK)
     }
 
+    /**
+     * 获取消息
+     *
+     * @param count 数量
+     * @param lastId 上次的消息id
+     */
     @GetMapping("/get")
     fun getMsgs(
         @RequestParam
@@ -68,9 +74,6 @@ class MsgApi {
         @RequestParam(required = false, defaultValue = Int.MAX_VALUE.toString())
         lastId: String,
         resp: HttpServletResponse
-    ): ResponseJson {
-        val msgs = msgService.getMsgBefore(lastId.toInt(), count.toInt())
-        return MsgRespJson(msgs)
-    }
+    ): ResponseJson = MsgRespJson(msgService.getMsgBefore(lastId.toInt(), count.toInt()))
 
 }

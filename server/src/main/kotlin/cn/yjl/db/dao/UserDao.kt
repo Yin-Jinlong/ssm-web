@@ -6,6 +6,7 @@ import cn.yjl.db.server.ServerUser
 import org.apache.ibatis.annotations.Insert
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Select
+import org.springframework.stereotype.Repository
 
 /**
  * 用户表操作接口
@@ -13,6 +14,7 @@ import org.apache.ibatis.annotations.Select
  * @author YJL
  */
 @Mapper
+@Repository
 interface UserDao : Dao {
 
     /**

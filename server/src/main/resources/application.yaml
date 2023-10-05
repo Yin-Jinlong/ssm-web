@@ -4,19 +4,7 @@ server:
   compression:
     enabled: true
     min-response-size: 1KB
-    mime-types:
-      - text/*
-      - application/javascript
-      - text/javascript
-      - application/json
-      - application/xml
-    excluded-user-agents:
-      - application/octet-stream
-      - application/zip
-      - application/x-gzip
-      - image/*
-      - audio/*
-      - video/*
 
 mybatis:
-  config-location: classpath:mybatis-config.xml
+  configuration:
+    map-underscore-to-camel-case: true
