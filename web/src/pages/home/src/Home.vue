@@ -34,7 +34,8 @@
                                 class="aynu-card"/>
                     </div>
                 </transition-group>
-                <div v-if="noMore" style="display:flex;align-items: center;justify-content: center;opacity: 0.8;">
+                <div v-if="noMore&&data.length"
+                     style="display:flex;align-items: center;justify-content: center;opacity: 0.8;">
                     没有更多了X_X
                 </div>
             </div>
