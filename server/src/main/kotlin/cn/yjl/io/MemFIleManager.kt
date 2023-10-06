@@ -61,17 +61,17 @@ class MemFileManager(baseDir: String) {
      * @return 文件或null（不存在）
      */
     operator fun get(name: String): MemFile? {
-        // 先从缓存中取
-        val cache = fileMap[name] ?:
-        // 缓存中没有，从文件中取
-        addCache(name) ?: return null
-        return if (cache.exists())// 物理文件存在
-            cache
-        else {// 物理文件不存在
-            LOGGER.warning("file $name in disk not exist")
+        runCatching {
+            // 先从缓存中取
+            return fileMap[name] ?:
+            // 缓存中没有，从文件中取
+            addCache(name) ?: return null
+        }.onFailure {
+            // 读取出错，去除该文件
             fileMap -= name
-            null
+            LOGGER.warning(it.message)
         }
+        return null
     }
 
 }

@@ -10,9 +10,18 @@ import java.nio.file.Path
  */
 class SimpleMemFile(baseDir: File, watchFile: String) : AbstractMemFile() {
 
+    companion object {
+        /**
+         * 文件缓存有效期（毫秒）
+         */
+        var aliveTime = 5 * 60 * 1000L
+    }
+
     private val webDir = baseDir
 
     private val file = File(webDir, watchFile)
+
+    private var cacheTime = 0L
 
     init {
         update()
@@ -36,6 +45,9 @@ class SimpleMemFile(baseDir: File, watchFile: String) : AbstractMemFile() {
 
     @Synchronized
     override fun update() {
+        val now = System.currentTimeMillis()
+        if (now - cacheTime < aliveTime)
+            return
         if (!file.exists()) {
             throw FileNotFoundException(fileName)
         }
@@ -45,5 +57,6 @@ class SimpleMemFile(baseDir: File, watchFile: String) : AbstractMemFile() {
         data = file.inputStream().use {
             it.readAllBytes()
         }
+        cacheTime = now
     }
 }
