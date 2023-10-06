@@ -72,3 +72,30 @@ tasks.build {
         }
     }
 }
+
+tasks.getByName("bootJar", BootJar::class) {
+    exclude("*.jar")
+    val dist = buildDir.resolve("app")
+    val files = configurations.runtimeClasspath.get().files.filter {
+        it.name.endsWith("jar")
+    }
+    manifest {
+        var cp = ""
+        files.forEach {
+            cp += "lib/${it.name} "
+        }
+        attributes("Class-Path" to cp)
+    }
+    doLast {
+        delete(dist.resolve("lib"))
+        copy {
+            println(archiveFileName.get())
+            from(buildDir.resolve("libs/${archiveFileName.get()}"))
+            into(dist)
+        }
+        copy {
+            from(files)
+            into(buildDir.resolve("app/lib"))
+        }
+    }
+}
