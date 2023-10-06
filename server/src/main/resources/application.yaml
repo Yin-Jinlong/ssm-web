@@ -8,3 +8,8 @@ server:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
+
+spring:
+  mvc:
+    converters:
+      preferred-json-mapper: gson

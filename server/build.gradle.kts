@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     war
@@ -22,14 +23,9 @@ configurations.all {
 }
 
 dependencies {
-    // spring-boot-jdbc
-    implementation("org.springframework.boot:spring-boot-starter-jdbc:3.1.4")
     // spring-boot-web
     implementation("org.springframework.boot:spring-boot-starter-web:3.1.0") {
-        exclude("com.fasterxml.jackson.core", "jackson-databind")
-        exclude("com.fasterxml.jackson.datatype", "jackson-datatype-jdk8")
-        exclude("com.fasterxml.jackson.datatype", "jackson-datatype-jsr310")
-        exclude("com.fasterxml.jackson.module", "jackson-module-parameter-names")
+        exclude("org.springframework.boot", "spring-boot-starter-json")
     }
     // druid
     // https://mvnrepository.com/artifact/com.alibaba/druid-spring-boot-starter
@@ -40,16 +36,14 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.10")
 
-    // servlet-api
-    implementation("jakarta.servlet:jakarta.servlet-api:6.0.0")
-
     // mybatis
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.2")
 
     // gson
     implementation("com.google.code.gson:gson:2.10.1")
 
-    implementation("org.springframework.boot:spring-boot-starter-actuator:3.1.0")
+    // servlet-api
+    api("jakarta.servlet:jakarta.servlet-api:6.0.0")
 
     // mysql
     runtimeOnly("com.mysql:mysql-connector-j:8.0.32")
