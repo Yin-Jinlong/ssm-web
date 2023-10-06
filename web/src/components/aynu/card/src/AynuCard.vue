@@ -70,11 +70,12 @@ import {Props} from "./AynuCard.ts";
 
 const props = defineProps<Props>()
 
-function toDateStr(time: Date | undefined): string {
-    if (!time)
+function toDateStr(t: number | undefined): string {
+    if (!t)
         return ''
+    let time = new Date(t)
     let y = time.getFullYear()
-    let M = time.getMonth()
+    let M = time.getMonth() + 1
     let d = time.getDate()
     let h = time.getHours()
     let m = time.getMinutes()

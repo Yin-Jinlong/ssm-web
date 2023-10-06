@@ -59,10 +59,10 @@
 
 <script setup lang="ts">
 
-import {ref, watch} from "vue";
-import {getTheme, setTheme} from "Global";
+import {watch} from "vue";
 import {MoonNight, Sunny} from "@element-plus/icons-vue";
 import {Props} from "./CommonHeader.ts";
+import {useStatuser} from "@util/Statuser.ts";
 
 const props = defineProps<Props>()
 
@@ -83,16 +83,22 @@ function onCommand(c: string | number) {
     }
 }
 
+const statuser = useStatuser("header")
 
-const dark = ref<boolean>(getTheme())
+const dark = statuser.addRef<boolean>('dark',false)
 
-watch(dark, (nv) => {
-    setTheme(nv)
-    if (nv) {
+change(dark.value)
+
+function change(v: boolean) {
+    if (v) {
         document.documentElement.classList.add("dark")
     } else {
         document.documentElement.classList.remove("dark")
     }
+}
+
+watch(dark, (nv: boolean) => {
+    change(nv)
 })
 
 </script>

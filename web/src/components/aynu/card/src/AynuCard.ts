@@ -1,18 +1,10 @@
-export declare interface Data {
-    id: number
-    uid: number | undefined
-    name: string
+import {Msg} from "@types";
+
+export declare interface Data extends Msg {
     img: string
-    msg: string
-    time: Date
 }
 
 export declare interface Props {
-    data?: {
-        name: string
-        img: string
-        msg: string
-        time: Date
-    } | null,
+    data?: Data | null,
     onDelete: () => void
 }

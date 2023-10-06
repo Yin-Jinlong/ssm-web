@@ -53,12 +53,13 @@
 <script lang="ts" setup>
 
 import {AddButton, AddMsgDialog, AynuCard, AynuCardData, CommonHeader, LogDialog} from "@components";
-import {onMounted, reactive, ref} from "vue";
+import {onMounted, ref, reactive} from "vue";
 import gsap from "gsap";
 import {Callback, ElMessage, ElScrollbar} from "element-plus";
 import axios from "axios";
 import {Msg, User} from "@types";
 import {getErrorMessage, LS} from "Global";
+import {useStatuser} from "@util/Statuser.ts";
 
 const loading = ref(true)
 
@@ -67,37 +68,18 @@ const showLoginDialog = ref(false)
 
 const msgScrollBar = ref<InstanceType<typeof ElScrollbar>>()
 
-let data = reactive<(AynuCardData | null)[]>([])
-
 const noMore = ref(false)
 
 const loadCount = 2
 
-let user = ref<User | null>(null)
+const statuser = useStatuser("home")
+let data = reactive<(AynuCardData | null)[]>([])
+let user = statuser.addRef<User | null>('user', null)
 
 function login(u: User) {
-    localStorage.setItem(LS.USER_NAME, u.uid.toString())
     user.value = u
     user.value.img = "/img/avatar.svg"
     showLoginDialog.value = false
-}
-
-function parseDate(date: string): Date {
-    //2023-09-13T09:32:02.000+00:00
-    let dateReg = /(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}).(\d{3}).(\d{2}):(\d{2})/
-    if (dateReg.test(date)) {
-        let gs = dateReg.exec(date)!
-        let year = +gs[1]
-        let month = +gs[2]
-        let day = +gs[3]
-        let hour = +gs[4]
-        let minute = +gs[5]
-        let second = +gs[6]
-        let millisecond = +gs[7]
-        let timezone = +gs[8]
-        return new Date(year, month, day, hour + timezone + 8, minute, second, millisecond)
-    }
-    throw data
 }
 
 
@@ -117,7 +99,7 @@ onMounted(() => {
         load()
 })
 
-let lastId = undefined as number | undefined
+let lastId: number | undefined = undefined
 /**
  * 至少要等的时间（观看动画）
  */
@@ -142,11 +124,9 @@ function load() {
         let ms = res.data.data as Msg[]
         for (let i = 0; i < ms.length; i++) {
             let item = ms[i]
-            let time = parseDate(item.time)
             let v = {
                 img: '/img/avatar.svg',
                 ...item,
-                time
             };
             setTimeout(() => {
                 data[data.length - loadCount + i] = v
@@ -222,7 +202,7 @@ function onAdd(v: string) {
         id: 9999,
         uid: user.value?.uid,
         name: user.value?.name,
-        time: new Date(),
+        time: Date.now(),
         img: '/img/avatar.svg',
         msg: v
     })

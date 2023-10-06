@@ -93,11 +93,12 @@
 
 <script lang="ts" setup>
 import {ElForm, ElMessage} from "element-plus";
-import {onMounted, reactive, ref, watch} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import axios from "axios";
 import {initFromRules, loginRulesDefine, logonRulesDefine, LogUser} from "./FormRules.ts";
 import {User} from "@types";
-import {getAutoLogin, getErrorMessage, LS, setAutoLogin} from "Global";
+import {getErrorMessage, LS} from "Global";
+import {useStatuser} from "@util/Statuser.ts";
 
 const props = defineProps<{
     modalValue?: boolean
@@ -107,7 +108,10 @@ const emits = defineEmits(["login"])
 
 const isLogining = ref(false)
 const isLogoning = ref(false)
-const autoLogin = ref(getAutoLogin())
+
+const statuser = useStatuser("logdialog")
+
+const autoLogin = statuser.addRef<boolean>('autoLogin',false)
 
 const form = ref<InstanceType<typeof ElForm>>()
 const logonForm = ref<InstanceType<typeof ElForm>>()
@@ -205,10 +209,6 @@ onMounted(() => {
             })
         }
     }
-})
-
-watch(autoLogin, (nv) => {
-    setAutoLogin(nv)
 })
 
 </script>

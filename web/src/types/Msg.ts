@@ -4,6 +4,6 @@ declare module '@types' {
         uid: number
         name: string
         msg: string
-        time: string
+        time: number
     }
 }

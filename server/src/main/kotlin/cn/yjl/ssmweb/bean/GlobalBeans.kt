@@ -2,10 +2,12 @@ package cn.yjl.ssmweb.bean
 
 import cn.yjl.annotations.YamlPropertySource
 import cn.yjl.io.MemFileManager
-import com.google.gson.Gson
+import cn.yjl.util.registerTypeAdapter
+import com.google.gson.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import java.sql.Timestamp
 
 /**
  * 全局单实例Bean
@@ -17,7 +19,9 @@ import org.springframework.context.annotation.Configuration
 class GlobalBeans {
 
     companion object {
-        val globalGson = Gson()
+        val globalGson: Gson = GsonBuilder().registerTypeAdapter<Timestamp> { src ->
+            JsonPrimitive(src?.time)
+        }.create()
     }
 
     @Bean
@@ -25,8 +29,7 @@ class GlobalBeans {
 
     @Bean
     fun memFileManager(
-        @Value("\${ssm-web.dir}")
-        dir: String?
-    ): MemFileManager = MemFileManager( "./web/dist")
+        @Value("\${ssm-web.dir}") dir: String?
+    ): MemFileManager = MemFileManager("./web/dist")
 
 }
