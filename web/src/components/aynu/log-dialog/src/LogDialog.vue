@@ -111,7 +111,7 @@ const isLogoning = ref(false)
 
 const statuser = useStatuser("logdialog")
 
-const autoLogin = statuser.addRef<boolean>('autoLogin',false)
+const autoLogin = statuser.useRef<boolean>('autoLogin',false)
 
 const form = ref<InstanceType<typeof ElForm>>()
 const logonForm = ref<InstanceType<typeof ElForm>>()

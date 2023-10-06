@@ -59,12 +59,12 @@
 
 <script setup lang="ts">
 
-import {watch} from "vue";
 import {MoonNight, Sunny} from "@element-plus/icons-vue";
 import {Props} from "./CommonHeader.ts";
-import {useStatuser} from "@util/Statuser.ts";
+import {globalStatuser} from "@util/Statuser.ts";
 
 const props = defineProps<Props>()
+const dark = globalStatuser.useRef<boolean>('dark', false)
 
 const emits = defineEmits(["onUserLogin", "logout"])
 
@@ -82,23 +82,5 @@ function onCommand(c: string | number) {
         }
     }
 }
-
-const statuser = useStatuser("header")
-
-const dark = statuser.addRef<boolean>('dark',false)
-
-change(dark.value)
-
-function change(v: boolean) {
-    if (v) {
-        document.documentElement.classList.add("dark")
-    } else {
-        document.documentElement.classList.remove("dark")
-    }
-}
-
-watch(dark, (nv: boolean) => {
-    change(nv)
-})
 
 </script>

@@ -5,9 +5,19 @@ type VueRef<T> = Ref<UnwrapRef<T>>
 export declare interface Statuser {
     readonly name: string
 
-    addRef<T>(name: string, def: T): VueRef<T>
+    /**
+     * 使用Ref，如果存在则直接返回，不存在返回新的
+     * @param name 名字
+     * @param def 默认值
+     */
+    useRef<T>(name: string, def: T): VueRef<T>
 
-    addReactive<T extends Object>(name: string, def: T): T
+    /**
+     * 使用Reactive，如果存在则直接返回，不存在返回新的
+     * @param name 名字
+     * @param def 默认值
+     */
+    useReactive<T extends Object>(name: string, def: T): T
 
     load(): void
 
@@ -18,8 +28,11 @@ export function useStatuser(name: string): Statuser {
     return new LocalStorageStatuser(name)
 }
 
-function addListeners(statuser: Statuser) {
-    window.addEventListener('load', statuser.load)
+export function useGlobalStatuser(): Statuser {
+    return globalStatuser
+}
+
+export function addListeners(statuser: Statuser) {
     window.addEventListener('beforeunload', () => {
         statuser.save()
     })
@@ -41,14 +54,20 @@ class LocalStorageStatuser implements Statuser {
         this.load()
     }
 
-    addRef<T>(name: string, s: T): VueRef<T> {
+    useRef<T>(name: string, s: T): VueRef<T> {
+        let refv = this.refs[name];
+        if (refv)
+            return refv
         let sv = this.loadedStatuses[name] ?? s
         let v = ref<T>(sv)
         this.refs[name] = v
         return v
     }
 
-    addReactive<T extends Object>(name: string, def: T): T {
+    useReactive<T extends Object>(name: string, def: T): T {
+        let rv = this.reactives[name]
+        if (rv)
+            return rv
         let sv = this.loadedStatuses[name] ?? def
         let v = reactive(sv)
         this.reactives[name] = v
@@ -78,3 +97,5 @@ function forEach<T>(record: Record<string, T>, callback: (k: string, v: T) => vo
     for (let i in record)
         callback(i, record[i])
 }
+
+export const globalStatuser = useStatuser("GLOBAL")

@@ -75,7 +75,7 @@ const loadCount = 2
 
 const statuser = useStatuser("home")
 let data = reactive<(AynuCardData | null)[]>([])
-let user = statuser.addRef<User | null>('user', null)
+let user = statuser.useRef<User | null>('user', null)
 
 function login(u: User) {
     user.value = u
