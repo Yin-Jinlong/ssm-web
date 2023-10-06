@@ -24,8 +24,12 @@ export declare interface Statuser {
     save(): void
 }
 
+const statusers: Record<string, Statuser> = {}
+
 export function useStatuser(name: string): Statuser {
-    return new LocalStorageStatuser(name)
+    let s = statusers[name] ?? new LocalStorageStatuser(name)
+    statusers[name] = s
+    return s
 }
 
 export function useGlobalStatuser(): Statuser {
