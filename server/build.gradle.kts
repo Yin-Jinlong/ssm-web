@@ -1,9 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
+val SPRING_BOOT_VERSION = "3.1.4"
+
 plugins {
     war
-    id("org.springframework.boot") version "3.1.3"
+    id("org.springframework.boot") version "3.1.4"
     id("io.spring.dependency-management") version "1.1.3"
     kotlin("plugin.spring") version "1.9.10"
     kotlin("jvm")
@@ -24,7 +26,7 @@ configurations.all {
 
 dependencies {
     // spring-boot-web
-    implementation("org.springframework.boot:spring-boot-starter-web:3.1.0") {
+    implementation("org.springframework.boot:spring-boot-starter-web:$SPRING_BOOT_VERSION") {
         exclude("org.springframework.boot", "spring-boot-starter-json")
     }
     // druid
@@ -48,9 +50,9 @@ dependencies {
     // mysql
     runtimeOnly("com.mysql:mysql-connector-j:8.0.32")
 
-    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat:3.1.0")
+    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat:$SPRING_BOOT_VERSION")
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test:3.1.0")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:$SPRING_BOOT_VERSION")
 }
 
 tasks.withType<KotlinCompile> {
