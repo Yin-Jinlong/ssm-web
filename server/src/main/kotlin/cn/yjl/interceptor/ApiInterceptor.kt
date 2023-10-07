@@ -36,6 +36,8 @@ class ApiInterceptor : HandlerInterceptor {
                     }
                 }
                 response.status = SC_BAD_REQUEST
+                response.characterEncoding = "UTF-8"
+                response.contentType = "application/json;charset=UTF-8"
                 response.writer.println(gson.toJson(ErrorRespJson(RespCode.USER_NOT_LOGIN)))
                 return false
             }

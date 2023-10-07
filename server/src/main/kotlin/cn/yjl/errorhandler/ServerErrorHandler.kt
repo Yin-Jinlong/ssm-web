@@ -33,6 +33,7 @@ class ServerErrorHandler {
             LOGGER.severe(e.message)
         else
             LOGGER.severe(e.message + "-> ${e.cause?.message}")
+        LOGGER.severe(e.toString())
         resp.status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR
         return ErrorRespJson(RespCode.SERVER_ERROR)
     }
