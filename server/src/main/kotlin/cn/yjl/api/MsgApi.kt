@@ -50,14 +50,14 @@ class MsgApi {
     fun send(
         @Uid
         @RequestParam
-        uid: String,
+        uid: Int,
         @NotEmpty
         @RequestParam
         msg: String,
         session: HttpSession,
         resp: HttpServletResponse
     ): ResponseJson {
-        msgService.addMsg(uid.toInt(), msg)
+        msgService.addMsg(uid, msg)
         return ErrorRespJson(RespCode.USER_MSG_SEND_OK)
     }
 
@@ -70,10 +70,10 @@ class MsgApi {
     @GetMapping("/get")
     fun getMsgs(
         @RequestParam
-        count: String,
+        count: Int,
         @RequestParam(required = false, defaultValue = Int.MAX_VALUE.toString())
-        lastId: String,
+        lastId: Int,
         resp: HttpServletResponse
-    ): ResponseJson = MsgRespJson(msgService.getMsgBefore(lastId.toInt(), count.toInt()))
+    ): ResponseJson = MsgRespJson(msgService.getMsgBefore(lastId, count))
 
 }

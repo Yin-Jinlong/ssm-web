@@ -24,11 +24,16 @@ annotation class Logid(
  *
  * @author YJL
  */
-object LogidValidator : BaseValidator<Logid>() {
+object LogidValidator : BaseValidator<Logid, String>() {
 
     override fun valid(value: String?): Boolean {
-        return if (value == null) false
-        else UidValidator.valid(value) || UnameValidator.valid(value)
+        runCatching {
+            return if (value == null) false
+            else UidValidator.valid(value.toInt()) || UnameValidator.valid(value)
+        }.onFailure {
+
+        }
+        return false
     }
 
 }

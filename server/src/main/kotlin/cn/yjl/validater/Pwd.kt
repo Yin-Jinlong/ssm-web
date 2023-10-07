@@ -24,7 +24,7 @@ annotation class Pwd(
  *
  * @author YJL
  */
-object PwdValidator : BaseValidator<Pwd>() {
+object PwdValidator : BaseValidator<Pwd,String>() {
 
     override val errorCode = RespCode.USER_PWD_ERROR
 

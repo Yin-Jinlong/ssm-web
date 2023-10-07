@@ -115,11 +115,11 @@ class UserApi {
     fun logout(
         @Uid
         @RequestParam
-        uid: String,
+        uid: Int,
         session: HttpSession,
         resp: HttpServletResponse
     ): ResponseJson {
-        if (uid == session.getUid()) {
+        if (uid == session.getUid()?.toIntOrNull()) {
             session.clearAll()
             return ErrorRespJson(RespCode.OK)
         }
