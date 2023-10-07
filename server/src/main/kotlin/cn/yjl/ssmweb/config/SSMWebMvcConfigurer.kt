@@ -1,9 +1,11 @@
 package cn.yjl.ssmweb.config
 
+import cn.yjl.hmc.FileStreamMessageConverter
 import cn.yjl.ssmweb.SSMHandlerMethodArgumentResolver
 import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
@@ -16,10 +18,9 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 @EnableWebMvc
 class SSMWebMvcConfigurer : WebMvcConfigurer {
 
-//    override fun extendMessageConverters(converters: MutableList<HttpMessageConverter<*>>) {
-//        converters.add(0, FileStreamMessageConverter())
-//    }
-
+    override fun extendMessageConverters(converters: MutableList<HttpMessageConverter<*>>) {
+        converters.add(0, FileStreamMessageConverter())
+    }
 
 }
 
