@@ -1,6 +1,7 @@
 <template>
     <add-button @click="add"/>
     <log-dialog v-model="showLoginDialog"
+                @logon="logon"
                 @login="login"/>
     <el-scrollbar
             ref="msgScrollBar"
@@ -59,8 +60,8 @@ import gsap from "gsap";
 import {Callback, ElMessage, ElScrollbar} from "element-plus";
 import axios from "axios";
 import {Msg, User} from "@types";
-import {getErrorMessage, LS} from "Global";
-import {globalStatuser, useStatuser} from "@util/Statuser.ts";
+import {getErrorMessage} from "Global";
+import {globalStatuser} from "@util/Statuser.ts";
 
 const loading = ref(true)
 
@@ -77,12 +78,80 @@ const token = globalStatuser.useRef<string | null>('token', null)
 let data = reactive<(AynuCardData | null)[]>([])
 let user = ref<User | null>(null)
 
-function login(u: User) {
-    user.value = u
-    user.value.img = "/img/avatar.svg"
-    showLoginDialog.value = false
+function catchError(err: any) {
+    ElMessage.error(getErrorMessage(err))
 }
 
+async function postLogin(logid: string | undefined = undefined, pwd: string | undefined = undefined): Promise<User> {
+    let args: string | undefined = undefined
+    if (logid && pwd) {
+        args = 'logid=' + logid + '&pwd=' + pwd
+    }
+    return new Promise<User>((resolve: (u: User) => void, reject: (r: any) => void) => {
+        axios.post("/api/user/login", args, {
+            headers: {
+                "Authorization": token.value
+            }
+        }).then(res => {
+            if (res.data.code == '0') {
+                let user = res.data.user as User
+                token.value = res.headers["authorization"]
+                resolve(user)
+            } else {
+                reject(res.data.msg)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+
+function login(u: { logid: string, pwd: string }, callback: (ok: boolean) => void) {
+    postLogin(u.logid, u.pwd).then((u: User) => {
+        user.value = u
+        ElMessage.success("登录成功")
+        showLoginDialog.value = false
+        callback(true)
+    }).catch(err => {
+        catchError(err)
+        callback(false)
+    })
+}
+
+function postLogon(name: string, pwd: string): Promise<User> {
+    return new Promise<User>((resolve, reject) => {
+        axios.post("/api/user/logon", `uname=${name}&pwd=${pwd}`).then(res => {
+            if (res.data.code == '0') {
+                resolve(res.data.user)
+            } else {
+                reject(res.data.msg)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+
+function logon(u: { name: string, pwd1: string }, callback: (ok: boolean) => void) {
+    postLogon(u.name, u.pwd1).then((u) => {
+        user.value = u
+        ElMessage.success("登录成功")
+        showLoginDialog.value = false
+        callback(true)
+    }).catch((err) => {
+        catchError(err)
+        callback(false)
+    })
+}
+
+onMounted(() => {
+    postLogin().then(u => {
+        ElMessage.success(u.name + " 欢迎回来！")
+        user.value = u
+    }).catch((err) => {
+        console.error(err)
+    })
+})
 
 function scroll(e: WheelEvent): void {
     if (e.deltaY < 0)

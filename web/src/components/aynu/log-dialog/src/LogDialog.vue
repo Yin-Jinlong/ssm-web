@@ -36,11 +36,10 @@
                         自动登录
                     </el-checkbox>
                 </div>
-
-                <el-button :loading="isLogining"
+                <el-button :loading="isLoging"
                            style="width: 100%;height: 4em"
                            type="primary"
-                           @click.stop="login"><span>{{ isLogining ? '登陆中...' : '登录' }}</span></el-button>
+                           @click.stop="login"><span>{{ isLoging ? '登陆中...' : '登录' }}</span></el-button>
             </el-tab-pane>
             <el-tab-pane label="注册">
                 <el-form :model="logUser"
@@ -72,10 +71,10 @@
                                   type="password"/>
                     </el-form-item>
                 </el-form>
-                <el-button :loading="isLogoning"
+                <el-button :loading="isLoging"
                            style="width: 100%;height: 4em"
                            type="primary"
-                           @click.stop="logon"><span>{{ isLogoning ? '请稍后...' : '注册' }}</span></el-button>
+                           @click.stop="logon"><span>{{ isLoging ? '请稍后...' : '注册' }}</span></el-button>
             </el-tab-pane>
         </el-tabs>
     </el-dialog>
@@ -92,22 +91,18 @@
 </style>
 
 <script lang="ts" setup>
-import {ElForm, ElMessage} from "element-plus";
-import {onMounted, reactive, ref} from "vue";
-import axios from "axios";
+import {ElForm} from "element-plus";
+import {reactive, ref} from "vue";
 import {initFromRules, loginRulesDefine, logonRulesDefine, LogUser} from "./FormRules.ts";
-import {User} from "@types";
-import {getErrorMessage, LS} from "Global";
-import {globalStatuser, useStatuser} from "@util/Statuser.ts";
+import {useStatuser} from "@util/Statuser.ts";
 
 const props = defineProps<{
     modalValue?: boolean
 }>()
 
-const emits = defineEmits(["login"])
+const emits = defineEmits(["login", "logon"])
 
-const isLogining = ref(false)
-const isLogoning = ref(false)
+const isLoging = ref(false)
 
 const statuser = useStatuser("logdialog")
 
@@ -129,89 +124,38 @@ let logUser = ref<LogUser>({
 
 initFromRules(logUser)
 
-function catchError(err: any) {
-    ElMessage.error(getErrorMessage(err))
-}
-
-const token = globalStatuser.useRef<string | null>('token', null)
-
-async function postLogin(logid: string | undefined = undefined, pwd: string | undefined = undefined): Promise<User> {
-    let args: string | undefined = undefined
-    if (logid && pwd) {
-        args = 'logid=' + logid + '&pwd=' + pwd
-    }
-    return new Promise<User>((resolve: (u: User) => void, reject: (r: any) => void) => {
-        axios.post("/api/user/login", args, {
-            headers: {
-                "Authorization": token.value
-            }
-        }).then(res => {
-            if (res.data.code == '0') {
-                let user = res.data.user as User
-                token.value = res.headers["authorization"]
-                resolve(user)
-            } else {
-                reject(res.data.msg)
-            }
-        }).catch(err => {
-            reject(err)
-        })
-    })
-}
-
 function clearPwds() {
     logUser.value.pwd = ''
     logUser.value.pwd1 = ''
     logUser.value.pwd2 = ''
 }
 
+function logEnd(ok: boolean) {
+    if (ok) {
+        // 清除密码，避免泄露
+        clearPwds()
+    }
+    setTimeout(() => {
+        isLoging.value = false
+    }, 500)
+}
+
 function login() {
     form.value!.validate((valid: boolean) => {
         if (valid) {
-            isLogining.value = true
-            postLogin(logUser.value.logid, logUser.value.pwd).then(user => {
-                // 清除密码，避免泄露
-                clearPwds()
-                ElMessage.success("登录成功")
-                emits("login", user)
-            }).catch(catchError).finally(() => {
-                setTimeout(() => {
-                    isLogining.value = false
-                }, 500)
-            })
+            isLoging.value = true
+            emits("login", logUser.value, logEnd)
         }
     })
 }
 
 function logon() {
-    logonForm.value?.validate(v => {
-        if (v) {
-            isLogoning.value = true
-            axios.post("/api/user/logon", `uname=${logUser.value.logid}&pwd=${logUser.value.pwd1}`).then(res => {
-                if (res.data.code == '0') {
-                    // 清除密码，避免泄露
-                    clearPwds()
-                    ElMessage.success(res.data.msg)
-                    emits("login", res.data.user)
-                } else {
-                    ElMessage.error(res.data.msg)
-                }
-            }).catch(catchError).finally(() => {
-                setTimeout(() => {
-                    isLogoning.value = false
-                }, 500)
-            })
+    logonForm.value?.validate(valid => {
+        if (valid) {
+            isLoging.value = true
+            emits("logon", logUser.value, logEnd)
         }
     })
 }
-
-onMounted(() => {
-    postLogin().then(user => {
-        ElMessage.success(user.name + " 欢迎回来！")
-        emits("login", user)
-    }).catch((err) => {
-        console.error(err)
-    })
-})
 
 </script>

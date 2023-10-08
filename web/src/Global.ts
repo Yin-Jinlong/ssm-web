@@ -4,10 +4,6 @@ export function isSystemDarkTheme() {
     return window.matchMedia('(prefers-color-scheme : dark)').matches
 }
 
-export enum LS {
-    USER_NAME = "user",
-}
-
 
 export function getErrorMessage(err: any): string {
     if (err instanceof AxiosError) {
