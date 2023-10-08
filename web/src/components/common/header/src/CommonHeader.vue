@@ -60,11 +60,11 @@
 <script setup lang="ts">
 
 import {MoonNight, Sunny} from "@element-plus/icons-vue";
-import {Props} from "./CommonHeader.ts";
 import {globalStatuser} from "@util/Statuser.ts";
+import {User} from "@types";
 
-const props = defineProps<Props>()
 const dark = globalStatuser.useRef<boolean>('dark', false)
+const user = globalStatuser.useRef<User | null>('user', null)
 
 const emits = defineEmits(["onUserLogin", "logout"])
 
@@ -75,7 +75,7 @@ function onCommand(c: string | number) {
             break
         }
         case 'login': {
-            if (!props.user) {
+            if (!user.value) {
                 emits("onUserLogin")
             }
             break

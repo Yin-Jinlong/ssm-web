@@ -8,7 +8,6 @@
             style="height: 100vh"
             @wheel="scroll">
         <common-header
-                :user="user"
                 @logout="logout"
                 @on-user-login="log"/>
         <div class="contents">
@@ -44,7 +43,6 @@
     </el-scrollbar>
     <add-msg-dialog
             v-model="showAddDialog"
-            :user="user"
             @on-add="(v : string) =>onAdd(v)"/>
 </template>
 
@@ -75,8 +73,8 @@ const noMore = ref(false)
 const loadCount = 2
 
 const token = globalStatuser.useRef<string | null>('token', null)
+const user = globalStatuser.useRef<User | null>('user', null)
 let data = reactive<(AynuCardData | null)[]>([])
-let user = ref<User | null>(null)
 
 function catchError(err: any) {
     ElMessage.error(getErrorMessage(err))

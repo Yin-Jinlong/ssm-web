@@ -55,8 +55,12 @@ import {reactive, ref, watch} from "vue";
 import {ElForm} from "element-plus";
 import {TopTooltip} from "@components";
 import {Props, formRulesDefine, FormData} from "./add-msg-dialog.ts";
+import {globalStatuser} from "@util/Statuser.ts";
+import {User} from "@types";
 
 const props = defineProps<Props>()
+
+const user=globalStatuser.useRef<User|null>('user',null)
 
 const emits = defineEmits(['onAdd'])
 

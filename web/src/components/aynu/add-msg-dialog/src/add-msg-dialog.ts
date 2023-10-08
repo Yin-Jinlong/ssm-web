@@ -1,9 +1,7 @@
 import {FormRules} from "element-plus";
-import {User} from "@types";
 
 export declare interface Props {
     modalValue?: boolean,
-    user: User | null
 }
 
 export interface FormData {

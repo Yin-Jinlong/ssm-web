@@ -31,7 +31,7 @@
                         {{ toDateStr(props?.data?.time) }}
                     </div>
                 </div>
-                <div class="card-btn-container">
+                <div v-if="user?.uid!=null&&user?.uid==data?.uid" class="card-btn-container">
                     <div class="card-btn">
                         <top-tooltip
                                 content="编辑">
@@ -67,8 +67,12 @@
 
 import {TopTooltip} from "@components";
 import {Props} from "./AynuCard.ts";
+import {globalStatuser} from "@util/Statuser.ts";
+import {User} from "@types";
 
 const props = defineProps<Props>()
+
+const user = globalStatuser.useRef<User | null>('user', null)
 
 function toDateStr(t: number | undefined): string {
     if (!t)
