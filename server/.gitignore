@@ -3,3 +3,4 @@ build/
 # 本地配置文件
 **/resources/application-jdbc.yaml
 **/resources/application-mem-file.yaml
+**/resources/application-token.yaml

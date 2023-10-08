@@ -12,7 +12,7 @@ import cn.yjl.resp.RespCode
 class ValidateException(
     val code: Int,
     val msg: String,
-    cause: Throwable?
+    cause: Throwable?=null
 ) : Exception(msg, cause) {
     constructor(respCode: RespCode) : this(respCode.code, respCode.msg, null)
 }

@@ -66,6 +66,8 @@ enum class RespCode(val code: Int, val msg: String) {
      */
     USER_LOGON_UNAME_EXISTS(130, "用户名已存在"),
 
+    TOKEN_ERROR(200, "token已过期或无效"),
+
     /**
      * 服务器错误
      */

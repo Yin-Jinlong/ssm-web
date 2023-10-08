@@ -8,6 +8,8 @@ import cn.yjl.resp.RespCode
 import cn.yjl.resp.ResponseJson
 import cn.yjl.resp.user.UserLogonRespJson
 import cn.yjl.security.sha1_512
+import cn.yjl.security.token.Token
+import cn.yjl.security.token.isAlive
 import cn.yjl.service.BaseService
 import cn.yjl.service.UserService
 import cn.yjl.validater.Uid
@@ -43,6 +45,12 @@ class UserServiceImpl : BaseService(), UserService {
             dao.getUserByNamePwd(logid, pwd.sha1_512)
         else
             throw IllegalArgumentException("No format way to login:$logid $pwd")
+    }
+
+    override fun loginByToken(token: Token<Int>?): User? {
+        if (token==null||!token.isAlive())
+            return null
+        return dao.getUserByUid(token.v)
     }
 
     override fun getUser(uid: Int): User? {

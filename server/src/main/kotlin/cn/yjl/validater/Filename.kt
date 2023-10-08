@@ -22,7 +22,7 @@ annotation class Filename(
  *
  * @author YJL
  */
-object FilenameValidator : BaseValidator<Filename,String>() {
+object FilenameValidator : BaseValidator<Filename,String>("fileName") {
 
     override fun valid(value: String?): Boolean {
         return !value.isNullOrBlank() && value.trim().length < 32

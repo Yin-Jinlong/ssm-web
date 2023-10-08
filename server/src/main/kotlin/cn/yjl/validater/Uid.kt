@@ -28,7 +28,7 @@ annotation class Uid(
  *
  * @author YJL
  */
-object UidValidator : BaseValidator<Uid,Int>() {
+object UidValidator : BaseValidator<Uid,Int>("uid") {
 
     override fun valid(value: Int?): Boolean {
         return value?.toString()?.matches(Uid.UidReg) ?: false

@@ -25,14 +25,15 @@ class SSMHandlerMethodArgumentResolver : HandlerMethodArgumentResolver {
 
     override fun supportsParameter(parameter: MethodParameter) = parameter.parameterType in supprotedTypes
 
-    private fun validateFailed(): Nothing = throw ValidateException(RespCode.VALIDATE_FAILED)
+    private fun validateFailed(name: String?): Nothing =
+        throw ValidateException(RespCode.VALIDATE_FAILED.code, "参数校验失败：$name")
 
     private fun MethodParameter.optional(v: Any?): Any? {
         return if (isOptional) {
             v
         } else {
             if (v == null)
-                validateFailed()
+                validateFailed(parameterName)
             v
         }
     }
@@ -72,7 +73,7 @@ class SSMHandlerMethodArgumentResolver : HandlerMethodArgumentResolver {
             }
             return parameter.optional(r)
         }.onFailure {
-            validateFailed()
+            validateFailed(parameter.parameterName)
         }
         return null
     }

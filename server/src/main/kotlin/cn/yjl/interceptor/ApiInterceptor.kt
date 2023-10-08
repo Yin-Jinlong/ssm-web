@@ -1,15 +1,18 @@
 package cn.yjl.interceptor
 
 import cn.yjl.annotations.ShouldLogin
-import cn.yjl.api.uitl.getUid
-import cn.yjl.api.uitl.isLogin
 import cn.yjl.log.util.getLogger
 import cn.yjl.resp.ErrorRespJson
 import cn.yjl.resp.RespCode
-import cn.yjl.ssmweb.bean.GlobalBeans
+import cn.yjl.security.token.TokenUtil
+import cn.yjl.util.getToken
+import cn.yjl.util.now
+import com.google.gson.Gson
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.servlet.http.HttpServletResponse.SC_BAD_REQUEST
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
 
@@ -18,22 +21,31 @@ import org.springframework.web.servlet.HandlerInterceptor
  *
  * @author YJL
  */
+@Component
 class ApiInterceptor : HandlerInterceptor {
 
     private val LOGGER = getLogger()
 
-    private val gson = GlobalBeans.globalGson
+    @Autowired
+    private lateinit var gson: Gson
+
+    @Autowired
+    private lateinit var tokenUtil: TokenUtil
+
+    private fun notLogin(resp: HttpServletResponse): Boolean {
+        resp.status = SC_BAD_REQUEST
+        resp.writer.println(gson.toJson(ErrorRespJson(RespCode.USER_NOT_LOGIN)))
+        return false
+    }
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         if (handler is HandlerMethod) {
             handler.handleAnnotation<ShouldLogin> {
-                val session = request.session
-                LOGGER.info(session.getUid() + " >> ${request.requestURI}")
-                val uid = request.getParameter("uid") ?: return false
-                if (session.isLogin()) {
-                    if (uid == session.getUid()) {
-                        return true
-                    }
+                val token = request.getToken(tokenUtil) ?: return notLogin(response)
+                LOGGER.info("${token.v} >> ${request.requestURI}")
+                // token
+                if (now() < token.time()) {
+                    return true
                 }
                 response.status = SC_BAD_REQUEST
                 response.characterEncoding = "UTF-8"

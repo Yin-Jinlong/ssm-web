@@ -70,10 +70,10 @@ class MsgApi {
     @GetMapping("/get")
     fun getMsgs(
         @RequestParam
+        lastId: Int?,
+        @RequestParam
         count: Int,
-        @RequestParam(required = false, defaultValue = Int.MAX_VALUE.toString())
-        lastId: Int,
         resp: HttpServletResponse
-    ): ResponseJson = MsgRespJson(msgService.getMsgBefore(lastId, count))
+    ): ResponseJson = MsgRespJson(msgService.getMsgBefore(lastId?: Int.MAX_VALUE, count))
 
 }

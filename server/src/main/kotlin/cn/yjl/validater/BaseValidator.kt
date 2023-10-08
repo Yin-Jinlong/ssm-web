@@ -7,7 +7,9 @@ import jakarta.validation.ConstraintValidatorContext
 /**
  * @author YJL
  */
-abstract class BaseValidator<A : Annotation?,T> : ConstraintValidator<A, T> {
+abstract class BaseValidator<A : Annotation, T>(
+    val name: String
+) : ConstraintValidator<A, T> {
 
     /**
      * 是否有效
@@ -23,9 +25,15 @@ abstract class BaseValidator<A : Annotation?,T> : ConstraintValidator<A, T> {
      */
     open val errorCode: RespCode = RespCode.VALIDATE_FAILED
 
+    lateinit var anno: A
+
+    override fun initialize(constraintAnnotation: A) {
+        anno = constraintAnnotation
+    }
+
     override fun isValid(value: T?, context: ConstraintValidatorContext?): Boolean {
         if (valid(value))
             return true
-        throw ValidateException(errorCode)
+        throw ValidateException(errorCode.code, errorCode.msg + ": $name", null)
     }
 }

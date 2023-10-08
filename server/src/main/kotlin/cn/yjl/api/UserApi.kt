@@ -1,6 +1,5 @@
 package cn.yjl.api
 
-import cn.yjl.api.uitl.*
 import cn.yjl.log.util.getLogger
 import cn.yjl.resp.ErrorRespJson
 import cn.yjl.resp.RespCode
@@ -8,12 +7,18 @@ import cn.yjl.resp.ResponseJson
 import cn.yjl.resp.user.UserLoginRespJson
 import cn.yjl.resp.user.UserLogonRespJson
 import cn.yjl.resp.user.UserRespJson
+import cn.yjl.security.token.Token
+import cn.yjl.security.token.TokenUtil
 import cn.yjl.service.UserService
+import cn.yjl.util.getToken
+import cn.yjl.util.isNotNull
 import cn.yjl.validater.*
+import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.servlet.http.HttpServletResponse.SC_BAD_REQUEST
 import jakarta.servlet.http.HttpSession
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
@@ -29,10 +34,8 @@ class UserApi {
 
     private val LOGGER = getLogger()
 
-    companion object {
-        const val SESSION_USER_ID = "user-id"
-        const val SESSION_USER_PWD = "user-pwd"
-    }
+    @Autowired
+    private lateinit var tokenUtil: TokenUtil
 
     /**
      * 用户服务
@@ -59,8 +62,13 @@ class UserApi {
     ): ResponseJson = userService.logon(uname, pwd).apply {
         if (code == 0)
             resp.status = SC_BAD_REQUEST
-        else if (this is UserLogonRespJson)
-            session.save(user.uid, pwd)
+        else if (this is UserLogonRespJson) {
+            resp.saveToken(user.uid)
+        }
+    }
+
+    fun HttpServletResponse.saveToken(uid: Int) {
+        setHeader(AUTHORIZATION, tokenUtil.encode(Token(uid)))
     }
 
     /**
@@ -73,34 +81,26 @@ class UserApi {
     @PostMapping("/login")
     fun login(
         @RequestParam
-        @Logid
-        logid: String,
+        @Logid(required = false)
+        logid: String?,
         @RequestParam
+        @Pwd(required = false)
         pwd: String?,
-        session: HttpSession,
+        req: HttpServletRequest,
         resp: HttpServletResponse
     ): ResponseJson {
         LOGGER.info("login:$logid - pwd: $pwd")
-        // 用户密码
-        val upwd = pwd ?:
-        // 到此logid应该是uid，且应与session的uid相同
-        // 否则可能为不同用户的相同密码登录
-        if (session.getUid() == logid) {
-            session.getPwd()
-        } else
-            null
+        val token = req.getToken(tokenUtil)
 
-        upwd?.let {// 有密码
-            // 密码格式验证一下
-            if (!PwdValidator.valid(upwd)) {
-                resp.status = SC_BAD_REQUEST
-                return ErrorRespJson(RespCode.USER_PWD_ERROR)
-            }
-            userService.login(logid, upwd)?.let {
-                // 保存一下
-                session.save(it.uid, upwd)
-                return UserLoginRespJson(RespCode.USER_LOGIN_SUCCESS, it)
-            }
+        val user = userService.loginByToken(token) ?: if (logid != null && pwd != null)
+            userService.login(logid, pwd)
+        else
+            return ErrorRespJson(RespCode.TOKEN_ERROR)
+
+        user?.let {
+            // 存到header里
+            resp.saveToken(it.uid)
+            return UserLoginRespJson(RespCode.USER_LOGIN_SUCCESS, it)
         }
         resp.status = SC_BAD_REQUEST
         return ErrorRespJson(RespCode.USER_FAILED_LOGIN)
@@ -119,10 +119,6 @@ class UserApi {
         session: HttpSession,
         resp: HttpServletResponse
     ): ResponseJson {
-        if (uid == session.getUid()?.toIntOrNull()) {
-            session.clearAll()
-            return ErrorRespJson(RespCode.OK)
-        }
         return ErrorRespJson(RespCode.NOTHING)
     }
 

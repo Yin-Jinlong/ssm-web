@@ -98,7 +98,7 @@ import axios from "axios";
 import {initFromRules, loginRulesDefine, logonRulesDefine, LogUser} from "./FormRules.ts";
 import {User} from "@types";
 import {getErrorMessage, LS} from "Global";
-import {useStatuser} from "@util/Statuser.ts";
+import {globalStatuser, useStatuser} from "@util/Statuser.ts";
 
 const props = defineProps<{
     modalValue?: boolean
@@ -111,7 +111,7 @@ const isLogoning = ref(false)
 
 const statuser = useStatuser("logdialog")
 
-const autoLogin = statuser.useRef<boolean>('autoLogin',false)
+const autoLogin = statuser.useRef<boolean>('autoLogin', false)
 
 const form = ref<InstanceType<typeof ElForm>>()
 const logonForm = ref<InstanceType<typeof ElForm>>()
@@ -133,14 +133,22 @@ function catchError(err: any) {
     ElMessage.error(getErrorMessage(err))
 }
 
-async function postLogin(logid: string, pwd: string | undefined = undefined): Promise<User> {
-    let args = 'logid=' + logid
-    if (pwd)
-        args += '&pwd=' + pwd
+const token = globalStatuser.useRef<string | null>('token', null)
+
+async function postLogin(logid: string | undefined = undefined, pwd: string | undefined = undefined): Promise<User> {
+    let args: string | undefined = undefined
+    if (logid && pwd) {
+        args = 'logid=' + logid + '&pwd=' + pwd
+    }
     return new Promise<User>((resolve: (u: User) => void, reject: (r: any) => void) => {
-        axios.post("/api/user/login", args).then(res => {
+        axios.post("/api/user/login", args, {
+            headers: {
+                "Authorization": token.value
+            }
+        }).then(res => {
             if (res.data.code == '0') {
                 let user = res.data.user as User
+                token.value = res.headers["authorization"]
                 resolve(user)
             } else {
                 reject(res.data.msg)
@@ -198,17 +206,12 @@ function logon() {
 }
 
 onMounted(() => {
-    if (autoLogin.value) {
-        let un = localStorage.getItem(LS.USER_NAME);
-        if (un) {
-            postLogin(un).then(user => {
-                ElMessage.success(user.name + " 欢迎回来！")
-                emits("login", user)
-            }).catch((err) => {
-                console.error(err)
-            })
-        }
-    }
+    postLogin().then(user => {
+        ElMessage.success(user.name + " 欢迎回来！")
+        emits("login", user)
+    }).catch((err) => {
+        console.error(err)
+    })
 })
 
 </script>

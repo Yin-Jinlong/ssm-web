@@ -22,7 +22,7 @@ annotation class NotEmpty(
 /**
  * @author YJL
  */
-object NotEmptyValidator : BaseValidator<NotEmpty,String>() {
+object NotEmptyValidator : BaseValidator<NotEmpty, String>("") {
 
     override fun valid(value: String?): Boolean {
         return !value.isNullOrBlank()

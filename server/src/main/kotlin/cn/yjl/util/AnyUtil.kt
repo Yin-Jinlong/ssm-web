@@ -8,4 +8,4 @@ inline fun Any.sync(block: () -> Unit) {
 
 inline fun Any?.isNull() = this == null
 
-inline fun Any?.isNotNull() = this == null
+inline fun Any?.isNotNull() = this != null

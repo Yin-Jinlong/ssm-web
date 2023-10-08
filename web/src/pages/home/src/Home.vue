@@ -60,7 +60,7 @@ import {Callback, ElMessage, ElScrollbar} from "element-plus";
 import axios from "axios";
 import {Msg, User} from "@types";
 import {getErrorMessage, LS} from "Global";
-import {useStatuser} from "@util/Statuser.ts";
+import {globalStatuser, useStatuser} from "@util/Statuser.ts";
 
 const loading = ref(true)
 
@@ -73,9 +73,9 @@ const noMore = ref(false)
 
 const loadCount = 2
 
-const statuser = useStatuser("home")
+const token = globalStatuser.useRef<string | null>('token', null)
 let data = reactive<(AynuCardData | null)[]>([])
-let user = statuser.useRef<User | null>('user', null)
+let user = ref<User | null>(null)
 
 function login(u: User) {
     user.value = u
@@ -168,7 +168,7 @@ function logout() {
     axios.post('/api/user/logout', `uid=${user.value.uid}`).then((err) => {
         if (err.data.code == 0) {
             user.value = null
-            localStorage.removeItem(LS.USER_NAME)
+            token.value = null
             ElMessage.success("登出成功")
         } else {
             ElMessage.error(err.data.msg)

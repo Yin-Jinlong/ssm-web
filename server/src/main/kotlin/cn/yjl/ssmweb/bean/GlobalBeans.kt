@@ -3,7 +3,9 @@ package cn.yjl.ssmweb.bean
 import cn.yjl.annotations.YamlPropertySource
 import cn.yjl.io.MemFileManager
 import cn.yjl.util.registerTypeAdapter
-import com.google.gson.*
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonPrimitive
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -15,7 +17,7 @@ import java.sql.Timestamp
  * @author YJL
  */
 @Configuration
-@YamlPropertySource(["application-mem-file.yaml"])
+@YamlPropertySource("classpath:application-mem-file.yaml")
 class GlobalBeans {
 
     companion object {

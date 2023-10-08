@@ -28,7 +28,7 @@ annotation class Uname(
  *
  * @author YJL
  */
-object UnameValidator : BaseValidator<Uname,String>() {
+object UnameValidator : BaseValidator<Uname,String>("uname") {
 
     private val num = Regex("\\d+")
 

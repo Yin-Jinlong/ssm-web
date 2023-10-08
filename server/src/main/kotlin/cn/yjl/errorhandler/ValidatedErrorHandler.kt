@@ -28,6 +28,7 @@ object ValidatedErrorHandler {
     @ExceptionHandler(ValidateException::class)
     fun handleValidationException(e: ValidateException): ResponseJson {
         LOGGER.severe(e.msg)
+        LOGGER.severe(e.stackTraceToString())
         return BaseRespJson(e.code, e.msg)
     }
 

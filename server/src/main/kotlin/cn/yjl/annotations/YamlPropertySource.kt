@@ -12,5 +12,5 @@ import org.springframework.core.annotation.AliasFor
 @PropertySource(factory = YamlPropertySourceFactory::class)
 annotation class YamlPropertySource(
     @get:AliasFor(annotation = PropertySource::class, attribute = "value")
-    val value: Array<String>
+    vararg val value: String
 )

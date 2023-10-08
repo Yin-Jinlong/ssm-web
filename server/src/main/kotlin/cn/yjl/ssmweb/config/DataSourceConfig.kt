@@ -14,7 +14,7 @@ import javax.sql.DataSource
  */
 @Configuration
 @ConfigurationProperties(prefix = "jdbc")
-@YamlPropertySource(["application-jdbc.yaml"])
+@YamlPropertySource("classpath:application-jdbc.yaml")
 class DataSourceConfig {
 
     lateinit var driverClassName: String

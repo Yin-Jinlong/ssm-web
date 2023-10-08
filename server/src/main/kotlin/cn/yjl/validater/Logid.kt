@@ -13,6 +13,7 @@ import kotlin.reflect.KClass
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Constraint(validatedBy = [LogidValidator::class])
 annotation class Logid(
+    val required:Boolean=true,
     val message: String = "",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<Payload>> = [],
@@ -24,12 +25,14 @@ annotation class Logid(
  *
  * @author YJL
  */
-object LogidValidator : BaseValidator<Logid, String>() {
+object LogidValidator : BaseValidator<Logid, String>("logid") {
 
     override fun valid(value: String?): Boolean {
+        if (value == null && !anno.required)
+            return true
         runCatching {
             return if (value == null) false
-            else UidValidator.valid(value.toInt()) || UnameValidator.valid(value)
+            else UnameValidator.valid(value)||UidValidator.valid(value.toInt())
         }.onFailure {
 
         }
