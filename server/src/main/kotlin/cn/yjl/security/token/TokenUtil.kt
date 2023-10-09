@@ -41,7 +41,7 @@ class TokenUtil {
                 TokenClassType(Token::class.java, T::class.java)
             )
         }.onFailure {
-            LOGGER.warning("parse json error: $it")
+            LOGGER.info("bad token: $base64")
         }
         return null
     }

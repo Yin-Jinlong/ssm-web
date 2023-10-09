@@ -89,13 +89,17 @@ class UserApi {
         req: HttpServletRequest,
         resp: HttpServletResponse
     ): ResponseJson {
-        LOGGER.info("login:$logid - pwd: $pwd")
         val token = req.getToken(tokenUtil)
 
-        val user = userService.loginByToken(token) ?: if (logid != null && pwd != null)
+        val user = userService.loginByToken(token)?.apply {
+            LOGGER.info("login by token :$uid")
+        } ?: if (logid != null && pwd != null) {
+            LOGGER.info("login:$logid - pwd: $pwd")
             userService.login(logid, pwd)
-        else
+        } else {
+            LOGGER.info("${req.remoteAddr} login failed by token")
             return ErrorRespJson(RespCode.TOKEN_ERROR)
+        }
 
         user?.let {
             // 存到header里
