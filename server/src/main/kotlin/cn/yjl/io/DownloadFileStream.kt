@@ -1,4 +1,4 @@
-package cn.yjl.api
+package cn.yjl.io
 
 import cn.yjl.io.FileStream
 import java.io.InputStream
