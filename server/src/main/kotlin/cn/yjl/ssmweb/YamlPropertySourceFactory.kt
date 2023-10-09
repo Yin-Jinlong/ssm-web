@@ -11,7 +11,7 @@ import org.springframework.core.io.support.PropertySourceFactory
  * @author YJL
  */
 class YamlPropertySourceFactory : PropertySourceFactory {
-    override fun createPropertySource(name: String?, resource: EncodedResource): PropertySource<*> {
-        return YamlPropertySourceLoader().load(resource.resource.filename, resource.resource)[0]
-    }
+    override fun createPropertySource(name: String?, resource: EncodedResource): PropertySource<*> =
+        YamlPropertySourceLoader().load(resource.resource.filename, resource.resource)[0]
+
 }
