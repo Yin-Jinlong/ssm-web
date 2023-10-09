@@ -4,6 +4,7 @@ import cn.yjl.resp.RespCode
 import cn.yjl.validater.ValidateException
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.core.MethodParameter
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.support.WebDataBinderFactory
 import org.springframework.web.context.request.NativeWebRequest
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
@@ -23,7 +24,8 @@ class SSMHandlerMethodArgumentResolver : HandlerMethodArgumentResolver {
         Double::class.java
     )
 
-    override fun supportsParameter(parameter: MethodParameter) = parameter.parameterType in supprotedTypes
+    override fun supportsParameter(parameter: MethodParameter) =
+        parameter.hasParameterAnnotation(RequestParam::class.java) && parameter.parameterType in supprotedTypes
 
     private fun validateFailed(name: String?): Nothing =
         throw ValidateException(RespCode.VALIDATE_FAILED.code, "参数校验失败：$name")
