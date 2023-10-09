@@ -1,11 +1,18 @@
 <template>
     <el-dialog
-            :model-value="props.modalValue"
+            :model-value="modelValue"
+            @open="emits('update:modelValue',true)"
+            @close="emits('update:modelValue',false)"
             :show-close="false"
             class="noheader"
             width="400">
-        <el-tabs :stretch="true">
-            <el-tab-pane label="登录">
+        <el-tabs
+                :model-value="nowPage"
+                @tabChange="emits('update:nowPage', $event)"
+                :stretch="true">
+            <el-tab-pane
+                    name="login"
+                    label="登录">
                 <el-form ref="form"
                          :model="logUser"
                          :rules="loginRules"
@@ -41,7 +48,9 @@
                            type="primary"
                            @click.stop="login"><span>{{ isLoging ? '登陆中...' : '登录' }}</span></el-button>
             </el-tab-pane>
-            <el-tab-pane label="注册">
+            <el-tab-pane
+                    name="logon"
+                    label="注册">
                 <el-form :model="logUser"
                          :rules="logonRules"
                          ref="logonForm"
@@ -92,15 +101,16 @@
 
 <script lang="ts" setup>
 import {ElForm} from "element-plus";
-import {reactive, ref} from "vue";
+import {reactive, ref, watch} from "vue";
 import {initFromRules, loginRulesDefine, logonRulesDefine, LogUser} from "./FormRules.ts";
 import {useStatuser} from "@util/Statuser.ts";
 
 const props = defineProps<{
-    modalValue?: boolean
+    modelValue?: boolean
+    nowPage: 'login' | 'logon'
 }>()
 
-const emits = defineEmits(["login", "logon"])
+const emits = defineEmits(["login", "logon", "update:nowPage", 'update:modelValue'])
 
 const isLoging = ref(false)
 
@@ -158,4 +168,14 @@ function logon() {
     })
 }
 
+watch(props, (nv) => {
+    if (!form.value || !logonForm.value)
+        return
+    if (nv.modelValue) {
+        form.value!.clearValidate()
+        logonForm.value!.clearValidate()
+    }
+}, {
+    deep: true
+})
 </script>

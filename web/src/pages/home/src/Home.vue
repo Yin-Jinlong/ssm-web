@@ -1,6 +1,7 @@
 <template>
     <add-button @click="add"/>
-    <log-dialog v-model="showLoginDialog"
+    <log-dialog v-model:model-value="showLoginDialog"
+                v-model:now-page="nowPage"
                 @logon="logon"
                 @login="login"/>
     <el-scrollbar
@@ -53,7 +54,7 @@
 <script lang="ts" setup>
 
 import {AddButton, AddMsgDialog, AynuCard, AynuCardData, CommonHeader, LogDialog} from "@components";
-import {onMounted, ref, reactive} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import gsap from "gsap";
 import {Callback, ElMessage, ElScrollbar} from "element-plus";
 import axios from "axios";
@@ -65,7 +66,7 @@ const loading = ref(true)
 
 const showAddDialog = ref(false)
 const showLoginDialog = ref(false)
-
+const nowPage = ref<'login' | 'logon'>('login')
 const msgScrollBar = ref<InstanceType<typeof ElScrollbar>>()
 
 const noMore = ref(false)
@@ -226,6 +227,7 @@ function del(i: number) {
 }
 
 function log() {
+    nowPage.value = "login"
     showLoginDialog.value = true
 }
 
