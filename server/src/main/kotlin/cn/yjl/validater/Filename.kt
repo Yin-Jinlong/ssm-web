@@ -12,6 +12,7 @@ import kotlin.reflect.KClass
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Constraint(validatedBy = [FilenameValidator::class])
 annotation class Filename(
+    val name: String = "",
     val message: String = "",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<Payload>> = [],
@@ -22,7 +23,7 @@ annotation class Filename(
  *
  * @author YJL
  */
-object FilenameValidator : BaseValidator<Filename,String>("fileName") {
+object FilenameValidator : BaseValidator<Filename, String>() {
 
     override fun valid(value: String?): Boolean {
         return !value.isNullOrBlank() && value.trim().length < 32

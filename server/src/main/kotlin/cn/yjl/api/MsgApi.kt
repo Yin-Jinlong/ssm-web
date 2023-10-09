@@ -51,7 +51,7 @@ class MsgApi {
         @Uid
         @RequestParam
         uid: Int,
-        @NotEmpty
+        @NotEmpty("msg")
         @RequestParam
         msg: String,
         session: HttpSession,

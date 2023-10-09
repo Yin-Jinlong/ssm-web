@@ -13,10 +13,11 @@ import kotlin.reflect.KClass
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Constraint(validatedBy = [UnameValidator::class])
 annotation class Uname(
+    val name: String = "name",
     val message: String = "",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<Payload>> = [],
-    val code: RespCode = RespCode.VALIDATE_FAILED
+    val code: RespCode = RespCode.USER_NAME_ERROR
 ) {
     companion object {
         val UnameReg = Regex("\\S{1,12}")
@@ -28,11 +29,9 @@ annotation class Uname(
  *
  * @author YJL
  */
-object UnameValidator : BaseValidator<Uname,String>("uname") {
+object UnameValidator : BaseValidator<Uname, String>() {
 
     private val num = Regex("\\d+")
-
-    override val errorCode: RespCode = RespCode.USER_NAME_ERROR
 
     override fun valid(value: String?): Boolean {
         return if (value == null || value.matches(num) || value.matches(Uid.UidReg)) false

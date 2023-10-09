@@ -10,7 +10,7 @@ import org.mybatis.spring.annotation.MapperScan
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpHeaders.*
 import org.springframework.scheduling.annotation.Async
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -43,7 +43,7 @@ class SsmWebApplication {
         }
         path.openMemFileForEncoding(req, resp)?.apply {
             resp.status = SC_OK
-            resp.setHeader(HttpHeaders.CONTENT_TYPE, req.servletContext.getMimeType(path))
+            resp.setHeader(CONTENT_TYPE, req.servletContext.getMimeType(path))
             writeTo(resp)
             req.log(filePath)
             return
@@ -56,9 +56,9 @@ class SsmWebApplication {
      * 打开请求的文件，如果gz存在则返回gz文件
      */
     private fun String.openMemFileForEncoding(req: HttpServletRequest, resp: HttpServletResponse): MemFile? {
-        if (req.getHeader(HttpHeaders.ACCEPT_ENCODING)?.contains("gzip") == true) {
+        if (req.getHeader(ACCEPT_ENCODING)?.contains("gzip") == true) {
             memFileManager["$this.gz"]?.apply {
-                resp.addHeader(HttpHeaders.CONTENT_ENCODING, "gzip")
+                resp.addHeader(CONTENT_ENCODING, "gzip")
                 return this
             }
         }

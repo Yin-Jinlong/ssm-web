@@ -13,7 +13,8 @@ import kotlin.reflect.KClass
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Constraint(validatedBy = [NotEmptyValidator::class])
 annotation class NotEmpty(
-    val message: String = "",
+    val name: String,
+    val message: String = "不能为空",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<Payload>> = [],
     val code: RespCode = RespCode.VALIDATE_FAILED
@@ -22,9 +23,10 @@ annotation class NotEmpty(
 /**
  * @author YJL
  */
-object NotEmptyValidator : BaseValidator<NotEmpty, String>("") {
+object NotEmptyValidator : BaseValidator<NotEmpty, String>() {
 
     override fun valid(value: String?): Boolean {
         return !value.isNullOrBlank()
     }
+
 }

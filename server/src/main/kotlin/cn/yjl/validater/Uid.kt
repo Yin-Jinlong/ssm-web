@@ -13,6 +13,7 @@ import kotlin.reflect.KClass
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Constraint(validatedBy = [UidValidator::class])
 annotation class Uid(
+    val name: String = "uid",
     val message: String = "",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<Payload>> = [],
@@ -28,7 +29,7 @@ annotation class Uid(
  *
  * @author YJL
  */
-object UidValidator : BaseValidator<Uid,Int>("uid") {
+object UidValidator : BaseValidator<Uid, Int>() {
 
     override fun valid(value: Int?): Boolean {
         return value?.toString()?.matches(Uid.UidReg) ?: false

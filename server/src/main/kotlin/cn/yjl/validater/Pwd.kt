@@ -14,10 +14,11 @@ import kotlin.reflect.KClass
 @Constraint(validatedBy = [PwdValidator::class])
 annotation class Pwd(
     val required: Boolean = true,
+    val name: String = "pwd",
     val message: String = "",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<Payload>> = [],
-    val code: RespCode = RespCode.VALIDATE_FAILED
+    val code: RespCode = RespCode.USER_PWD_ERROR
 )
 
 /**
@@ -25,9 +26,7 @@ annotation class Pwd(
  *
  * @author YJL
  */
-object PwdValidator : BaseValidator<Pwd, String>("pwd") {
-
-    override val errorCode = RespCode.USER_PWD_ERROR
+object PwdValidator : BaseValidator<Pwd, String>() {
 
     override fun valid(value: String?): Boolean {
         if (value == null && !anno.required)
