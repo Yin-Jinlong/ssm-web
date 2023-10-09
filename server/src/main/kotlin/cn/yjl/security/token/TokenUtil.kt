@@ -7,10 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
-import java.security.SecureRandom
-import javax.crypto.Cipher.DECRYPT_MODE
-import javax.crypto.Cipher.ENCRYPT_MODE
-import javax.crypto.spec.PBEParameterSpec
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
@@ -32,24 +28,16 @@ class TokenUtil {
      */
     val gson = Gson()
 
-    /**
-     * 暂时放在内存中
-     */
-    val salt: ByteArray = SecureRandom().generateSeed(8)
-
-    fun cipher(mode: Int) =
-        tokenKey.newCipher(PBEParameterSpec(salt, 100), mode)
-
     fun <T> encode(t: Token<T>): String {
         val json = gson.toJson(t)
-        val r = cipher(ENCRYPT_MODE).doFinal(json.toByteArray())
+        val r = tokenKey.encode(json.toByteArray())
         return Base64.encode(r, 0, r.size)
     }
 
     final inline fun <reified T> decode(base64: String): Token<T>? {
         kotlin.runCatching {
             return gson.fromJson(
-                cipher(DECRYPT_MODE).doFinal(Base64.decode(base64)).decodeToString(),
+                tokenKey.decode(Base64.decode(base64)).decodeToString(),
                 TokenClassType(Token::class.java, T::class.java)
             )
         }.onFailure {
