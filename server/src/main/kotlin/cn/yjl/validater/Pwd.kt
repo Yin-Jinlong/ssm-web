@@ -13,7 +13,6 @@ import kotlin.reflect.KClass
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Constraint(validatedBy = [PwdValidator::class])
 annotation class Pwd(
-    val required: Boolean = true,
     val name: String = "pwd",
     val message: String = "",
     val groups: Array<KClass<*>> = [],
@@ -29,8 +28,6 @@ annotation class Pwd(
 object PwdValidator : BaseValidator<Pwd, String>() {
 
     override fun valid(value: String?): Boolean {
-        if (value == null && !anno.required)
-            return true
         return value?.length in 6..18
     }
 }

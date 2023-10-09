@@ -25,25 +25,25 @@ abstract class BaseValidator<A : Annotation, T> : ConstraintValidator<A, T> {
         anno = constraintAnnotation
     }
 
-    private fun <R> getOrDefault(name: String, def: R, msg: String): R {
+    private fun <R> getOrDefault(name: String, def: R): R {
         var r: R? = null
         runCatching {
-            r = anno::class.java.getDeclaredMethod("message").invoke(anno) as R?
+            r = anno::class.java.getDeclaredMethod(name).invoke(anno) as R?
         }.onFailure {
-            LOGGER.warning(msg)
+            LOGGER.warning("'${anno.javaClass.simpleName}' has no $name")
         }
         return r ?: def
     }
 
-    fun name() = getOrDefault("name", "", "\"'$anno' has no name\"")
+    private fun name() = getOrDefault("name", "")
 
-    fun code() = getOrDefault("code", RespCode.VALIDATE_FAILED, "\"'$anno' has no code\"")
+    private fun code() = getOrDefault("code", RespCode.VALIDATE_FAILED)
 
-    fun message() = getOrDefault("message", RespCode.VALIDATE_FAILED.msg, "\"'$anno' has no message\"")
-        .ifBlank { code().msg }
+    private fun message() = getOrDefault("message", RespCode.VALIDATE_FAILED.msg)
+        .ifEmpty { code().msg }// 没有的话从code中取
 
     override fun isValid(value: T?, context: ConstraintValidatorContext?): Boolean {
-        if (valid(value))
+        if (value == null || valid(value))
             return true
         throw ValidateException(code().code, message() + ": ${name()}", null)
     }

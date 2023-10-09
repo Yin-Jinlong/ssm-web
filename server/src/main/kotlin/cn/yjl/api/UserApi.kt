@@ -81,10 +81,10 @@ class UserApi {
     @PostMapping("/login")
     fun login(
         @RequestParam
-        @Logid(required = false)
+        @Logid
         logid: String?,
         @RequestParam
-        @Pwd(required = false)
+        @Pwd
         pwd: String?,
         req: HttpServletRequest,
         resp: HttpServletResponse
