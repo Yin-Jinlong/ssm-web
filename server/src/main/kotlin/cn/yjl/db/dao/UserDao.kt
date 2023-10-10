@@ -2,7 +2,6 @@ package cn.yjl.db.dao
 
 import cn.yjl.annotations.ServerUse
 import cn.yjl.db.User
-import cn.yjl.db.server.ServerUser
 import org.apache.ibatis.annotations.Insert
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Select
@@ -50,7 +49,7 @@ interface UserDao : Dao {
      */
     @ServerUse
     @Select("select * from user where name=#{name}")
-    fun getUserByName(name: String): ServerUser?
+    fun getUserByName(name: String): User?
 
     /**
      *

@@ -1,5 +1,7 @@
 package cn.yjl.db
 
+import cn.yjl.annotations.json.JsonIgnored
+
 /**
  * 用户
  *
@@ -9,4 +11,6 @@ package cn.yjl.db
 data class User(
     val uid: Int,
     val name: String,
+    @JsonIgnored
+    val pwd: String? = null
 )

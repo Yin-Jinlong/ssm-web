@@ -2,6 +2,7 @@ package cn.yjl.test.service
 
 import cn.yjl.db.User
 import cn.yjl.resp.user.UserLogonRespJson
+import cn.yjl.security.sha1_512
 import cn.yjl.service.UserService
 import cn.yjl.ssmweb.SsmWebApplication
 import cn.yjl.test.annotation.SSMTest
@@ -15,7 +16,7 @@ class UserServiceTest {
     @Autowired
     lateinit var userService: UserService
 
-    val testUser = User(732418, "user")
+    val testUser = User(732418, "user", "123456".sha1_512)
 
     @Test
     fun testGetUser() {

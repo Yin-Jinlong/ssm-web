@@ -1,9 +1,6 @@
 package cn.yjl.util
 
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonElement
-import com.google.gson.JsonSerializationContext
-import com.google.gson.JsonSerializer
+import com.google.gson.*
 import java.lang.reflect.Type
 
 inline fun <reified T> GsonBuilder.registerTypeAdapter(
@@ -19,4 +16,28 @@ inline fun <reified T> GsonBuilder.registerTypeAdapter(
     crossinline serialize: (src: T?) -> JsonElement
 ): GsonBuilder = registerTypeAdapter<T> { src, _, _ ->
     serialize(src)
+}
+
+/**
+ *
+ * 设置排除选项
+ *
+ * 当判断字段时class为空
+ *
+ * 当判断类型时field为空
+ *
+ * @param shouldSkips 需要跳过的字段或类型处理函数
+ */
+fun GsonBuilder.setExclusionStrategies(vararg shouldSkips: (FieldAttributes?, Class<*>?) -> Boolean): GsonBuilder {
+    val list = mutableListOf<ExclusionStrategy>()
+    shouldSkips.forEach { shouldSkip ->
+        list += object : ExclusionStrategy {
+
+            override fun shouldSkipField(f: FieldAttributes?) = shouldSkip(f, null)
+
+            override fun shouldSkipClass(c: Class<*>?) = shouldSkip(null, c)
+        }
+    }
+    setExclusionStrategies(*list.toTypedArray())
+    return this
 }

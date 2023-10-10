@@ -2,7 +2,7 @@ package cn.yjl.service.impl
 
 import cn.yjl.db.User
 import cn.yjl.db.dao.UserDao
-import cn.yjl.db.server.ServerException
+import cn.yjl.service.ServiceException
 import cn.yjl.resp.ErrorRespJson
 import cn.yjl.resp.RespCode
 import cn.yjl.resp.ResponseJson
@@ -32,10 +32,10 @@ class UserServiceImpl : BaseService(), UserService {
         if (dao.getUserByName(name) != null)
             return ErrorRespJson(RespCode.USER_LOGON_UNAME_EXISTS)
         dao.newUser(name, pwd.sha1_512)
-        val u = dao.getUserByName(name) ?: throw ServerException("获取用户失败：$name")
+        val u = dao.getUserByName(name) ?: throw ServiceException("获取用户失败：$name")
         if (u.pwd == pwd.sha1_512)
-            return UserLogonRespJson(RespCode.USER_LOGON_OK, u.toUser())
-        throw ServerException("插入出现未知异常")
+            return UserLogonRespJson(RespCode.USER_LOGON_OK, u)
+        throw ServiceException("插入出现未知异常")
     }
 
     override fun login(logid: String, pwd: String): User? {

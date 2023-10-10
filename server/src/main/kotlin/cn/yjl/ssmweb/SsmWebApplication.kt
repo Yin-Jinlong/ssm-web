@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse.*
 import org.mybatis.spring.annotation.MapperScan
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration
 import org.springframework.boot.runApplication
 import org.springframework.http.HttpHeaders.*
 import org.springframework.scheduling.annotation.Async
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @MapperScan("cn.yjl.db.dao")
-@SpringBootApplication(scanBasePackages = ["cn.yjl"])
+@SpringBootApplication(scanBasePackages = ["cn.yjl"], exclude = [GsonAutoConfiguration::class])
 class SsmWebApplication {
 
     @Autowired
