@@ -10,6 +10,8 @@ import javax.crypto.Cipher
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.PBEParameterSpec
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 /**
  * Token密码
@@ -18,6 +20,7 @@ import javax.crypto.spec.PBEParameterSpec
  * @author YJL
  */
 @Component
+@OptIn(ExperimentalEncodingApi::class)
 @YamlPropertySource("classpath:application-token.yaml")
 class TokenKey {
 
@@ -53,8 +56,8 @@ class TokenKey {
         }
     }
 
-    fun encode(data: ByteArray): ByteArray = encodeCipher.doFinal(data)
+    fun encode(json: String): String = Base64.encode(encodeCipher.doFinal(json.toByteArray()))
 
-    fun decode(data: ByteArray): ByteArray = decodeCipher.doFinal(data)
+    fun decode(base64: String): String = decodeCipher.doFinal(Base64.decode(base64)).decodeToString()
 
 }
