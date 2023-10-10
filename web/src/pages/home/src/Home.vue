@@ -105,12 +105,16 @@ async function postLogin(logid: string | undefined = undefined, pwd: string | un
     })
 }
 
+function loginSuccess(u: User) {
+    user.value = {
+        ...u,
+        img: '/img/avatar.svg',
+    }
+}
+
 function login(u: { logid: string, pwd: string }, callback: (ok: boolean) => void) {
     postLogin(u.logid, u.pwd).then((u: User) => {
-        user.value = {
-            ...u,
-            img: '/img/avatar.svg',
-        }
+        loginSuccess(u)
         ElMessage.success("登录成功")
         showLoginDialog.value = false
         callback(true)
@@ -136,10 +140,7 @@ function postLogon(name: string, pwd: string): Promise<User> {
 
 function logon(u: { name: string, pwd1: string }, callback: (ok: boolean) => void) {
     postLogon(u.name, u.pwd1).then((u) => {
-        user.value = {
-            ...u,
-            img: '/img/avatar.svg',
-        }
+        loginSuccess(u)
         ElMessage.success("登录成功")
         showLoginDialog.value = false
         callback(true)
@@ -148,18 +149,6 @@ function logon(u: { name: string, pwd1: string }, callback: (ok: boolean) => voi
         callback(false)
     })
 }
-
-onMounted(() => {
-    postLogin().then(u => {
-        ElMessage.success(u.name + " 欢迎回来！")
-        user.value = {
-            ...u,
-            img: '/img/avatar.svg',
-        }
-    }).catch((err) => {
-        console.error(err)
-    })
-})
 
 function scroll(e: WheelEvent): void {
     if (e.deltaY < 0)
@@ -173,6 +162,13 @@ function scroll(e: WheelEvent): void {
 }
 
 onMounted(() => {
+    postLogin().then(u => {
+        loginSuccess(u)
+        ElMessage.success(u.name + " 欢迎回来！")
+    }).catch((err) => {
+        user.value = null
+        console.error(err)
+    })
     if (data.length == 0)
         load()
 })
