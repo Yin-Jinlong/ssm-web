@@ -5,7 +5,3 @@ inline fun Any.sync(block: () -> Unit) {
         block()
     }
 }
-
-inline fun Any?.isNull() = this == null
-
-inline fun Any?.isNotNull() = this != null
