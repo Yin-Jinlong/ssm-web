@@ -25,14 +25,11 @@ abstract class BaseValidator<A : Annotation, T> : ConstraintValidator<A, T> {
         anno = constraintAnnotation
     }
 
-    private fun <R> getOrDefault(name: String, def: R): R {
-        var r: R? = null
-        runCatching {
-            r = anno::class.java.getDeclaredMethod(name).invoke(anno) as R?
-        }.onFailure {
-            LOGGER.warning("'${anno.javaClass.simpleName}' has no $name")
-        }
-        return r ?: def
+    private inline fun <reified R> getOrDefault(name: String, def: R) = runCatching {
+        return@runCatching (anno::class.java.getDeclaredMethod(name).invoke(anno) as R?) ?: def
+    }.getOrElse {
+        LOGGER.warning("'${anno.javaClass.simpleName}' has no $name")
+        def
     }
 
     private fun name() = getOrDefault("name", "")
@@ -43,8 +40,7 @@ abstract class BaseValidator<A : Annotation, T> : ConstraintValidator<A, T> {
         .ifEmpty { code().msg }// 没有的话从code中取
 
     override fun isValid(value: T?, context: ConstraintValidatorContext?): Boolean {
-        if (value == null || valid(value))
-            return true
+        if (value == null || valid(value)) return true
         throw ValidateException(code().code, message() + ": ${name()}", null)
     }
 }
