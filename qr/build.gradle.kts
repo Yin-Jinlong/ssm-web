@@ -13,6 +13,9 @@ dependencies {
     implementation("org.jetbrains.skiko:skiko-awt:0.7.81")
     // https://mvnrepository.com/artifact/org.jetbrains.skiko/skiko-awt-runtime-windows-x64
     runtimeOnly("org.jetbrains.skiko:skiko-awt-runtime-windows-x64:0.7.81")
+
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+
 }
 
 java {
