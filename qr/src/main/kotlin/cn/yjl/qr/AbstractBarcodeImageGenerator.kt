@@ -1,13 +1,10 @@
 package cn.yjl.qr
 
 import com.google.zxing.common.BitMatrix
-import org.jetbrains.skia.Bitmap
-import org.jetbrains.skia.Canvas
-import org.jetbrains.skia.Color
-import org.jetbrains.skia.Paint
+import org.jetbrains.skia.*
 import org.jetbrains.skiko.toBufferedImage
-import org.jetbrains.skiko.toImage
 import java.awt.image.BufferedImage
+import java.lang.IllegalStateException
 import kotlin.math.roundToInt
 
 /**
@@ -39,8 +36,12 @@ abstract class AbstractBarcodeImageGenerator : BarcodeImageGenerator {
     override fun generate(bitMatrix: BitMatrix, scale: Float): BufferedImage {
         graphicsWidth = (bitMatrix.width * scale).roundToInt()
         graphicsHeight = (bitMatrix.height * scale).roundToInt()
-        val image = BufferedImage(graphicsWidth, graphicsHeight, BufferedImage.TYPE_INT_RGB).toImage()
-        return Bitmap.makeFromImage(image).let { bm ->
+        return Bitmap().apply {
+            if (!allocN32Pixels(graphicsWidth, graphicsHeight, true)) {
+                close()
+                throw IllegalStateException("Alloc bitmap failed")
+            }
+        }.let { bm ->
             Canvas(bm).use { canvas ->
                 canvas.drawPaint(backgroundPaint)
                 draw(canvas, bitMatrix)
