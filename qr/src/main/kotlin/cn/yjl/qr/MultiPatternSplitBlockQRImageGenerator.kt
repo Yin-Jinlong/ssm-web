@@ -4,10 +4,17 @@ import cn.yjl.util.drawArc
 import cn.yjl.util.drawOval
 import cn.yjl.util.drawRect
 
-
+/**
+ * 绘制器
+ */
 typealias Drawer = MultiPatternSplitBlockQRImageGenerator.(x: Int, y: Int) -> Unit
 
 /**
+ * 多样式分离式块二维码生成器
+ *
+ * @property blockDrawer 块绘制器
+ * @property locationOutDrawer 定位块外圈绘制器
+ * @property locationInDrawer 定位块内部绘制器
  *
  * @author YJL
  */
@@ -28,10 +35,16 @@ class MultiPatternSplitBlockQRImageGenerator(
 
     companion object {
 
+        /**
+         * 矩形块
+         */
         val BLOCK_RECT_DRAWER: Drawer = { x, y ->
             canvas.drawRect(x * blockWidth, y * blockHeight, blockWidth, blockHeight, primaryPaint)
         }
 
+        /**
+         * 矩形外定位块
+         */
         val LOCATION_OUT_RECT_DRAWER: Drawer = { x, y ->
             val sx = x * blockWidth
             val sy = y * blockHeight
@@ -41,27 +54,40 @@ class MultiPatternSplitBlockQRImageGenerator(
             canvas.drawRect(sx, sy + 6 * blockHeight, blockWidth * 7, blockHeight, primaryPaint)
         }
 
+        /**
+         * 矩形内定位块
+         */
         val LOCATION_IN_RECT_DRAWER: Drawer = { x, y ->
             canvas.drawRect(x * blockWidth, y * blockHeight, blockWidth * 3, blockHeight * 3, primaryPaint)
         }
 
+        /**
+         * 圆形内定位块
+         */
         val LOCATION_IN_CIRCLE_DRAWER: Drawer = { x, y ->
             canvas.drawOval(x * blockWidth, y * blockHeight, blockWidth * 3, blockHeight * 3, primaryPaint)
         }
 
-
+        /**
+         * 圆形块
+         */
         val BLOCK_CIRCLE_DRAWER: Drawer = { x, y ->
             canvas.drawOval(x * blockWidth, y * blockHeight, blockWidth, blockHeight, primaryPaint)
         }
 
+        /**
+         * 圆角块（暂时外圆角）
+         */
         val BLOCK_ROUND_CORNER_DRAWER: Drawer = { x, y ->
 
+            // 常量
             val PI = 360f
             val LEFT = 0
             val RIGHT = 1
             val TOP = 2
             val BOTTOM = 3
 
+            // 四周块情况，配合上下左右使用
             val has = arrayOf(
                 if (x < 0) false else data[x - 1, y],
                 if (x >= data.width - 1) false else data[x + 1, y],
@@ -69,6 +95,9 @@ class MultiPatternSplitBlockQRImageGenerator(
                 if (y >= data.height - 1) false else data[x, y + 1]
             )
 
+            /**
+             * 四周块个数
+             */
             fun getCount(): Int {
                 var c = 0
                 has.forEach { c += if (it) 1 else 0 }
@@ -78,7 +107,14 @@ class MultiPatternSplitBlockQRImageGenerator(
             val sx = x * blockWidth
             val sy = y * blockHeight
 
+            /**
+             * 填充圆边（180deg)
+             */
             fun fillRound(s: Float = 0f) = canvas.drawArc(sx, sy, blockWidth, blockHeight, s, PI / 2f, primaryPaint)
+
+            /**
+             * 填充半圆边（90deg)
+             */
             fun fillHalfRound(offX: Float = 0f, offY: Float = 0f, s: Float = 0f) {
                 canvas.drawArc(
                     sx + offX * blockWidth,

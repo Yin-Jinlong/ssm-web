@@ -5,17 +5,29 @@ import org.jetbrains.skia.Canvas
 import org.jetbrains.skia.Color
 
 /**
+ * 分离块二维码生成器
+ *
+ * 分离数据块绘制
  *
  * @author YJL
  */
 abstract class SplitBlockBarcodeImageGenerator : AbstractBarcodeImageGenerator() {
 
+    /**
+     * 单个块宽度，初始为-1f
+     */
     var blockWidth: Float = -1f
 
+    /**
+     * 单个块高度，初始为-1f
+     */
     var blockHeight: Float = -1f
 
     lateinit var canvas: Canvas
 
+    /**
+     * 数据矩阵
+     */
     lateinit var data: BitMatrix
         internal set
 
@@ -27,6 +39,9 @@ abstract class SplitBlockBarcodeImageGenerator : AbstractBarcodeImageGenerator()
      */
     abstract fun draw(x: Int, y: Int)
 
+    /**
+     * 更新信息
+     */
     internal fun update(canvas: Canvas, data: BitMatrix) {
         this.data = data
         this.canvas = canvas

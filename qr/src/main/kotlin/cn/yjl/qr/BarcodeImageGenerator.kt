@@ -13,6 +13,7 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import java.awt.image.BufferedImage
 
 /**
+ * 二维码图片生成器接口
  *
  * @author YJL
  */
@@ -54,6 +55,17 @@ fun interface BarcodeImageGenerator {
             put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.Q)
         }
 
+        /**
+         * 依据指定类型生成二维码等
+         *
+         * @param content 内容（默认UTF-8编码，参见[EncodeHintType.CHARACTER_SET]）
+         * @param format 二维码格式，不全支持写[BarcodeFormat]
+         * @param hints 配置
+         *
+         * @return 内容的数据矩阵
+         *
+         * @throws NotImplementedError 不支持当前写入
+         */
         fun genBitMatrix(
             content: String,
             format: BarcodeFormat,
@@ -77,6 +89,17 @@ fun interface BarcodeImageGenerator {
 
     }
 
+    /**
+     * 根据bitMatrix生成图片
+     *
+     * @param bitMatrix 数据矩阵，
+     *
+     *  使用 [BarcodeImageGenerator.genBitMatrix] 生成
+     *
+     * @param scale 缩放（每个点大小），参见[DEFAULT_SCALE]
+     *
+     * @return 生成的图像
+     */
     fun generate(bitMatrix: BitMatrix, scale: Float): BufferedImage
 
 }

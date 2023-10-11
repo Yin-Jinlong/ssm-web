@@ -3,6 +3,7 @@ package cn.yjl.qr
 import cn.yjl.util.drawRect
 
 /**
+ * 常规二维码图片生成器
  *
  * @author YJL
  */

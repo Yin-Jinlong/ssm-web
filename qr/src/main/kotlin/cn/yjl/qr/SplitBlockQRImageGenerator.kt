@@ -4,11 +4,20 @@ import com.google.zxing.common.BitMatrix
 import org.jetbrains.skia.Canvas
 
 /**
+ * 分离块二维码生成器
+ *
+ * 分离数据块和定位块绘制
  *
  * @author YJL
  */
 abstract class SplitBlockQRImageGenerator : SplitBlockBarcodeImageGenerator() {
 
+    /**
+     * 绘制定位块
+     *
+     * @param x 定位块左上角x
+     * @param y 定位块左上角y
+     */
     abstract fun drawLocation(x: Int, y: Int)
 
     override fun draw(canvas: Canvas, data: BitMatrix) {
@@ -52,6 +61,9 @@ abstract class SplitBlockQRImageGenerator : SplitBlockBarcodeImageGenerator() {
     }
 
 
+    /**
+     * 寻找定位块
+     */
     private fun find(data: BitMatrix): Array<IntArray> {
         var y = 0
         val r = mutableListOf<IntArray>()
@@ -67,6 +79,9 @@ abstract class SplitBlockQRImageGenerator : SplitBlockBarcodeImageGenerator() {
         return r.toTypedArray()
     }
 
+    /**
+     * 找到定位块?
+     */
     private fun find(data: BitMatrix, x: Int, y: Int): Boolean {
         for (py in 0..6) {
             for (px in 0..6) {

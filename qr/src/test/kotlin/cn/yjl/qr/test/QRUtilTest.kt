@@ -12,6 +12,13 @@ import javax.imageio.ImageIO.getImageWritersBySuffix
 import javax.imageio.stream.FileImageOutputStream
 import kotlin.random.Random
 
+/**
+ * QR工具测试
+ *
+ * 测试生成图片在`build/test/qr`目录下，执行扫描查看结果
+ *
+ * @author YJL
+ */
 class QRUtilTest {
 
     val filePath = File("build/test/qr")
