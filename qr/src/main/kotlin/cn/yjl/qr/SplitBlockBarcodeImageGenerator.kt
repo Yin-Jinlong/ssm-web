@@ -19,6 +19,9 @@ abstract class SplitBlockBarcodeImageGenerator(
 
     lateinit var graphics: Graphics2D
 
+    lateinit var data: BitMatrix
+        internal set
+
     /**
      * 绘制为true时的块
      *
@@ -27,9 +30,15 @@ abstract class SplitBlockBarcodeImageGenerator(
      */
     abstract fun draw(x: Int, y: Int)
 
+    internal fun update(graphics: Graphics2D, data: BitMatrix) {
+
+        this.data = data
+        this.graphics = graphics
+    }
+
     override fun draw(graphics: Graphics2D, data: BitMatrix) {
 
-        this.graphics = graphics
+        update(graphics, data)
 
         blockWidth = graphicsWidth / data.width
         blockHeight = graphicsHeight / data.height

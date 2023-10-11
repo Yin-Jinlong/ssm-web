@@ -17,7 +17,7 @@ abstract class SplitBlockQRImageGenerator(
 
     override fun draw(graphics: Graphics2D, data: BitMatrix) {
 
-        this.graphics = graphics
+        super.update(graphics, data)
 
         blockWidth = graphicsWidth / data.width
         blockHeight = graphicsHeight / data.height
@@ -64,7 +64,7 @@ abstract class SplitBlockQRImageGenerator(
         var y = 0
         val r = mutableListOf<IntArray>()
         while (y < data.height - 7) {
-            var x=0
+            var x = 0
             while (x < data.width - 7) {
                 if (find(data, x, y))
                     r += intArrayOf(x, y)
