@@ -1,9 +1,12 @@
 package cn.yjl.qr
 
 import com.google.zxing.common.BitMatrix
-import java.awt.Color
-import java.awt.Graphics2D
-import java.awt.RenderingHints
+import org.jetbrains.skia.Bitmap
+import org.jetbrains.skia.Canvas
+import org.jetbrains.skia.Color
+import org.jetbrains.skia.Paint
+import org.jetbrains.skiko.toBufferedImage
+import org.jetbrains.skiko.toImage
 import java.awt.image.BufferedImage
 import kotlin.math.roundToInt
 
@@ -11,32 +14,46 @@ import kotlin.math.roundToInt
  *
  * @author YJL
  */
-abstract class AbstractBarcodeImageGenerator(
-    var primaryColor: Color = Color.BLACK,
-    var backgroundColor: Color = Color.WHITE
-) : BarcodeImageGenerator {
+abstract class AbstractBarcodeImageGenerator : BarcodeImageGenerator {
 
     var graphicsWidth = 0
 
     var graphicsHeight = 0
 
-    abstract fun draw(graphics: Graphics2D, data: BitMatrix)
+    val backgroundPaint = Paint().apply {
+        isAntiAlias = true
+        color = Color.WHITE
+    }
+
+    val primaryPaint = Paint().apply {
+        isAntiAlias = true
+        color = Color.BLACK
+    }
+
+    abstract fun draw(canvas: Canvas, data: BitMatrix)
+
+    open fun drawBackGround(canvas: Canvas) {
+        canvas.drawPaint(backgroundPaint)
+    }
 
     override fun generate(bitMatrix: BitMatrix, scale: Float): BufferedImage {
         graphicsWidth = (bitMatrix.width * scale).roundToInt()
         graphicsHeight = (bitMatrix.height * scale).roundToInt()
-        return BufferedImage(graphicsWidth, graphicsHeight, BufferedImage.TYPE_INT_RGB).apply {
-            val g = createGraphics()
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
-
-            g.setClip(0, 0, graphicsWidth, graphicsHeight)
-
-            g.color = backgroundColor
-            g.fillRect(0, 0, graphicsWidth, graphicsHeight)
-
-            g.color = primaryColor
-            draw(g, bitMatrix)
+        val image = BufferedImage(graphicsWidth, graphicsHeight, BufferedImage.TYPE_INT_RGB).toImage()
+        return Bitmap.makeFromImage(image).let { bm ->
+            Canvas(bm).use { canvas ->
+                canvas.drawPaint(backgroundPaint)
+                draw(canvas, bitMatrix)
+                bm.toBufferedImage()
+            }
         }
     }
 
+    fun setPrimaryColor(color: Int) {
+        primaryPaint.color = color
+    }
+
+    fun setBackGroundColor(color: Int) {
+        backgroundPaint.color = color
+    }
 }

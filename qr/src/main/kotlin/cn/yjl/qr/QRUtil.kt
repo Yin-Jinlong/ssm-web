@@ -2,7 +2,7 @@ package cn.yjl.qr
 
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
-import java.awt.Color
+import org.jetbrains.skia.Color
 
 /**
  *
@@ -16,16 +16,16 @@ object QRUtil {
     fun genRectQRImage(
         content: String,
         hints: Map<EncodeHintType, *> = BarcodeImageGenerator.DEFAULT_QR_HINTS,
-        color: Color = Color.BLACK,
-        bgc: Color = Color.WHITE,
+        color: Int = Color.BLACK,
+        bgc: Int = Color.WHITE,
         scale: Float = BarcodeImageGenerator.DEFAULT_SCALE
     ) = genQR(rectBarcodeImageGenerator, content, hints, color, bgc, scale)
 
     fun genCircleQRImage(
         content: String,
         hints: Map<EncodeHintType, *> = BarcodeImageGenerator.DEFAULT_QR_HINTS,
-        color: Color = Color.BLACK,
-        bgc: Color = Color.WHITE,
+        color: Int = Color.BLACK,
+        bgc: Int = Color.WHITE,
         scale: Float = BarcodeImageGenerator.DEFAULT_SCALE
     ) = genQR(circleBarcodeImageGenerator, content, hints, color, bgc, scale)
 
@@ -33,12 +33,12 @@ object QRUtil {
         generator: AbstractBarcodeImageGenerator,
         content: String,
         hints: Map<EncodeHintType, *> = BarcodeImageGenerator.DEFAULT_QR_HINTS,
-        color: Color = Color.BLACK,
-        bgc: Color = Color.WHITE,
+        color: Int = Color.BLACK,
+        bgc: Int = Color.WHITE,
         scale: Float = BarcodeImageGenerator.DEFAULT_SCALE
     ) = generator.let {
-        it.primaryColor = color
-        it.backgroundColor = bgc
+        it.setPrimaryColor(color)
+        it.setBackGroundColor(bgc)
         it.generate(
             BarcodeImageGenerator.genBitMatrix(
                 content,

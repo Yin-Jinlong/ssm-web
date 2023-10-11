@@ -1,26 +1,18 @@
 package cn.yjl.qr
 
 import com.google.zxing.common.BitMatrix
-import java.awt.Color
-import java.awt.Graphics2D
+import org.jetbrains.skia.Canvas
 
 /**
  *
  * @author YJL
  */
-abstract class SplitBlockQRImageGenerator(
-    primaryColor: Color = Color.BLACK,
-    backgroundColor: Color = Color.WHITE
-) : SplitBlockBarcodeImageGenerator(primaryColor, backgroundColor) {
+abstract class SplitBlockQRImageGenerator : SplitBlockBarcodeImageGenerator() {
 
     abstract fun drawLocation(x: Int, y: Int)
 
-    override fun draw(graphics: Graphics2D, data: BitMatrix) {
-
-        super.update(graphics, data)
-
-        blockWidth = graphicsWidth / data.width
-        blockHeight = graphicsHeight / data.height
+    override fun draw(canvas: Canvas, data: BitMatrix) {
+        super.update(canvas, data)
 
         val ls = find(data)
 

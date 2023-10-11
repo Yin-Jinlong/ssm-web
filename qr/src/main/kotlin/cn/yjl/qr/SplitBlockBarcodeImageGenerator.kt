@@ -1,23 +1,20 @@
 package cn.yjl.qr
 
 import com.google.zxing.common.BitMatrix
-import java.awt.Color
-import java.awt.Graphics2D
+import org.jetbrains.skia.Canvas
+import org.jetbrains.skia.Color
 
 /**
  *
  * @author YJL
  */
-abstract class SplitBlockBarcodeImageGenerator(
-    primaryColor: Color = Color.BLACK,
-    backgroundColor: Color = Color.WHITE
-) : AbstractBarcodeImageGenerator(primaryColor, backgroundColor) {
+abstract class SplitBlockBarcodeImageGenerator : AbstractBarcodeImageGenerator() {
 
-    var blockWidth: Int = -1
+    var blockWidth: Float = -1f
 
-    var blockHeight: Int = -1
+    var blockHeight: Float = -1f
 
-    lateinit var graphics: Graphics2D
+    lateinit var canvas: Canvas
 
     lateinit var data: BitMatrix
         internal set
@@ -30,18 +27,16 @@ abstract class SplitBlockBarcodeImageGenerator(
      */
     abstract fun draw(x: Int, y: Int)
 
-    internal fun update(graphics: Graphics2D, data: BitMatrix) {
-
+    internal fun update(canvas: Canvas, data: BitMatrix) {
         this.data = data
-        this.graphics = graphics
+        this.canvas = canvas
+        blockWidth = graphicsWidth.toFloat() / data.width
+        blockHeight = graphicsHeight.toFloat() / data.height
     }
 
-    override fun draw(graphics: Graphics2D, data: BitMatrix) {
+    override fun draw(canvas: Canvas, data: BitMatrix) {
 
-        update(graphics, data)
-
-        blockWidth = graphicsWidth / data.width
-        blockHeight = graphicsHeight / data.height
+        update(canvas, data)
 
         for (y in 0..<data.height)
             for (x in 0..<data.width)

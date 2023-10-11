@@ -1,18 +1,15 @@
 package cn.yjl.qr
 
-import java.awt.Color
+import cn.yjl.util.drawRect
 
 /**
  *
  * @author YJL
  */
-class RectBarcodeImageGenerator(
-    primaryColor: Color = Color.BLACK,
-    backgroundColor: Color = Color.WHITE
-) : SplitBlockBarcodeImageGenerator(primaryColor, backgroundColor) {
+class RectBarcodeImageGenerator : SplitBlockBarcodeImageGenerator() {
 
     override fun draw(x: Int, y: Int) {
-        graphics.fillRect(x * blockWidth, y * blockHeight, blockWidth, blockHeight)
+        canvas.drawRect(x * blockWidth, y * blockHeight, blockWidth, blockHeight, primaryPaint)
     }
 
 }
