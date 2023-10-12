@@ -16,15 +16,13 @@ import kotlin.math.roundToInt
  */
 abstract class AbstractBarcodeImageGenerator : BarcodeImageGenerator {
 
-    /**
-     * 当前图片宽度，初始时为0
-     */
-    var graphicsWidth = 0
+    lateinit var canvas: Canvas
 
     /**
-     * 当前图片高度，初始时为0
+     * 数据矩阵
      */
-    var graphicsHeight = 0
+    lateinit var data: BitMatrix
+        internal set
 
     /**
      * 背景Paint，白色，默认开启抗锯齿
@@ -42,13 +40,24 @@ abstract class AbstractBarcodeImageGenerator : BarcodeImageGenerator {
         color = Color.BLACK
     }
 
+    internal fun saveDraw(draw: () -> Unit) {
+        val c = canvas.save()
+        draw()
+        canvas.restoreToCount(c)
+    }
+
     /**
      * 绘制有效点（矩阵中的true)
-     *
-     * @param canvas 画布
-     * @param data 数据矩阵
      */
-    abstract fun draw(canvas: Canvas, data: BitMatrix)
+    open fun draw() {
+
+        for (y in 0..<data.height)
+            for (x in 0..<data.width)
+                if (data[x, y])
+                    saveDraw {
+                        draw(x, y)
+                    }
+    }
 
     /**
      * 绘制背景
@@ -57,9 +66,16 @@ abstract class AbstractBarcodeImageGenerator : BarcodeImageGenerator {
         canvas.drawPaint(backgroundPaint)
     }
 
+    /**
+     * 绘制点，宽度为1
+     *
+     * @param x data x
+     * @param y data y
+     */
+    abstract fun draw(x: Int, y: Int)
     override fun generate(bitMatrix: BitMatrix, scale: Float): BufferedImage {
-        graphicsWidth = (bitMatrix.width * scale).roundToInt()
-        graphicsHeight = (bitMatrix.height * scale).roundToInt()
+        val graphicsWidth = (bitMatrix.width * scale).roundToInt()
+        val graphicsHeight = (bitMatrix.height * scale).roundToInt()
         return Bitmap().apply {
             if (!allocN32Pixels(graphicsWidth, graphicsHeight, true)) {
                 close()
@@ -67,8 +83,11 @@ abstract class AbstractBarcodeImageGenerator : BarcodeImageGenerator {
             }
         }.let { bm ->
             Canvas(bm).use { canvas ->
-                canvas.drawPaint(backgroundPaint)
-                draw(canvas, bitMatrix)
+                this.data = bitMatrix
+                this.canvas = canvas
+                canvas.scale(graphicsWidth.toFloat() / data.width, graphicsHeight.toFloat() / data.height)
+                drawBackGround(canvas)
+                draw()
                 bm.toBufferedImage()
             }
         }

@@ -3,11 +3,12 @@ package cn.yjl.qr
 import cn.yjl.util.drawArc
 import cn.yjl.util.drawOval
 import cn.yjl.util.drawRect
+import org.jetbrains.skia.Path
 
 /**
  * 绘制器
  */
-typealias Drawer = MultiPatternSplitBlockQRImageGenerator.(x: Int, y: Int) -> Unit
+typealias Drawer = MultiPatternQRImageGenerator.(x: Int, y: Int) -> Unit
 
 /**
  * 多样式分离式块二维码生成器
@@ -18,11 +19,11 @@ typealias Drawer = MultiPatternSplitBlockQRImageGenerator.(x: Int, y: Int) -> Un
  *
  * @author YJL
  */
-class MultiPatternSplitBlockQRImageGenerator(
+class MultiPatternQRImageGenerator(
     val blockDrawer: Drawer = BLOCK_RECT_DRAWER,
     val locationOutDrawer: Drawer = LOCATION_OUT_RECT_DRAWER,
     val locationInDrawer: Drawer = LOCATION_IN_RECT_DRAWER
-) : SplitBlockQRImageGenerator() {
+) : QRImageGenerator() {
 
     override fun draw(x: Int, y: Int) {
         blockDrawer(x, y)
@@ -39,40 +40,40 @@ class MultiPatternSplitBlockQRImageGenerator(
          * 矩形块
          */
         val BLOCK_RECT_DRAWER: Drawer = { x, y ->
-            canvas.drawRect(x * blockWidth, y * blockHeight, blockWidth, blockHeight, primaryPaint)
+            canvas.drawRect(x.toFloat(), y.toFloat(), 1f, 1f, primaryPaint)
         }
 
         /**
          * 矩形外定位块
          */
         val LOCATION_OUT_RECT_DRAWER: Drawer = { x, y ->
-            val sx = x * blockWidth
-            val sy = y * blockHeight
-            canvas.drawRect(sx, sy, blockWidth * 7, blockHeight, primaryPaint)
-            canvas.drawRect(sx, sy + blockHeight, blockWidth, blockHeight * 5, primaryPaint)
-            canvas.drawRect(sx + 6 * blockWidth, sy + blockHeight, blockWidth, blockHeight * 5, primaryPaint)
-            canvas.drawRect(sx, sy + 6 * blockHeight, blockWidth * 7, blockHeight, primaryPaint)
+            val sx = x.toFloat()
+            val sy = y.toFloat()
+            canvas.drawRect(sx, sy, 7f, 1f, primaryPaint)
+            canvas.drawRect(sx, sy + 1f, 1f, 5f, primaryPaint)
+            canvas.drawRect(sx + 6f, sy + 1f, 1f, 5f, primaryPaint)
+            canvas.drawRect(sx, sy + 6f, 7f, 1f, primaryPaint)
         }
 
         /**
          * 矩形内定位块
          */
         val LOCATION_IN_RECT_DRAWER: Drawer = { x, y ->
-            canvas.drawRect(x * blockWidth, y * blockHeight, blockWidth * 3, blockHeight * 3, primaryPaint)
+            canvas.drawRect(x.toFloat(), y.toFloat(), 3f, 3f, primaryPaint)
         }
 
         /**
          * 圆形内定位块
          */
         val LOCATION_IN_CIRCLE_DRAWER: Drawer = { x, y ->
-            canvas.drawOval(x * blockWidth, y * blockHeight, blockWidth * 3, blockHeight * 3, primaryPaint)
+            canvas.drawOval(x.toFloat(), y.toFloat(), 3f, 3f, primaryPaint)
         }
 
         /**
          * 圆形块
          */
         val BLOCK_CIRCLE_DRAWER: Drawer = { x, y ->
-            canvas.drawOval(x * blockWidth, y * blockHeight, blockWidth, blockHeight, primaryPaint)
+            canvas.drawOval(x.toFloat(), y.toFloat(), 1f, 1f, primaryPaint)
         }
 
         /**
@@ -104,23 +105,23 @@ class MultiPatternSplitBlockQRImageGenerator(
                 return c
             }
 
-            val sx = x * blockWidth
-            val sy = y * blockHeight
+            val sx = x.toFloat()
+            val sy = y.toFloat()
 
             /**
              * 填充圆边（180deg)
              */
-            fun fillRound(s: Float = 0f) = canvas.drawArc(sx, sy, blockWidth, blockHeight, s, PI / 2f, primaryPaint)
+            fun fillRound(s: Float = 0f) = canvas.drawArc(sx, sy, 1f, 1f, s, PI / 2f, primaryPaint)
 
             /**
              * 填充半圆边（90deg)
              */
             fun fillHalfRound(offX: Float = 0f, offY: Float = 0f, s: Float = 0f) {
                 canvas.drawArc(
-                    sx + offX * blockWidth,
-                    sy + offY * blockHeight,
-                    blockWidth * 2,
-                    blockHeight * 2,
+                    sx + offX,
+                    sy + offY,
+                    2f,
+                    2f,
                     s,
                     PI / 4,
                     primaryPaint
@@ -130,8 +131,8 @@ class MultiPatternSplitBlockQRImageGenerator(
             fun fillHalf(offX: Float, offY: Float, w: Float, h: Float) =
                 canvas.drawRect(sx + offX, sy + offY, w, h, primaryPaint)
 
-            val bw2 = blockWidth / 2f + 1f
-            val bh2 = blockHeight / 2f + 1f
+            val bw2 = 1.5f
+            val bh2 = 1.5f
 
             when (getCount()) {
                 0 -> BLOCK_CIRCLE_DRAWER(this, x, y)
@@ -157,21 +158,39 @@ class MultiPatternSplitBlockQRImageGenerator(
                 else -> {
                     if (has[LEFT]) {
                         fillRound(-PI / 4f)
-                        fillHalf(0f, 0f, bw2 + 1f, blockHeight)
+                        fillHalf(0f, 0f, bw2 + 1f, 1f)
                     } else if (has[RIGHT]) {
                         fillRound(PI / 4f)
-                        fillHalf(bw2 - 1.5f, 0f, bw2 + 1f, blockHeight)
+                        fillHalf(bw2 - 1.5f, 0f, bw2 + 1f, 1f)
                     } else if (has[TOP]) {
                         fillRound()
-                        fillHalf(0f, 0f, blockWidth, bh2 + 1f)
+                        fillHalf(0f, 0f, 1f, bh2 + 1f)
                     } else {
                         fillRound(PI / 2f)
-                        fillHalf(0f, bh2 - 1.5f, blockWidth, bh2 + 1f)
+                        fillHalf(0f, bh2 - 1.5f, 1f, bh2 + 1f)
                     }
                 }
             }
 
         }
 
+        private val diamondPath = Path().apply {
+            moveTo(0.5f, 0f)
+            rLineTo(0.5f, 0.5f)
+            rLineTo(-0.5f, 0.5f)
+            rLineTo(-0.5f, -0.5f)
+            closePath()
+        }
+
+        val BLOCK_DIAMOND_DRAWER: Drawer = { x, y ->
+            canvas.translate(x.toFloat(), y.toFloat())
+            canvas.drawPath(diamondPath, primaryPaint)
+        }
+
+        val LOCATION_IN_DIAMOND_DRAWER: Drawer = { x, y ->
+            canvas.translate(x.toFloat(), y.toFloat())
+            canvas.scale(3f, 3f)
+            canvas.drawPath(diamondPath, primaryPaint)
+        }
     }
 }

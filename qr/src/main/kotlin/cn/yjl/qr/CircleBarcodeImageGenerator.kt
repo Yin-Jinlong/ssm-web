@@ -7,10 +7,10 @@ import cn.yjl.util.drawOval
  *
  * @author YJL
  */
-class CircleBarcodeImageGenerator : SplitBlockBarcodeImageGenerator() {
+class CircleBarcodeImageGenerator : AbstractBarcodeImageGenerator() {
 
     override fun draw(x: Int, y: Int) {
-        canvas.drawOval(x * blockWidth, y * blockHeight, blockWidth, blockHeight, primaryPaint)
+        canvas.drawOval(x.toFloat(), y.toFloat(), 1f, 1f, primaryPaint)
     }
 
 }

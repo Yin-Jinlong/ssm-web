@@ -10,7 +10,7 @@ import org.jetbrains.skia.Canvas
  *
  * @author YJL
  */
-abstract class SplitBlockQRImageGenerator : SplitBlockBarcodeImageGenerator() {
+abstract class QRImageGenerator : AbstractBarcodeImageGenerator() {
 
     /**
      * 绘制定位块
@@ -20,8 +20,7 @@ abstract class SplitBlockQRImageGenerator : SplitBlockBarcodeImageGenerator() {
      */
     abstract fun drawLocation(x: Int, y: Int)
 
-    override fun draw(canvas: Canvas, data: BitMatrix) {
-        super.update(canvas, data)
+    override fun draw() {
 
         val ls = find(data)
 
@@ -33,12 +32,17 @@ abstract class SplitBlockQRImageGenerator : SplitBlockBarcodeImageGenerator() {
                         continue@loopX
                     }
                 }
-                if (data[x, y])
-                    draw(x, y)
+                if (data[x, y]) {
+                    saveDraw {
+                        draw(x, y)
+                    }
+                }
             }
 
         ls.forEach {
-            drawLocation(it[0], it[1])
+            saveDraw {
+                drawLocation(it[0], it[1])
+            }
         }
     }
 

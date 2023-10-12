@@ -1,9 +1,12 @@
 package cn.yjl.qr.test
 
-import cn.yjl.qr.MultiPatternSplitBlockQRImageGenerator
-import cn.yjl.qr.MultiPatternSplitBlockQRImageGenerator.Companion.BLOCK_ROUND_CORNER_DRAWER
-import cn.yjl.qr.MultiPatternSplitBlockQRImageGenerator.Companion.LOCATION_IN_CIRCLE_DRAWER
-import cn.yjl.qr.MultiPatternSplitBlockQRImageGenerator.Companion.LOCATION_OUT_RECT_DRAWER
+import cn.yjl.qr.MultiPatternQRImageGenerator
+import cn.yjl.qr.MultiPatternQRImageGenerator.Companion.BLOCK_CIRCLE_DRAWER
+import cn.yjl.qr.MultiPatternQRImageGenerator.Companion.BLOCK_DIAMOND_DRAWER
+import cn.yjl.qr.MultiPatternQRImageGenerator.Companion.BLOCK_RECT_DRAWER
+import cn.yjl.qr.MultiPatternQRImageGenerator.Companion.LOCATION_IN_CIRCLE_DRAWER
+import cn.yjl.qr.MultiPatternQRImageGenerator.Companion.LOCATION_IN_DIAMOND_DRAWER
+import cn.yjl.qr.MultiPatternQRImageGenerator.Companion.LOCATION_OUT_RECT_DRAWER
 import cn.yjl.qr.QRUtil
 import org.junit.jupiter.api.Test
 import java.awt.image.BufferedImage
@@ -41,6 +44,13 @@ class QRUtilTest {
     }
 
     @Test
+    fun testGenDiamondQRImage() {
+        QRUtil.genRectQRImage(
+            "Hi QR"
+        ).save("rect")
+    }
+
+    @Test
     fun testGenCircleQRImage() {
         QRUtil.genCircleQRImage(
             "Hi Circle QR"
@@ -57,15 +67,28 @@ class QRUtilTest {
 
     @Test
     fun testGenQR() {
+
+        val blocks = arrayOf(
+            BLOCK_RECT_DRAWER,
+            BLOCK_CIRCLE_DRAWER,
+            BLOCK_DIAMOND_DRAWER
+        )
+
+        val locationIns = arrayOf(
+            LOCATION_IN_CIRCLE_DRAWER,
+            LOCATION_IN_CIRCLE_DRAWER,
+            LOCATION_IN_DIAMOND_DRAWER
+        )
+
         QRUtil.genQR(
-            MultiPatternSplitBlockQRImageGenerator(
+            MultiPatternQRImageGenerator(
                 blockDrawer = { x, y ->
                     primaryPaint.color = randomColor()
-                    BLOCK_ROUND_CORNER_DRAWER(this, x, y)
+                    blocks[Random.nextInt(blocks.size)](this, x, y)
                 },
                 locationInDrawer = { x, y ->
                     primaryPaint.color = randomColor()
-                    LOCATION_IN_CIRCLE_DRAWER(this, x, y)
+                    locationIns[Random.nextInt(locationIns.size)](this, x, y)
                 },
                 locationOutDrawer = { x, y ->
                     primaryPaint.color = randomColor()

@@ -7,10 +7,11 @@ import cn.yjl.util.drawRect
  *
  * @author YJL
  */
-class RectBarcodeImageGenerator : SplitBlockBarcodeImageGenerator() {
+class RectBarcodeImageGenerator : AbstractBarcodeImageGenerator() {
 
     override fun draw(x: Int, y: Int) {
-        canvas.drawRect(x * blockWidth, y * blockHeight, blockWidth, blockHeight, primaryPaint)
+        canvas.drawRect(x.toFloat(), y.toFloat(), 1f, 1f, primaryPaint)
+
     }
 
 }
