@@ -1,5 +1,6 @@
 package cn.yjl.qr
 
+import cn.yjl.qr.DiamondBarcodeImageGenerator.Companion.diamondPath
 import cn.yjl.util.drawArc
 import cn.yjl.util.drawOval
 import cn.yjl.util.drawRect
@@ -172,14 +173,6 @@ class MultiPatternQRImageGenerator(
                 }
             }
 
-        }
-
-        private val diamondPath = Path().apply {
-            moveTo(0.5f, 0f)
-            rLineTo(0.5f, 0.5f)
-            rLineTo(-0.5f, 0.5f)
-            rLineTo(-0.5f, -0.5f)
-            closePath()
         }
 
         val BLOCK_DIAMOND_DRAWER: Drawer = { x, y ->

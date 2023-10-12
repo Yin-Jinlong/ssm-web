@@ -45,9 +45,9 @@ class QRUtilTest {
 
     @Test
     fun testGenDiamondQRImage() {
-        QRUtil.genRectQRImage(
-            "Hi QR"
-        ).save("rect")
+        QRUtil.genDiamondQRImage(
+            "Hi Diamond QR"
+        ).save("diamond")
     }
 
     @Test

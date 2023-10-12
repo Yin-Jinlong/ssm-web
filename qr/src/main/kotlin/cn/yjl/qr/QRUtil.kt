@@ -12,6 +12,7 @@ import org.jetbrains.skia.Color
 object QRUtil {
 
     private val rectBarcodeImageGenerator by lazy { RectBarcodeImageGenerator() }
+    private val diamondBarcodeImageGenerator by lazy { DiamondBarcodeImageGenerator() }
     private val circleBarcodeImageGenerator by lazy { CircleBarcodeImageGenerator() }
 
     /**
@@ -30,6 +31,23 @@ object QRUtil {
         bgc: Int = Color.WHITE,
         scale: Float = BarcodeImageGenerator.DEFAULT_SCALE
     ) = genQR(rectBarcodeImageGenerator, content, hints, color, bgc, scale)
+
+    /**
+     * 生成矩形二维码图片
+     *
+     * @param content 内容
+     * @param hints 配置
+     * @param color 主要色
+     * @param bgc 背景色
+     * @param scale 缩放
+     */
+    fun genDiamondQRImage(
+        content: String,
+        hints: Map<EncodeHintType, *> = BarcodeImageGenerator.DEFAULT_QR_HINTS,
+        color: Int = Color.BLACK,
+        bgc: Int = Color.WHITE,
+        scale: Float = BarcodeImageGenerator.DEFAULT_SCALE
+    ) = genQR(diamondBarcodeImageGenerator, content, hints, color, bgc, scale)
 
     /**
      * 生成圆形二维码图片
