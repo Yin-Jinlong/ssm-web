@@ -1,8 +1,5 @@
-package cn.yjl.log.util
+package cn.yjl.util.log
 
 import java.util.logging.Logger
 
-/**
- * 获取当前类名称的Logger
- */
 fun Any.getLogger(): Logger = Logger.getLogger(this::class.simpleName)
