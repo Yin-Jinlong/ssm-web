@@ -17,6 +17,6 @@ class MemFileConfig {
     @Bean
     fun memFileManager(
         @Value("\${ssm-web.dir}") dir: String?
-    ): MemFileManager = MemFileManager("./web/dist")
+    ): MemFileManager = MemFileManager(dir ?: "./web/dist")
 
 }

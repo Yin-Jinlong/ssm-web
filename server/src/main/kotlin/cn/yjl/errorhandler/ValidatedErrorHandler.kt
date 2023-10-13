@@ -1,6 +1,6 @@
 package cn.yjl.errorhandler
 
-import cn.yjl.log.util.getLogger
+import cn.yjl.util.log.getLogger
 import cn.yjl.resp.BaseRespJson
 import cn.yjl.resp.ResponseJson
 import cn.yjl.validater.ValidateException

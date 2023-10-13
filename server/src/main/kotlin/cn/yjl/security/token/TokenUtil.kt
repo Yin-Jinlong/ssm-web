@@ -1,6 +1,6 @@
 package cn.yjl.security.token
 
-import cn.yjl.log.util.getLogger
+import cn.yjl.util.log.getLogger
 import cn.yjl.util.now
 import com.google.gson.Gson
 import org.springframework.beans.factory.annotation.Autowired

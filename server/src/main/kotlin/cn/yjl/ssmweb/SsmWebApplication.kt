@@ -2,7 +2,7 @@ package cn.yjl.ssmweb
 
 import cn.yjl.io.MemFile
 import cn.yjl.io.MemFileManager
-import cn.yjl.log.util.getLogger
+import cn.yjl.util.log.getLogger
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.servlet.http.HttpServletResponse.*

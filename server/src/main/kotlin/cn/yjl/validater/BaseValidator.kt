@@ -1,6 +1,6 @@
 package cn.yjl.validater
 
-import cn.yjl.log.util.getLogger
+import cn.yjl.util.log.getLogger
 import cn.yjl.resp.RespCode
 import jakarta.validation.ConstraintValidator
 import jakarta.validation.ConstraintValidatorContext

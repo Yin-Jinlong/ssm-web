@@ -1,11 +1,11 @@
 package cn.yjl.interceptor
 
 import cn.yjl.annotations.ShouldLogin
-import cn.yjl.log.util.getLogger
 import cn.yjl.resp.ErrorRespJson
 import cn.yjl.resp.RespCode
 import cn.yjl.security.token.TokenUtil
 import cn.yjl.util.getToken
+import cn.yjl.util.log.getLogger
 import cn.yjl.util.now
 import com.google.gson.Gson
 import jakarta.servlet.http.HttpServletRequest

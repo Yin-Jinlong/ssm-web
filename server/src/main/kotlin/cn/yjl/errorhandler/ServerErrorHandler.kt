@@ -1,9 +1,9 @@
 package cn.yjl.errorhandler
 
-import cn.yjl.log.util.getLogger
 import cn.yjl.resp.ErrorRespJson
 import cn.yjl.resp.RespCode
 import cn.yjl.resp.ResponseJson
+import cn.yjl.util.log.getLogger
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
