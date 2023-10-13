@@ -1,6 +1,5 @@
 package cn.yjl.io.mf
 
-import jakarta.servlet.ServletResponse
 import java.io.File
 import java.io.OutputStream
 import java.nio.file.Path
@@ -49,7 +48,6 @@ interface MemFile {
 
     infix fun writeTo(out: OutputStream)
 
-    infix fun writeTo(out: ServletResponse)
 
     fun buffer(): ByteArray
 

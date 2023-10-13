@@ -1,7 +1,6 @@
 package cn.yjl.io.mf
 
 import cn.yjl.util.sync
-import jakarta.servlet.ServletResponse
 import java.io.OutputStream
 import kotlin.reflect.KProperty
 
@@ -40,7 +39,6 @@ abstract class AbstractMemFile : MemFile {
 
     override fun writeTo(out: OutputStream) = updateRun { out.write(data) }
 
-    override fun writeTo(out: ServletResponse) = updateRun { out.outputStream.write(data) }
 
     /**
      * 更新内存文件

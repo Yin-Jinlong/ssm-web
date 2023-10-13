@@ -1,7 +1,7 @@
 package cn.yjl.ssmweb.config
 
 import cn.yjl.annotations.YamlPropertySource
-import cn.yjl.io.MemFileManager
+import cn.yjl.io.mf.MemFileManager
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

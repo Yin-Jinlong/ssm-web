@@ -1,6 +1,5 @@
 package cn.yjl.io.df
 
-import cn.yjl.db.User
 
 /**
  *
@@ -12,8 +11,6 @@ class DataFileGroup(
     companion object {
 
         val DFG_PUBLIC = DataFileGroup("public")
-
-        fun fromUser(user: User) = DataFileGroup(user.uid.toString())
 
     }
 }

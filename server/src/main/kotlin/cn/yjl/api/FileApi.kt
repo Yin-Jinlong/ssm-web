@@ -1,6 +1,6 @@
 package cn.yjl.api
 
-import cn.yjl.io.FileStream
+import cn.yjl.io.df.FileStream
 import cn.yjl.validater.Filename
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping

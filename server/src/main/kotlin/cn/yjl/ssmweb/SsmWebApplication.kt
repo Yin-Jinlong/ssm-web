@@ -1,7 +1,7 @@
 package cn.yjl.ssmweb
 
-import cn.yjl.io.MemFile
-import cn.yjl.io.MemFileManager
+import cn.yjl.io.mf.MemFile
+import cn.yjl.io.mf.MemFileManager
 import cn.yjl.util.log.getLogger
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -45,7 +45,7 @@ class SsmWebApplication {
         path.openMemFileForEncoding(req, resp)?.apply {
             resp.status = SC_OK
             resp.setHeader(CONTENT_TYPE, req.servletContext.getMimeType(path))
-            writeTo(resp)
+            writeTo(resp.outputStream)
             req.log(filePath)
             return
         }
