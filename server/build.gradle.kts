@@ -20,6 +20,9 @@ configurations.all {
 }
 
 dependencies {
+
+    implementation(project(mapOf("path" to ":util")))
+
     // spring-boot-web
     implementation("org.springframework.boot:spring-boot-starter-web:$SPRING_BOOT_VERSION") {
         exclude("org.springframework.boot", "spring-boot-starter-json")
