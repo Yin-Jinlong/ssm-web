@@ -97,6 +97,6 @@ class QRUtilTest {
 
             ),
             "Hello QR"
-        ).save("colorful-round")
+        ).save("random")
     }
 }
