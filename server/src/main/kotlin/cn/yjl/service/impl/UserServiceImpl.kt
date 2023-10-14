@@ -2,7 +2,6 @@ package cn.yjl.service.impl
 
 import cn.yjl.db.User
 import cn.yjl.db.dao.UserDao
-import cn.yjl.service.ServiceException
 import cn.yjl.resp.ErrorRespJson
 import cn.yjl.resp.RespCode
 import cn.yjl.resp.ResponseJson
@@ -11,6 +10,7 @@ import cn.yjl.security.sha1_512
 import cn.yjl.security.token.Token
 import cn.yjl.security.token.isAlive
 import cn.yjl.service.BaseService
+import cn.yjl.service.ServiceException
 import cn.yjl.service.UserService
 import cn.yjl.validater.Uid
 import cn.yjl.validater.Uname
@@ -31,7 +31,8 @@ class UserServiceImpl : BaseService(), UserService {
     override fun logon(name: String, pwd: String): ResponseJson {
         if (dao.getUserByName(name) != null)
             return ErrorRespJson(RespCode.USER_LOGON_UNAME_EXISTS)
-        dao.newUser(name, pwd.sha1_512)
+        if (dao.newUser(name, pwd.sha1_512) == 0)
+            throw ServiceException("插入用户失败：$name pwd:$pwd")
         val u = dao.getUserByName(name) ?: throw ServiceException("获取用户失败：$name")
         if (u.pwd == pwd.sha1_512)
             return UserLogonRespJson(RespCode.USER_LOGON_OK, u)
@@ -48,7 +49,7 @@ class UserServiceImpl : BaseService(), UserService {
     }
 
     override fun loginByToken(token: Token<Int>?): User? {
-        if (token==null||!token.isAlive())
+        if (token == null || !token.isAlive())
             return null
         return dao.getUserByUid(token.v)
     }

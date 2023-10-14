@@ -4,6 +4,7 @@ import cn.yjl.db.Msg
 import cn.yjl.db.dao.MsgDao
 import cn.yjl.service.BaseService
 import cn.yjl.service.MsgService
+import cn.yjl.service.util.assertRowChange
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
@@ -23,7 +24,9 @@ class MsgServiceImpl : BaseService(), MsgService {
     }
 
     override fun addMsg(uid: Int, msg: String) {
-        dao.insertMsg(uid, msg)
+        assertRowChange(dao.insertMsg(uid, msg)) {
+            "添加消息失败：$uid msg:$msg"
+        }
     }
 
     override fun getMsgBefore(id: Int, count: Int): Array<Msg> {

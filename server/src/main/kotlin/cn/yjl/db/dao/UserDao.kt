@@ -23,7 +23,7 @@ interface UserDao : Dao {
      * @param pwdsha 密码sha
      */
     @Insert("insert into user(name,pwd) values(#{name},#{pwdsha})")
-    fun newUser(name: String, pwdsha: String)
+    fun newUser(name: String, pwdsha: String): Int
 
     /**
      * 通过用户名和密码查询用户

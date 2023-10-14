@@ -30,7 +30,7 @@ interface MsgDao : Dao {
      * @param msg 消息内容
      */
     @Insert("insert into leave_words(uid, msg) VALUES (#{uid},#{msg})")
-    fun insertMsg(uid: Int, msg: String)
+    fun insertMsg(uid: Int, msg: String): Int
 
     /**
      * 获取小于id的消息count个
