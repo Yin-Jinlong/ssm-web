@@ -66,6 +66,12 @@ class QRUtilTest {
     }
 
     @Test
+    fun testGenRoundRectQRImage() {
+        QRUtil.genRoundRectQRImage("Hi RoundRect QR")
+            .save("round-rect")
+    }
+
+    @Test
     fun testGenQR() {
 
         val blocks = arrayOf(
