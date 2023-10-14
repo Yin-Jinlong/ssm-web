@@ -1,5 +1,6 @@
 package cn.yjl.qr
 
+import cn.yjl.qr.drawer.Drawer
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.BarcodeFormat.*
 import com.google.zxing.EncodeHintType

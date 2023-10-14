@@ -1,5 +1,6 @@
 package cn.yjl.qr
 
+import cn.yjl.qr.drawer.*
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import org.jetbrains.skia.Color
@@ -11,11 +12,11 @@ import org.jetbrains.skia.Color
  */
 object QRUtil {
 
-    private val rectBarcodeImageGenerator by lazy { RectBarcodeImageGenerator() }
-    private val diamondBarcodeImageGenerator by lazy { DiamondBarcodeImageGenerator() }
-    private val circleBarcodeImageGenerator by lazy { CircleBarcodeImageGenerator() }
-    private val roundRectBarcodeImageGenerator by lazy { RoundRectBarcodeImageGenerator() }
-    private val loveBarcodeImageGenerator by lazy { PathBarcodeImageGenerator.LOVE_PATH_QR_GENERATOR }
+    private val rectBarcodeImageGenerator by lazy { BaseBarcodeImageGenerator(BaseDrawer.RectDrawer) }
+    private val diamondBarcodeImageGenerator by lazy { BaseBarcodeImageGenerator(PathDrawer(BasePath.DiamondPath)) }
+    private val circleBarcodeImageGenerator by lazy { BaseBarcodeImageGenerator(BaseDrawer.OvalDrawer) }
+    private val roundRectBarcodeImageGenerator by lazy { BaseBarcodeImageGenerator(RoundRectDrawer()) }
+    private val loveBarcodeImageGenerator by lazy { BaseBarcodeImageGenerator(PathDrawer(BasePath.LovePath)) }
 
     /**
      * 生成矩形二维码图片
@@ -86,7 +87,7 @@ object QRUtil {
         radius: Float = 0.3f,
         scale: Float = BarcodeImageGenerator.DEFAULT_SCALE
     ) = genQR(roundRectBarcodeImageGenerator.apply {
-        this.radius = radius
+        drawer.radius = radius
     }, content, hints, color, bgc, scale)
 
     /**
@@ -116,8 +117,8 @@ object QRUtil {
      * @param bgc 背景色
      * @param scale 缩放
      */
-    fun genQR(
-        generator: AbstractBarcodeImageGenerator,
+    fun<D:Drawer> genQR(
+        generator: AbstractBarcodeImageGenerator<D>,
         content: String,
         hints: Map<EncodeHintType, *> = BarcodeImageGenerator.DEFAULT_QR_HINTS,
         color: Int = Color.BLACK,

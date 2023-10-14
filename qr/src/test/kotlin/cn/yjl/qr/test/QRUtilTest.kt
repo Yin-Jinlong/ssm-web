@@ -1,13 +1,12 @@
 package cn.yjl.qr.test
 
-import cn.yjl.qr.MultiPatternQRImageGenerator
-import cn.yjl.qr.MultiPatternQRImageGenerator.Companion.BLOCK_CIRCLE_DRAWER
-import cn.yjl.qr.MultiPatternQRImageGenerator.Companion.BLOCK_DIAMOND_DRAWER
-import cn.yjl.qr.MultiPatternQRImageGenerator.Companion.BLOCK_RECT_DRAWER
-import cn.yjl.qr.MultiPatternQRImageGenerator.Companion.LOCATION_IN_CIRCLE_DRAWER
-import cn.yjl.qr.MultiPatternQRImageGenerator.Companion.LOCATION_IN_DIAMOND_DRAWER
-import cn.yjl.qr.MultiPatternQRImageGenerator.Companion.LOCATION_OUT_RECT_DRAWER
+import cn.yjl.qr.QRImageGenerator
 import cn.yjl.qr.QRUtil
+import cn.yjl.qr.drawer.BaseDrawer
+import cn.yjl.qr.drawer.BasePath
+import cn.yjl.qr.drawer.PathDrawer
+import org.jetbrains.skia.Canvas
+import org.jetbrains.skia.Paint
 import org.junit.jupiter.api.Test
 import java.awt.image.BufferedImage
 import java.io.File
@@ -80,34 +79,30 @@ class QRUtilTest {
     @Test
     fun testGenQR() {
 
-        val blocks = arrayOf(
-            BLOCK_RECT_DRAWER,
-            BLOCK_CIRCLE_DRAWER,
-            BLOCK_DIAMOND_DRAWER
-        )
-
-        val locationIns = arrayOf(
-            LOCATION_IN_CIRCLE_DRAWER,
-            LOCATION_IN_CIRCLE_DRAWER,
-            LOCATION_IN_DIAMOND_DRAWER
+        val bds = arrayOf(
+            BaseDrawer.RectDrawer,
+            BaseDrawer.OvalDrawer,
+            PathDrawer(BasePath.DiamondPath),
+            PathDrawer(BasePath.LovePath),
         )
 
         QRUtil.genQR(
-            MultiPatternQRImageGenerator(
-                blockDrawer = { x, y ->
+            QRImageGenerator(object : QRImageGenerator.QRDrawer {
+                override fun drawBlock(canvas: Canvas, primaryPaint: Paint, x: Int, y: Int) {
                     primaryPaint.color = randomColor()
-                    blocks[Random.nextInt(blocks.size)](this, x, y)
-                },
-                locationInDrawer = { x, y ->
-                    primaryPaint.color = randomColor()
-                    locationIns[Random.nextInt(locationIns.size)](this, x, y)
-                },
-                locationOutDrawer = { x, y ->
-                    primaryPaint.color = randomColor()
-                    LOCATION_OUT_RECT_DRAWER(this, x, y)
+                    bds[Random.nextInt(bds.size)].draw(canvas, primaryPaint)
                 }
 
-            ),
+                override fun drawOutLocation(canvas: Canvas, primaryPaint: Paint, x: Int, y: Int) {
+                    primaryPaint.color = randomColor()
+                    super.drawOutLocation(canvas, primaryPaint, x, y)
+                }
+
+                override fun drawInLocation(canvas: Canvas, primaryPaint: Paint, x: Int, y: Int) {
+                    canvas.scale(3f,3f)
+                    drawBlock(canvas, primaryPaint, x, y)
+                }
+            }),
             "Hello QR"
         ).save("random")
     }

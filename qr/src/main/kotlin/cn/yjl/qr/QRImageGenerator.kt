@@ -1,7 +1,11 @@
 package cn.yjl.qr
 
+import cn.yjl.qr.drawer.BaseDrawer
+import cn.yjl.qr.drawer.Drawer
+import cn.yjl.util.drawRect
 import com.google.zxing.common.BitMatrix
 import org.jetbrains.skia.Canvas
+import org.jetbrains.skia.Paint
 
 /**
  * 分离块二维码生成器
@@ -10,15 +14,9 @@ import org.jetbrains.skia.Canvas
  *
  * @author YJL
  */
-abstract class QRImageGenerator : AbstractBarcodeImageGenerator() {
-
-    /**
-     * 绘制定位块
-     *
-     * @param x 定位块左上角x
-     * @param y 定位块左上角y
-     */
-    abstract fun drawLocation(x: Int, y: Int)
+open class QRImageGenerator(
+    drawer: QRDrawer = DefaultQRDrawer
+) : AbstractBarcodeImageGenerator<QRImageGenerator.QRDrawer>(drawer) {
 
     override fun draw() {
 
@@ -33,15 +31,19 @@ abstract class QRImageGenerator : AbstractBarcodeImageGenerator() {
                     }
                 }
                 if (data[x, y]) {
-                    saveDraw {
-                        draw(x, y)
+                    saveDrawXY(x.toFloat(), y.toFloat()) {
+                        drawer.drawBlock(canvas, it, x, y)
                     }
                 }
             }
 
         ls.forEach {
-            saveDraw {
-                drawLocation(it[0], it[1])
+            val (x, y) = it
+            saveDrawXY(x.toFloat(), y.toFloat()) {
+                drawer.drawOutLocation(canvas, primaryPaint.makeClone(), x, y)
+            }
+            saveDrawXY(x + 2f, y + 2f) {
+                drawer.drawInLocation(canvas, primaryPaint.makeClone(), x + 2, y + 2)
             }
         }
     }
@@ -62,6 +64,24 @@ abstract class QRImageGenerator : AbstractBarcodeImageGenerator() {
             arrayOf(X, O, O, O, O, O, X),
             arrayOf(X, X, X, X, X, X, X)
         )
+
+        val DefaultQRDrawer = object : QRDrawer {
+
+            override fun drawBlock(canvas: Canvas, primaryPaint: Paint, x: Int, y: Int) {
+                BaseDrawer.RectDrawer.draw(canvas, primaryPaint)
+            }
+
+            override fun drawOutLocation(canvas: Canvas, primaryPaint: Paint, x: Int, y: Int) {
+                canvas.drawRect(0f, 0f, 7f, 1f, primaryPaint)
+                canvas.drawRect(0f, 1f, 1f, 5f, primaryPaint)
+                canvas.drawRect(6f, 1f, 1f, 5f, primaryPaint)
+                canvas.drawRect(0f, 6f, 7f, 1f, primaryPaint)
+            }
+
+            override fun drawInLocation(canvas: Canvas, primaryPaint: Paint, x: Int, y: Int) {
+                canvas.drawRect(0f, 0f, 3f, 3f, primaryPaint)
+            }
+        }
     }
 
 
@@ -95,4 +115,22 @@ abstract class QRImageGenerator : AbstractBarcodeImageGenerator() {
         }
         return true
     }
+
+    interface QRDrawer : Drawer {
+        fun drawBlock(canvas: Canvas, primaryPaint: Paint, x: Int, y: Int) {
+            DefaultQRDrawer.drawBlock(canvas, primaryPaint, x, y)
+        }
+
+        fun drawOutLocation(canvas: Canvas, primaryPaint: Paint, x: Int, y: Int) {
+            DefaultQRDrawer.drawOutLocation(canvas, primaryPaint, x, y)
+        }
+
+        fun drawInLocation(canvas: Canvas, primaryPaint: Paint, x: Int, y: Int) {
+            DefaultQRDrawer.drawInLocation(canvas, primaryPaint, x, y)
+        }
+
+        override fun draw(canvas: Canvas, primaryPaint: Paint) = TODO()
+
+    }
+
 }
