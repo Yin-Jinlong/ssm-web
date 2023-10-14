@@ -72,6 +72,12 @@ class QRUtilTest {
     }
 
     @Test
+    fun testGenLoveQRImage() {
+        QRUtil.genLoveQRImage("Hi Love QR", scale = 30f)
+            .save("love")
+    }
+
+    @Test
     fun testGenQR() {
 
         val blocks = arrayOf(

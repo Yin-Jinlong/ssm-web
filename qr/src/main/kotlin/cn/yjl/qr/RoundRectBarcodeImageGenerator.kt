@@ -4,21 +4,20 @@ import org.jetbrains.skia.Path
 import org.jetbrains.skia.Rect
 
 /**
- * 圆点二维码图片生成器（替换方块为圆）
+ * 圆角矩形二维码图片生成器
  *
  * @author YJL
  */
 class RoundRectBarcodeImageGenerator(
     radius: Float = 0.2f
-) : AbstractBarcodeImageGenerator() {
+) : PathBarcodeImageGenerator() {
 
     companion object {
         private fun Path.arcTo(l: Float, t: Float, r: Float, b: Float, start: Float = 0f, sweep: Float = 90f) {
             arcTo(Rect(l, t, r, b), start, sweep, false)
         }
-    }
 
-    private lateinit var path: Path
+    }
 
     var radius: Float = radius
         set(value) {
@@ -45,10 +44,7 @@ class RoundRectBarcodeImageGenerator(
             }
         }
 
-
-    override fun draw(x: Int, y: Int) {
-        canvas.translate(x.toFloat(), y.toFloat())
-        canvas.drawPath(path, primaryPaint)
+    init {
+        this.radius = radius
     }
-
 }
