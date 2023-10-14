@@ -7,8 +7,7 @@ plugins {
 project.version = "0.0.0"
 
 dependencies {
-    testImplementation(project(mapOf("path" to ":test-util")))
-    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+
 }
 
 java {

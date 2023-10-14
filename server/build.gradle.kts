@@ -49,6 +49,9 @@ dependencies {
     // mysql
     runtimeOnly("com.mysql:mysql-connector-j:8.0.32")
 
+
+    testImplementation(project(mapOf("path" to ":test-util")))
+
     providedRuntime("org.springframework.boot:spring-boot-starter-tomcat:$SPRING_BOOT_VERSION")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test:$SPRING_BOOT_VERSION")
