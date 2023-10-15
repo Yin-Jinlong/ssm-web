@@ -1,6 +1,5 @@
 package cn.yjl.qr
 
-import cn.yjl.qr.drawer.Drawer
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.BarcodeFormat.*
 import com.google.zxing.EncodeHintType
@@ -12,6 +11,7 @@ import com.google.zxing.pdf417.PDF417Writer
 import com.google.zxing.qrcode.QRCodeWriter
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import java.awt.image.BufferedImage
+import kotlin.math.roundToInt
 
 /**
  * 二维码图片生成器接口
@@ -23,6 +23,8 @@ fun interface BarcodeImageGenerator {
     companion object {
 
         const val DEFAULT_SCALE = 15.0f
+
+        const val DEFAULT_SIZE = 400
 
         private val aztecWriter by lazy { AztecWriter() }
 
@@ -101,6 +103,21 @@ fun interface BarcodeImageGenerator {
      *
      * @return 生成的图像
      */
-    fun generate(bitMatrix: BitMatrix, scale: Float): BufferedImage
+    fun generate(bitMatrix: BitMatrix, scale: Float): BufferedImage =
+        generate(bitMatrix, (bitMatrix.width * scale).roundToInt(), (bitMatrix.height * scale).roundToInt())
+
+    /**
+     * 根据bitMatrix生成图片
+     *
+     * @param bitMatrix 数据矩阵，
+     *
+     *  使用 [BarcodeImageGenerator.genBitMatrix] 生成
+     *
+     * @param width 宽度
+     * @param height 高度
+     *
+     * @return 生成的图像
+     */
+    fun generate(bitMatrix: BitMatrix, width: Int, height: Int): BufferedImage
 
 }

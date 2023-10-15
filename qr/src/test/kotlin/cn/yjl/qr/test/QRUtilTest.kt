@@ -37,22 +37,24 @@ class QRUtilTest {
 
     @Test
     fun testGenRectQRImage() {
-        QRUtil.genRectQRImage(
+        QRUtil.genQR(
             "Hi QR"
         ).save("rect")
     }
 
     @Test
     fun testGenDiamondQRImage() {
-        QRUtil.genDiamondQRImage(
-            "Hi Diamond QR"
+        QRUtil.genQR(
+            "Hi Diamond QR",
+            QRUtil.DiamondBarcodeImageGenerator
         ).save("diamond")
     }
 
     @Test
     fun testGenCircleQRImage() {
-        QRUtil.genCircleQRImage(
-            "Hi Circle QR"
+        QRUtil.genQR(
+            "Hi Circle QR",
+            QRUtil.CircleBarcodeImageGenerator
         ).save("circle")
     }
 
@@ -66,14 +68,18 @@ class QRUtilTest {
 
     @Test
     fun testGenRoundRectQRImage() {
-        QRUtil.genRoundRectQRImage("Hi RoundRect QR")
-            .save("round-rect")
+        QRUtil.genQR(
+            "Hi RoundRect QR",
+            QRUtil.RoundRectBarcodeImageGenerator
+        ).save("round-rect")
     }
 
     @Test
     fun testGenLoveQRImage() {
-        QRUtil.genLoveQRImage("Hi Love QR", scale = 30f)
-            .save("love")
+        QRUtil.genQR(
+            "Hi Love QR",
+            QRUtil.LoveBarcodeImageGenerator
+        ).save("love")
     }
 
     @Test
@@ -87,6 +93,7 @@ class QRUtilTest {
         )
 
         QRUtil.genQR(
+            "Hello QR",
             QRImageGenerator(object : QRImageGenerator.QRDrawer {
                 override fun drawBlock(canvas: Canvas, primaryPaint: Paint, x: Int, y: Int) {
                     primaryPaint.color = randomColor()
@@ -99,11 +106,10 @@ class QRUtilTest {
                 }
 
                 override fun drawInLocation(canvas: Canvas, primaryPaint: Paint, x: Int, y: Int) {
-                    canvas.scale(3f,3f)
+                    canvas.scale(3f, 3f)
                     drawBlock(canvas, primaryPaint, x, y)
                 }
-            }),
-            "Hello QR"
+            })
         ).save("random")
     }
 }

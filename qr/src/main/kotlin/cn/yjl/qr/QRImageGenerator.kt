@@ -16,9 +16,9 @@ import org.jetbrains.skia.Paint
  */
 open class QRImageGenerator(
     drawer: QRDrawer = DefaultQRDrawer
-) : AbstractBarcodeImageGenerator<QRImageGenerator.QRDrawer>(drawer) {
+) : BaseBarcodeImageGenerator<QRImageGenerator.QRDrawer>(drawer) {
 
-    override fun draw() {
+    override fun draw(canvas: Canvas, data: BitMatrix) {
 
         val ls = find(data)
 
@@ -31,19 +31,19 @@ open class QRImageGenerator(
                     }
                 }
                 if (data[x, y]) {
-                    saveDrawXY(x.toFloat(), y.toFloat()) {
-                        drawer.drawBlock(canvas, it, x, y)
+                    canvas.saveDrawXY(x.toFloat(), y.toFloat()) {
+                        drawer.drawBlock(this, it, x, y)
                     }
                 }
             }
 
-        ls.forEach {
-            val (x, y) = it
-            saveDrawXY(x.toFloat(), y.toFloat()) {
-                drawer.drawOutLocation(canvas, primaryPaint.makeClone(), x, y)
+        ls.forEach { ps ->
+            val (x, y) = ps
+            canvas.saveDrawXY(x.toFloat(), y.toFloat()) {
+                drawer.drawOutLocation(this, it, x, y)
             }
-            saveDrawXY(x + 2f, y + 2f) {
-                drawer.drawInLocation(canvas, primaryPaint.makeClone(), x + 2, y + 2)
+            canvas.saveDrawXY(x + 2f, y + 2f) {
+                drawer.drawInLocation(this, it, x + 2, y + 2)
             }
         }
     }

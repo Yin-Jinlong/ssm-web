@@ -6,6 +6,6 @@ import cn.yjl.qr.drawer.Drawer
  *
  * @author YJL
  */
-class BaseBarcodeImageGenerator<D : Drawer>(
+open class BaseBarcodeImageGenerator<D : Drawer>(
     drawer: D
 ) : AbstractBarcodeImageGenerator<D>(drawer)
