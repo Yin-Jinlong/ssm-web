@@ -1,7 +1,6 @@
 package cn.yjl.service
 
 import cn.yjl.db.User
-import cn.yjl.resp.ResponseJson
 import cn.yjl.security.token.Token
 
 /**
@@ -17,7 +16,7 @@ interface UserService : Service {
      * @param name 用户名
      * @param pwd 密码
      */
-    fun logon(name: String, pwd: String): ResponseJson
+    fun logon(name: String, pwd: String): User?
 
     /**
      * 登录

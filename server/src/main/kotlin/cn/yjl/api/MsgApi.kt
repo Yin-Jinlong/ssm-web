@@ -9,7 +9,6 @@ import cn.yjl.service.MsgService
 import cn.yjl.validater.NotEmpty
 import cn.yjl.validater.Uid
 import jakarta.servlet.http.HttpServletResponse
-import jakarta.servlet.http.HttpSession
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
@@ -54,7 +53,6 @@ class MsgApi {
         @NotEmpty("msg")
         @RequestParam
         msg: String,
-        session: HttpSession,
         resp: HttpServletResponse
     ): ResponseJson {
         msgService.addMsg(uid, msg)

@@ -59,7 +59,7 @@ enum class RespCode(val code: Int, val msg: String) {
     /**
      * 注册成功
      */
-    USER_LOGON_OK(0, "注册成功"),
+    USER_LOGON_SUCCESS(0, "注册成功"),
 
     /**
      * 用户名已存在

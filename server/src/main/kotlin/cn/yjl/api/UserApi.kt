@@ -3,19 +3,19 @@ package cn.yjl.api
 import cn.yjl.resp.ErrorRespJson
 import cn.yjl.resp.RespCode
 import cn.yjl.resp.ResponseJson
-import cn.yjl.resp.user.UserLoginRespJson
-import cn.yjl.resp.user.UserLogonRespJson
-import cn.yjl.resp.user.UserRespJson
+import cn.yjl.resp.UserRespJson
 import cn.yjl.security.token.Token
 import cn.yjl.security.token.TokenUtil
 import cn.yjl.service.UserService
 import cn.yjl.util.getToken
 import cn.yjl.util.log.getLogger
-import cn.yjl.validater.*
+import cn.yjl.validater.Logid
+import cn.yjl.validater.Pwd
+import cn.yjl.validater.Uid
+import cn.yjl.validater.Uname
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.servlet.http.HttpServletResponse.SC_BAD_REQUEST
-import jakarta.servlet.http.HttpSession
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.validation.annotation.Validated
@@ -56,14 +56,14 @@ class UserApi {
         @Pwd
         @RequestParam
         pwd: String,
-        session: HttpSession,
         resp: HttpServletResponse
-    ): ResponseJson = userService.logon(uname, pwd).apply {
-        if (code == 0)
-            resp.status = SC_BAD_REQUEST
-        else if (this is UserLogonRespJson) {
-            resp.saveToken(user.uid)
+    ): ResponseJson {
+        userService.logon(uname, pwd)?.let {
+            resp.saveToken(it.uid)
+            return UserRespJson.logonResp(it)
         }
+        resp.status = SC_BAD_REQUEST
+        return ErrorRespJson(RespCode.USER_LOGON_UNAME_EXISTS)
     }
 
     fun HttpServletResponse.saveToken(uid: Int) {
@@ -103,7 +103,7 @@ class UserApi {
         user?.let {
             // 存到header里
             resp.saveToken(it.uid)
-            return UserLoginRespJson(RespCode.USER_LOGIN_SUCCESS, it)
+            return UserRespJson.loginResp(it)
         }
         resp.status = SC_BAD_REQUEST
         return ErrorRespJson(RespCode.USER_FAILED_LOGIN)
@@ -119,7 +119,6 @@ class UserApi {
         @Uid
         @RequestParam
         uid: Int,
-        session: HttpSession,
         resp: HttpServletResponse
     ): ResponseJson {
         return ErrorRespJson(RespCode.NOTHING)
