@@ -29,8 +29,10 @@ object TokenUtil {
         return tokenKey.encode(gson.toJson(t))
     }
 
-    inline fun <reified T> decode(base64: String): Token<T>? {
-        kotlin.runCatching {
+    inline fun <reified T> decode(base64: String?): Token<T>? {
+        if (base64.isNullOrBlank())
+            return null
+        runCatching {
             return gson.fromJson(
                 tokenKey.decode(base64),
                 TokenClassType(Token::class.java, T::class.java)

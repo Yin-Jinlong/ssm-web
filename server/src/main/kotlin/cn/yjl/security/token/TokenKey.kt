@@ -37,7 +37,9 @@ class TokenKey {
     /**
      * 暂时放在内存中
      */
-    val salt: ByteArray = SecureRandom().generateSeed(8)
+    final val salt: ByteArray = SecureRandom().generateSeed(8)
+
+    val spec = PBEParameterSpec(salt, 100)
 
     @PostConstruct
     fun init() {
@@ -45,17 +47,16 @@ class TokenKey {
             .generateSecret(
                 PBEKeySpec(pwd.toCharArray())
             )
-        val spec = PBEParameterSpec(salt, 100)
         encodeCipher = Cipher.getInstance(algorithm).apply {
             init(Cipher.ENCRYPT_MODE, key, spec)
         }
-        decodeCipher = Cipher.getInstance(algorithm).apply {
-            init(Cipher.DECRYPT_MODE, key, spec)
-        }
+        decodeCipher = Cipher.getInstance(algorithm)
     }
 
     fun encode(json: String): String = Base64.encode(encodeCipher.doFinal(json.toByteArray()))
 
-    fun decode(base64: String): String = decodeCipher.doFinal(Base64.decode(base64)).decodeToString()
+    fun decode(base64: String): String = decodeCipher.apply {
+        init(Cipher.DECRYPT_MODE, key, spec)
+    }.doFinal(Base64.decode(base64)).decodeToString()
 
 }
