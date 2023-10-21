@@ -41,6 +41,8 @@ class ApiInterceptor : HandlerInterceptor {
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         if (handler is HandlerMethod) {
             handler.handleAnnotation<ShouldLogin> {
+                response.characterEncoding = "UTF-8"
+                response.contentType = "application/json;charset=UTF-8"
                 val token = request.getToken(tokenUtil) ?: return notLogin(response)
                 LOGGER.info("${token.v} >> ${request.requestURI}")
                 // token
@@ -48,8 +50,6 @@ class ApiInterceptor : HandlerInterceptor {
                     return true
                 }
                 response.status = SC_BAD_REQUEST
-                response.characterEncoding = "UTF-8"
-                response.contentType = "application/json;charset=UTF-8"
                 response.writer.println(gson.toJson(ErrorRespJson(RespCode.USER_NOT_LOGIN)))
                 return false
             }
