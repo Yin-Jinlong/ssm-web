@@ -3,7 +3,6 @@ package cn.yjl.interceptor
 import cn.yjl.annotations.ShouldLogin
 import cn.yjl.resp.ErrorRespJson
 import cn.yjl.resp.RespCode
-import cn.yjl.security.token.TokenUtil
 import cn.yjl.util.getToken
 import cn.yjl.util.log.getLogger
 import cn.yjl.util.now
@@ -29,9 +28,6 @@ class ApiInterceptor : HandlerInterceptor {
     @Autowired
     private lateinit var gson: Gson
 
-    @Autowired
-    private lateinit var tokenUtil: TokenUtil
-
     private fun notLogin(resp: HttpServletResponse): Boolean {
         resp.status = SC_BAD_REQUEST
         resp.writer.println(gson.toJson(ErrorRespJson(RespCode.USER_NOT_LOGIN)))
@@ -43,7 +39,7 @@ class ApiInterceptor : HandlerInterceptor {
             handler.handleAnnotation<ShouldLogin> {
                 response.characterEncoding = "UTF-8"
                 response.contentType = "application/json;charset=UTF-8"
-                val token = request.getToken(tokenUtil) ?: return notLogin(response)
+                val token = request.getToken() ?: return notLogin(response)
                 LOGGER.info("${token.v} >> ${request.requestURI}")
                 // token
                 if (now() < token.time()) {

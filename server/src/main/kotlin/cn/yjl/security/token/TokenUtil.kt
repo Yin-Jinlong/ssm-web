@@ -3,9 +3,6 @@ package cn.yjl.security.token
 import cn.yjl.util.log.getLogger
 import cn.yjl.util.now
 import com.google.gson.Gson
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
-import org.springframework.stereotype.Component
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
@@ -13,12 +10,10 @@ import java.lang.reflect.Type
  *
  * @author YJL
  */
-@Component
-class TokenUtil {
+object TokenUtil {
 
     val LOGGER = getLogger()
 
-    @Autowired
     lateinit var tokenKey: TokenKey
 
     /**
@@ -26,11 +21,15 @@ class TokenUtil {
      */
     val gson = Gson()
 
+    fun init(key: TokenKey) {
+        tokenKey = key
+    }
+
     fun <T> encode(t: Token<T>): String {
         return tokenKey.encode(gson.toJson(t))
     }
 
-    final inline fun <reified T> decode(base64: String): Token<T>? {
+    inline fun <reified T> decode(base64: String): Token<T>? {
         kotlin.runCatching {
             return gson.fromJson(
                 tokenKey.decode(base64),

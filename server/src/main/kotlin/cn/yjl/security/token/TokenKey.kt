@@ -1,6 +1,5 @@
 package cn.yjl.security.token
 
-import cn.yjl.annotations.YamlPropertySource
 import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -21,7 +20,6 @@ import kotlin.io.encoding.ExperimentalEncodingApi
  */
 @Component
 @OptIn(ExperimentalEncodingApi::class)
-@YamlPropertySource("classpath:application-token.yaml")
 class TokenKey {
 
     lateinit var key: Key

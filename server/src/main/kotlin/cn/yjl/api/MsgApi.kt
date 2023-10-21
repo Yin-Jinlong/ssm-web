@@ -6,7 +6,7 @@ import cn.yjl.resp.RespCode
 import cn.yjl.resp.ResponseJson
 import cn.yjl.resp.msg.MsgRespJson
 import cn.yjl.service.MsgService
-import cn.yjl.service.util.getToken
+import cn.yjl.util.getToken
 import cn.yjl.validater.NotEmpty
 import cn.yjl.validater.Uid
 import jakarta.servlet.http.HttpServletRequest
@@ -89,7 +89,7 @@ class MsgApi : Api() {
         req: HttpServletRequest,
         resp: HttpServletResponse
     ): ResponseJson {
-        getToken(req)?.let { uid ->
+        req.getToken()?.let { uid ->
             msgService.deleteMsg(id, uid.v)
             return ErrorRespJson(RespCode.OK)
         }

@@ -5,8 +5,9 @@ import cn.yjl.resp.RespCode
 import cn.yjl.resp.ResponseJson
 import cn.yjl.resp.UserRespJson
 import cn.yjl.security.token.Token
+import cn.yjl.security.token.TokenUtil
 import cn.yjl.service.UserService
-import cn.yjl.service.util.getToken
+import cn.yjl.util.getToken
 import cn.yjl.util.log.getLogger
 import cn.yjl.validater.Logid
 import cn.yjl.validater.Pwd
@@ -63,7 +64,7 @@ class UserApi : Api() {
     }
 
     fun HttpServletResponse.saveToken(uid: Int) {
-        setHeader(AUTHORIZATION, tokenUtil.encode(Token(uid)))
+        setHeader(AUTHORIZATION, TokenUtil.encode(Token(uid)))
     }
 
     /**
@@ -84,7 +85,7 @@ class UserApi : Api() {
         req: HttpServletRequest,
         resp: HttpServletResponse
     ): ResponseJson {
-        val token = getToken(req)
+        val token = req.getToken()
 
         val user = userService.loginByToken(token)?.apply {
             LOGGER.info("login by token :$uid")
