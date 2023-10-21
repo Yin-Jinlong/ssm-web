@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@MapperScan("cn.yjl.db.dao")
+@MapperScan("cn.yjl.dao")
 @SpringBootApplication(scanBasePackages = ["cn.yjl"], exclude = [GsonAutoConfiguration::class])
 class SsmWebApplication {
 

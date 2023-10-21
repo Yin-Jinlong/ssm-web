@@ -1,4 +1,4 @@
-package cn.yjl.db.dao
+package cn.yjl.dao
 
 import cn.yjl.annotations.ServerUse
 import cn.yjl.db.User

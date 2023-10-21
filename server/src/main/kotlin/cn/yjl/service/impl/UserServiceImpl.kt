@@ -1,7 +1,7 @@
 package cn.yjl.service.impl
 
 import cn.yjl.db.User
-import cn.yjl.db.dao.UserDao
+import cn.yjl.dao.UserDao
 import cn.yjl.security.sha1_512
 import cn.yjl.security.token.Token
 import cn.yjl.security.token.isAlive

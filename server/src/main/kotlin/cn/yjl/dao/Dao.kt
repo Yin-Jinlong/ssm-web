@@ -1,4 +1,4 @@
-package cn.yjl.db.dao
+package cn.yjl.dao
 
 /**
  * Dao层

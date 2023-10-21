@@ -1,7 +1,7 @@
 package cn.yjl.service.impl
 
 import cn.yjl.db.Msg
-import cn.yjl.db.dao.MsgDao
+import cn.yjl.dao.MsgDao
 import cn.yjl.service.BaseService
 import cn.yjl.service.MsgService
 import cn.yjl.service.util.assertRowChange
