@@ -37,6 +37,7 @@
             <top-tooltip
                     :content="disableSubmit?'请先完成表单！':'提交'">
                 <el-button
+                        :loading="loading"
                         :disabled="disableSubmit"
                         @click.stop="onsubmit"
                         type="primary"><span>完成</span></el-button>
@@ -60,7 +61,7 @@ import {User} from "@types";
 
 const props = defineProps<Props>()
 
-const user=globalStatuser.useRef<User|null>('user',null)
+const user = globalStatuser.useRef<User | null>('user', null)
 
 const emits = defineEmits(['onAdd'])
 
@@ -74,6 +75,8 @@ const data = reactive<FormData>({
 
 const formRules = reactive(formRulesDefine)
 
+const loading = ref(false)
+
 watch(data, () => {
     form.value!.validate((valid: boolean) => {
         disableSubmit.value = !valid
@@ -85,8 +88,12 @@ watch(data, () => {
 function onsubmit() {
     form.value!.validate((valid: boolean) => {
         if (valid) {
-            emits('onAdd', data.msg)
-            data.msg = ''
+            loading.value = true
+            emits('onAdd', data.msg, (ok: boolean) => {
+                loading.value = false
+                if (ok)
+                    data.msg = ''
+            })
         } else {
             return false
         }

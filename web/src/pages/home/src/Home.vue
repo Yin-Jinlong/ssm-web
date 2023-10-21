@@ -44,7 +44,7 @@
     </el-scrollbar>
     <add-msg-dialog
             v-model="showAddDialog"
-            @on-add="(v : string) =>onAdd(v)"/>
+            @on-add="onAdd"/>
 </template>
 
 <style lang="scss" scoped>
@@ -278,7 +278,7 @@ function add() {
     }
 }
 
-function onAdd(v: string) {
+function onAdd(v: string, ok: (ok: boolean) => void) {
     if (!user.value)
         return
     axios.post('/api/msg/send', `uid=${user.value.uid}&msg=${v}`, {
@@ -293,10 +293,13 @@ function onAdd(v: string) {
                 img: '/img/avatar.svg',
             })
             showAddDialog.value = false
+            ok(true)
         } else {
+            ok(false)
             ElMessage.error(res.data.msg)
         }
     }).catch(err => {
+        ok(false)
         ElMessage.error(getErrorMessage(err))
     })
 }
