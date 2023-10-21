@@ -1,16 +1,15 @@
 package cn.yjl.api
 
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import cn.yjl.security.token.TokenUtil
+import org.springframework.beans.factory.annotation.Autowired
 
 /**
- * 测试Api
  *
  * @author YJL
  */
-@RestController
-@RequestMapping("/api")
-class Api {
-    @RequestMapping("/test")
-    fun test(): String = "Hello World"
+abstract class Api {
+
+    @Autowired
+    internal lateinit var tokenUtil: TokenUtil
+
 }

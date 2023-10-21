@@ -1,9 +1,8 @@
 package cn.yjl.dao
 
+import cn.yjl.annotations.ServerUse
 import cn.yjl.db.Msg
-import org.apache.ibatis.annotations.Insert
-import org.apache.ibatis.annotations.Mapper
-import org.apache.ibatis.annotations.Select
+import org.apache.ibatis.annotations.*
 import org.springframework.stereotype.Repository
 
 /**
@@ -30,12 +29,20 @@ interface MsgDao : Dao {
      * @param msg 消息内容
      */
     @Insert("insert into leave_words(uid, msg) VALUES (#{uid},#{msg})")
-    fun insertMsg(uid: Int, msg: String): Int
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
+    fun insertMsg(msg: Msg):Int
 
     /**
      * 获取小于id的消息count个
      */
     @Select("select id,name,uid, msg, time from leave_words natural join user where id < #{id} order by id desc limit #{count}")
     fun getMsgBeforeIdLimitCount(id: Int, count: Int): Array<Msg>
+
+    @Delete("delete from leave_words where id = #{id} and uid = #{uid}")
+    fun delete(id: Int, uid: Int): Int
+
+    @ServerUse
+    @Select("select id,name,uid, msg, time  from leave_words natural join user where id = #{id}")
+    fun getMsgById(id: Int): Msg?
 
 }

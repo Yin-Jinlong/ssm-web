@@ -20,11 +20,13 @@ interface MsgService : Service {
      * @param uid 用户ID
      * @param msg 消息内容
      */
-    fun addMsg(uid: Int, msg: String)
+    fun addMsg(uid: Int, msg: String): Msg?
 
     /**
      * 获取小于id（以前的）的消息
      */
     fun getMsgBefore(id: Int, count: Int): Array<Msg>
+
+    fun deleteMsg(id: Int, uid: Int)
 
 }

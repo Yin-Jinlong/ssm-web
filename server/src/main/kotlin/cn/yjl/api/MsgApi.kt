@@ -6,9 +6,12 @@ import cn.yjl.resp.RespCode
 import cn.yjl.resp.ResponseJson
 import cn.yjl.resp.msg.MsgRespJson
 import cn.yjl.service.MsgService
+import cn.yjl.service.util.getToken
 import cn.yjl.validater.NotEmpty
 import cn.yjl.validater.Uid
+import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpServletResponse.SC_BAD_REQUEST
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
@@ -21,7 +24,7 @@ import org.springframework.web.bind.annotation.*
 @Validated
 @RestController
 @RequestMapping("/api/msg", method = [RequestMethod.GET])
-class MsgApi {
+class MsgApi : Api() {
 
     /**
      * 消息服务
@@ -55,8 +58,12 @@ class MsgApi {
         msg: String,
         resp: HttpServletResponse
     ): ResponseJson {
-        msgService.addMsg(uid, msg)
-        return ErrorRespJson(RespCode.USER_MSG_SEND_OK)
+        val m = msgService.addMsg(uid, msg)
+        if (m == null) {
+            resp.status = SC_BAD_REQUEST
+            return ErrorRespJson(RespCode.USER_MSG_SEND_FAILED)
+        }
+        return MsgRespJson(arrayOf(m))
     }
 
     /**
@@ -72,6 +79,21 @@ class MsgApi {
         @RequestParam
         count: Int,
         resp: HttpServletResponse
-    ): ResponseJson = MsgRespJson(msgService.getMsgBefore(lastId?: Int.MAX_VALUE, count))
+    ): ResponseJson = MsgRespJson(msgService.getMsgBefore(lastId ?: Int.MAX_VALUE, count))
 
+    @ShouldLogin
+    @PostMapping("/delete")
+    fun delete(
+        @RequestParam
+        id: Int,
+        req: HttpServletRequest,
+        resp: HttpServletResponse
+    ): ResponseJson {
+        getToken(req)?.let { uid ->
+            msgService.deleteMsg(id, uid.v)
+            return ErrorRespJson(RespCode.OK)
+        }
+        resp.status = SC_BAD_REQUEST
+        return ErrorRespJson(RespCode.USER_NOT_LOGIN)
+    }
 }

@@ -1,7 +1,6 @@
 package cn.yjl.test.service
 
 import cn.yjl.db.User
-import cn.yjl.resp.user.UserLogonRespJson
 import cn.yjl.security.sha1_512
 import cn.yjl.service.UserService
 import cn.yjl.ssmweb.SsmWebApplication
@@ -38,10 +37,7 @@ class UserServiceTest {
     fun testLogon() {
         // TODO 使用前请先删除原有用户!!!
         val r = userService.logon("test1", "666666")
-        if (r is UserLogonRespJson) {
-            r.user.name sameAs "test1"
-        } else
-            throw IllegalStateException("logon failed")
+        r?.name sameAs "test1"
     }
 
 }

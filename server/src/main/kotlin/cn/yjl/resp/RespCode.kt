@@ -50,6 +50,7 @@ enum class RespCode(val code: Int, val msg: String) {
      * 提交消息成功
      */
     USER_MSG_SEND_OK(0, "提交成功"),
+    USER_MSG_SEND_FAILED(300, "提交失败"),
 
     /**
      * 用户未登录

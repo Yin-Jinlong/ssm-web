@@ -228,6 +228,23 @@ function load() {
 }
 
 function del(i: number) {
+    if (!data || data.length == 0 || !data[i])
+        return
+    axios.post('/api/msg/delete', `id=${data[i]!!.id}`, {
+        headers: {
+            "Authorization": token.value
+        }
+    }).then(res => {
+        if (res.data.code == 0) {
+            data.splice(i, 1)
+            ElMessage.success("删除成功")
+        } else {
+            ElMessage.error(res.data.msg)
+        }
+    }).catch(err => {
+        ElMessage.error(getErrorMessage(err))
+    })
+    console.log(data[i])
     // data.splice(i, 1)
 }
 
@@ -264,24 +281,24 @@ function add() {
 function onAdd(v: string) {
     if (!user.value)
         return
-    axios.post('/api/msg/send', `uid=${user.value.uid}&msg=${v}`).then((res) => {
+    axios.post('/api/msg/send', `uid=${user.value.uid}&msg=${v}`, {
+        headers: {
+            "Authorization": token.value
+        }
+    }).then((res) => {
         if (res.data.code == '0') {
             loading.value = true
+            data.splice(0, 0, {
+                ...res.data.data[0],
+                img: '/img/avatar.svg',
+            })
+            showAddDialog.value = false
         } else {
             ElMessage.error(res.data.msg)
         }
     }).catch(err => {
         ElMessage.error(getErrorMessage(err))
     })
-    data.splice(0, 0, {
-        id: 9999,
-        uid: user.value?.uid,
-        name: user.value?.name,
-        time: Date.now(),
-        img: '/img/avatar.svg',
-        msg: v
-    })
-    showAddDialog.value = false
 }
 
 function beforeEnter(el: Element) {

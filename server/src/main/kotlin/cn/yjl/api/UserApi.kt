@@ -5,9 +5,8 @@ import cn.yjl.resp.RespCode
 import cn.yjl.resp.ResponseJson
 import cn.yjl.resp.UserRespJson
 import cn.yjl.security.token.Token
-import cn.yjl.security.token.TokenUtil
 import cn.yjl.service.UserService
-import cn.yjl.util.getToken
+import cn.yjl.service.util.getToken
 import cn.yjl.util.log.getLogger
 import cn.yjl.validater.Logid
 import cn.yjl.validater.Pwd
@@ -29,12 +28,9 @@ import org.springframework.web.bind.annotation.*
 @Validated
 @RestController
 @RequestMapping("/api/user", method = [RequestMethod.POST, RequestMethod.GET])
-class UserApi {
+class UserApi : Api() {
 
     private val LOGGER = getLogger()
-
-    @Autowired
-    private lateinit var tokenUtil: TokenUtil
 
     /**
      * 用户服务
@@ -88,7 +84,7 @@ class UserApi {
         req: HttpServletRequest,
         resp: HttpServletResponse
     ): ResponseJson {
-        val token = req.getToken(tokenUtil)
+        val token = getToken(req)
 
         val user = userService.loginByToken(token)?.apply {
             LOGGER.info("login by token :$uid")
