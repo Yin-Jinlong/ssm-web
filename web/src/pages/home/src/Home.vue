@@ -26,11 +26,11 @@
                         @before-leave="beforeLeave">
                     <div
                             v-for="(v,i) in data"
-                            :key="i"
+                            :key="v.lid"
                             :data-index="i"
                             style="margin: 1em 0;">
                         <aynu-card
-                                :data='v'
+                                :data='v.data'
                                 :on-delete="() =>{del(i)} "
                                 class="aynu-card"/>
                     </div>
@@ -75,10 +75,31 @@ const loadCount = 2
 
 const token = globalStatuser.useRef<string | null>('token', null)
 const user = globalStatuser.useRef<User | null>('user', null)
-let data = reactive<(AynuCardData | null)[]>([])
+
+let lid = 0
+
+interface CardData {
+    lid: number
+    data?: AynuCardData | null
+}
+
+let data = reactive<(CardData)[]>([])
 
 function catchError(err: any) {
     ElMessage.error(getErrorMessage(err))
+}
+
+function warpData(m: AynuCardData | null = null): CardData {
+    lid++
+    if (m) {
+        return {
+            lid: lid,
+            data: m
+        }
+    }
+    return {
+        lid: lid
+    }
 }
 
 async function postLogin(logid: string | undefined = undefined, pwd: string | undefined = undefined): Promise<User> {
@@ -189,7 +210,7 @@ function load() {
     if (noMore.value)
         return;
     for (let i = 0; i < loadCount; i++) {
-        data.push(null)
+        data.push(warpData())
     }
     let args = ''
     if (lastId)
@@ -203,7 +224,7 @@ function load() {
                 ...item,
             };
             setTimeout(() => {
-                data[data.length - loadCount + i] = v
+                data[data.length - loadCount + i].data = v
             }, minWaitTime + cardLoadedWaitTime * (i + 1))
             if (v.id < (lastId ?? Number.MAX_VALUE)) {
                 lastId = v.id
@@ -221,7 +242,6 @@ function load() {
                 load()
         }, minWaitTime + cardLoadedWaitTime * (ms.length + 1))
 
-
     }).catch(err => {
         ElMessage.error("获取数据失败: " + getErrorMessage(err))
     })
@@ -230,7 +250,7 @@ function load() {
 function del(i: number) {
     if (!data || data.length == 0 || !data[i])
         return
-    axios.post('/api/msg/delete', `id=${data[i]!!.id}`, {
+    axios.post('/api/msg/delete', `id=${data[i].data!!.id}`, {
         headers: {
             "Authorization": token.value
         }
@@ -244,8 +264,6 @@ function del(i: number) {
     }).catch(err => {
         ElMessage.error(getErrorMessage(err))
     })
-    console.log(data[i])
-    // data.splice(i, 1)
 }
 
 function log() {
@@ -288,10 +306,11 @@ function onAdd(v: string, ok: (ok: boolean) => void) {
     }).then((res) => {
         if (res.data.code == '0') {
             loading.value = true
-            data.splice(0, 0, {
-                ...res.data.data[0],
-                img: '/img/avatar.svg',
-            })
+            data.splice(0, 0,
+                warpData({
+                    ...res.data.data[0],
+                    img: '/img/avatar.svg',
+                }))
             showAddDialog.value = false
             ok(true)
         } else {
