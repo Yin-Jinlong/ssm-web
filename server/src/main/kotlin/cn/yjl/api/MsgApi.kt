@@ -7,6 +7,7 @@ import cn.yjl.resp.ResponseJson
 import cn.yjl.resp.msg.MsgRespJson
 import cn.yjl.service.MsgService
 import cn.yjl.util.getToken
+import cn.yjl.util.log.getLogger
 import cn.yjl.validater.NotEmpty
 import cn.yjl.validater.Uid
 import jakarta.servlet.http.HttpServletRequest
@@ -25,6 +26,8 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/msg", method = [RequestMethod.GET])
 class MsgApi : Api() {
+
+    val LOGGER = getLogger()
 
     /**
      * 消息服务
@@ -63,6 +66,7 @@ class MsgApi : Api() {
             resp.status = SC_BAD_REQUEST
             return ErrorRespJson(RespCode.USER_MSG_SEND_FAILED)
         }
+        LOGGER.info("$uid send:$msg")
         return MsgRespJson(arrayOf(m))
     }
 
@@ -91,6 +95,7 @@ class MsgApi : Api() {
     ): ResponseJson {
         req.getToken()?.let { uid ->
             msgService.deleteMsg(id, uid.v)
+            LOGGER.info("$uid delete:$id")
             return ErrorRespJson(RespCode.OK)
         }
         resp.status = SC_BAD_REQUEST
