@@ -7,5 +7,5 @@ package cn.yjl.annotations
  *
  *  @author YJL
  */
-@Target(AnnotationTarget.FUNCTION)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
 annotation class ShouldLogin

@@ -3,9 +3,9 @@ package cn.yjl.interceptor
 import cn.yjl.annotations.ShouldLogin
 import cn.yjl.resp.ErrorRespJson
 import cn.yjl.resp.RespCode
+import cn.yjl.security.token.isAlive
 import cn.yjl.util.getToken
 import cn.yjl.util.log.getLogger
-import cn.yjl.util.now
 import com.google.gson.Gson
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 /**
  * Api 拦截器
@@ -35,26 +38,27 @@ class ApiInterceptor : HandlerInterceptor {
     }
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        if (handler is HandlerMethod) {
-            handler.handleAnnotation<ShouldLogin> {
-                response.characterEncoding = "UTF-8"
-                response.contentType = "application/json;charset=UTF-8"
-                val token = request.getToken() ?: return notLogin(response)
-                LOGGER.info("${token.v} >> ${request.requestURI}")
-                // token
-                if (now() < token.time()) {
-                    return true
-                }
-                response.status = SC_BAD_REQUEST
-                response.writer.println(gson.toJson(ErrorRespJson(RespCode.USER_NOT_LOGIN)))
-                return false
+        if (handler !is HandlerMethod)
+            return true
+        handler.handleAnnotation<ShouldLogin> {
+            response.characterEncoding = "UTF-8"
+            response.contentType = "application/json;charset=UTF-8"
+            val token = request.getToken() ?: return notLogin(response)
+            LOGGER.info("${token.v} >> ${request.requestURI}")
+            // token
+            if (token.isAlive()) {
+                return true
             }
+            return notLogin(response)
         }
-        return true
     }
 
+    @OptIn(ExperimentalContracts::class)
     private inline fun <reified T : Annotation> HandlerMethod.handleAnnotation(block: (anno: T) -> Unit): HandlerMethod {
-        method.getAnnotation(T::class.java)?.let(block)
+        contract {
+            callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+        }
+        method.declaringClass.getAnnotation(T::class.java) ?: method.getAnnotation(T::class.java)?.let(block)
         return this
     }
 }
