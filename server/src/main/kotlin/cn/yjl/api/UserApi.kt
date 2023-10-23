@@ -87,8 +87,10 @@ class UserApi : Api() {
     ): ResponseJson {
         val token = req.getToken()
 
-        val user = userService.loginByToken(token)?.apply {
-            LOGGER.info("login by token :$uid")
+        val user = token?.let {
+            userService.loginByToken(it)?.apply {
+                LOGGER.info("login by token :$uid")
+            }
         } ?: if (logid != null && pwd != null) {
             LOGGER.info("login:$logid - pwd: $pwd")
             userService.login(logid, pwd)

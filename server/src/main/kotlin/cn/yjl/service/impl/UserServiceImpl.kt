@@ -42,8 +42,8 @@ class UserServiceImpl : BaseService(), UserService {
             throw IllegalArgumentException("No format way to login:$logid $pwd")
     }
 
-    override fun loginByToken(token: Token<Int>?): User? {
-        if (token == null || !token.isAlive())
+    override fun loginByToken(token: Token<Int>): User? {
+        if (!token.isAlive())
             return null
         return dao.getUserByUid(token.v)
     }

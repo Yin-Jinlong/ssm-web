@@ -26,7 +26,7 @@ interface UserService : Service {
      */
     fun login(logid: String, pwd: String): User?
 
-    fun loginByToken(token: Token<Int>?): User?
+    fun loginByToken(token: Token<Int>): User?
 
     /**
      * 获取用户

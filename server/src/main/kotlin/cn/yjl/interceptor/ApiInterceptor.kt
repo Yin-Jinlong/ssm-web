@@ -3,7 +3,6 @@ package cn.yjl.interceptor
 import cn.yjl.annotations.ShouldLogin
 import cn.yjl.resp.ErrorRespJson
 import cn.yjl.resp.RespCode
-import cn.yjl.security.token.isAlive
 import cn.yjl.util.getToken
 import cn.yjl.util.log.getLogger
 import com.google.gson.Gson
@@ -45,12 +44,8 @@ class ApiInterceptor : HandlerInterceptor {
             response.contentType = "application/json;charset=UTF-8"
             val token = request.getToken() ?: return notLogin(response)
             LOGGER.info("${token.v} >> ${request.requestURI}")
-            // token
-            if (token.isAlive()) {
-                return true
-            }
-            return notLogin(response)
         }
+        return true
     }
 
     @OptIn(ExperimentalContracts::class)
