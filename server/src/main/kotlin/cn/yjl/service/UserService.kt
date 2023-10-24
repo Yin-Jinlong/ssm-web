@@ -2,6 +2,7 @@ package cn.yjl.service
 
 import cn.yjl.db.User
 import cn.yjl.security.token.Token
+import cn.yjl.service.exception.ServiceException
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -18,6 +19,7 @@ interface UserService : Service {
      * @param name 用户名
      * @param pwd 密码
      */
+    @Transactional(rollbackFor = [ServiceException::class])
     fun logon(name: String, pwd: String): User?
 
     /**
