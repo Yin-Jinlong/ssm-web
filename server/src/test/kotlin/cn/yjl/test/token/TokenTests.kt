@@ -15,16 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired
 @SSMTest([SsmWebApplication::class])
 class TokenTests {
 
-    @Autowired
-    lateinit var tokenUtil: TokenUtil
-
     @Test
     fun testEncodeDecode() {
         val tokenObj = 666
         val src = Token(tokenObj)
-        val token = tokenUtil.encode(src)
+        val token = TokenUtil.encode(src)
         println(token)
-        val r = tokenUtil.decode<Int>(token)
+        val r = TokenUtil.decode<Int>(token)
         println(r)
         r sameAs src
     }
