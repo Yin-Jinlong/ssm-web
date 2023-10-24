@@ -5,7 +5,7 @@ import cn.yjl.db.Msg
 import cn.yjl.service.BaseService
 import cn.yjl.service.MsgService
 import cn.yjl.service.exception.AddMsgException
-import cn.yjl.service.util.assertRowChange
+import cn.yjl.service.exception.DeleteMsgException
 import cn.yjl.service.util.assertRowChangeError
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
@@ -39,8 +39,8 @@ class MsgServiceImpl : BaseService(), MsgService {
     }
 
     override fun deleteMsg(id: Int, uid: Int) {
-        assertRowChange(dao.delete(id, uid)) {
-            "删除失败：$id uid:$uid"
+        assertRowChangeError(dao.delete(id, uid)) {
+            DeleteMsgException("删除失败：$id uid:$uid")
         }
     }
 }

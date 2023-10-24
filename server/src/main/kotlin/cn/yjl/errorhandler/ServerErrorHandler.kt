@@ -3,8 +3,9 @@ package cn.yjl.errorhandler
 import cn.yjl.resp.ErrorRespJson
 import cn.yjl.resp.RespCode
 import cn.yjl.resp.ResponseJson
-import cn.yjl.service.ServiceException
 import cn.yjl.service.exception.AddMsgException
+import cn.yjl.service.exception.DeleteMsgException
+import cn.yjl.service.exception.ServiceException
 import cn.yjl.util.log.getLogger
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.core.annotation.Order
@@ -39,13 +40,16 @@ class ServerErrorHandler {
         return ErrorRespJson(RespCode.SERVER_ERROR)
     }
 
+    private fun serverError(msg: String) = ErrorRespJson(RespCode.SERVER_ERROR.code, msg)
+
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(ServiceException::class)
     fun handleServiceException(e: ServiceException, resp: HttpServletResponse): ResponseJson {
+        LOGGER.info(e.message)
         return when (e) {
-            is AddMsgException -> {
-                ErrorRespJson(RespCode.SERVER_ERROR.code, "添加失败！")
-            }
+            is AddMsgException -> serverError("添加失败！")
+
+            is DeleteMsgException -> serverError("删除失败！")
 
             else -> handleAllException(e, resp)
         }

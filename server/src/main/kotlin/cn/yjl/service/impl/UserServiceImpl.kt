@@ -6,7 +6,7 @@ import cn.yjl.security.sha1_512
 import cn.yjl.security.token.Token
 import cn.yjl.security.token.isAlive
 import cn.yjl.service.BaseService
-import cn.yjl.service.ServiceException
+import cn.yjl.service.exception.ServiceException
 import cn.yjl.service.UserService
 import cn.yjl.validater.Uid
 import cn.yjl.validater.Uname

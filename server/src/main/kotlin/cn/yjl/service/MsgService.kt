@@ -2,6 +2,8 @@ package cn.yjl.service
 
 import cn.yjl.db.Msg
 import cn.yjl.service.exception.AddMsgException
+import cn.yjl.service.exception.DeleteMsgException
+import cn.yjl.service.exception.ServiceException
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -30,6 +32,7 @@ interface MsgService : Service {
      */
     fun getMsgBefore(id: Int, count: Int): Array<Msg>
 
+    @Transactional(rollbackFor = [DeleteMsgException::class])
     fun deleteMsg(id: Int, uid: Int)
 
 }

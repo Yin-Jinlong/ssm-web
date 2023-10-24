@@ -1,4 +1,4 @@
-package cn.yjl.service
+package cn.yjl.service.exception
 
 /**
  *  服务器异常

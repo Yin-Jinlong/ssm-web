@@ -4,7 +4,7 @@ package cn.yjl.service.exception
  *
  * @author YJL
  */
-class AddMsgException(
+class DeleteMsgException(
     msg: String,
     cause: Throwable? = null
 ) : ServiceException(msg, cause)
