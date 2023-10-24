@@ -3,6 +3,8 @@ package cn.yjl.errorhandler
 import cn.yjl.resp.ErrorRespJson
 import cn.yjl.resp.RespCode
 import cn.yjl.resp.ResponseJson
+import cn.yjl.service.ServiceException
+import cn.yjl.service.exception.AddMsgException
 import cn.yjl.util.log.getLogger
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.core.annotation.Order
@@ -27,7 +29,7 @@ class ServerErrorHandler {
      */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Throwable::class)
-    fun handleValidationException(e: Throwable, resp: HttpServletResponse): ResponseJson {
+    fun handleAllException(e: Throwable, resp: HttpServletResponse): ResponseJson {
         if (e.cause == null)
             LOGGER.severe(e.message)
         else
@@ -35,6 +37,18 @@ class ServerErrorHandler {
         LOGGER.severe(e.stackTraceToString())
         resp.status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR
         return ErrorRespJson(RespCode.SERVER_ERROR)
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(ServiceException::class)
+    fun handleServiceException(e: ServiceException, resp: HttpServletResponse): ResponseJson {
+        return when (e) {
+            is AddMsgException -> {
+                ErrorRespJson(RespCode.SERVER_ERROR.code, "添加失败！")
+            }
+
+            else -> handleAllException(e, resp)
+        }
     }
 
 }

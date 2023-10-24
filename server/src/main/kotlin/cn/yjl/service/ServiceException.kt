@@ -5,7 +5,7 @@ package cn.yjl.service
  *
  *  @author YJL
  */
-class ServiceException(
+open class ServiceException(
     msg: String,
     cause: Throwable? = null
 ) : RuntimeException(msg, cause)

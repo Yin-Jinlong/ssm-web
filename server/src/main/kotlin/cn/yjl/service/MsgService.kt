@@ -1,6 +1,8 @@
 package cn.yjl.service
 
 import cn.yjl.db.Msg
+import cn.yjl.service.exception.AddMsgException
+import org.springframework.transaction.annotation.Transactional
 
 /**
  * 消息服务
@@ -20,6 +22,7 @@ interface MsgService : Service {
      * @param uid 用户ID
      * @param msg 消息内容
      */
+    @Transactional(rollbackFor = [AddMsgException::class])
     fun addMsg(uid: Int, msg: String): Msg?
 
     /**

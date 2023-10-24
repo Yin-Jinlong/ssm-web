@@ -4,7 +4,9 @@ import cn.yjl.dao.MsgDao
 import cn.yjl.db.Msg
 import cn.yjl.service.BaseService
 import cn.yjl.service.MsgService
+import cn.yjl.service.exception.AddMsgException
 import cn.yjl.service.util.assertRowChange
+import cn.yjl.service.util.assertRowChangeError
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
@@ -26,8 +28,8 @@ class MsgServiceImpl : BaseService(), MsgService {
 
     override fun addMsg(uid: Int, msg: String): Msg? {
         val m = Msg(0, "", uid, msg, Timestamp(0))
-        assertRowChange(dao.insertMsg(m)) {
-            "添加失败：$uid msg:$msg"
+        assertRowChangeError(dao.insertMsg(m)) {
+            AddMsgException("添加失败：$uid msg:$msg")
         }
         return dao.getMsgById(m.id)
     }

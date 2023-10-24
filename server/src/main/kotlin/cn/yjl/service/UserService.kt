@@ -2,12 +2,14 @@ package cn.yjl.service
 
 import cn.yjl.db.User
 import cn.yjl.security.token.Token
+import org.springframework.transaction.annotation.Transactional
 
 /**
  * 用户服务
  *
  * @author YJL
  */
+@Transactional
 interface UserService : Service {
 
     /**
