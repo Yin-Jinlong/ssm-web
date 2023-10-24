@@ -6,6 +6,7 @@ import cn.yjl.resp.ResponseJson
 import cn.yjl.service.exception.AddMsgException
 import cn.yjl.service.exception.DeleteMsgException
 import cn.yjl.service.exception.ServiceException
+import cn.yjl.service.exception.ServiceExceptionWithJson
 import cn.yjl.util.log.getLogger
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.core.annotation.Order
@@ -50,6 +51,8 @@ class ServerErrorHandler {
             is AddMsgException -> serverError("添加失败！")
 
             is DeleteMsgException -> serverError("删除失败！")
+
+            is ServiceExceptionWithJson -> e.json
 
             else -> handleAllException(e, resp)
         }

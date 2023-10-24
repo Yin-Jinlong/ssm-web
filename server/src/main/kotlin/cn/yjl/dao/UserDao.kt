@@ -5,7 +5,9 @@ import cn.yjl.db.User
 import org.apache.ibatis.annotations.Insert
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Select
-import org.springframework.stereotype.Repository
+import org.apache.ibatis.annotations.SelectKey
+import org.springframework.dao.DuplicateKeyException
+import org.springframework.transaction.annotation.Transactional
 
 /**
  * 用户表操作接口
@@ -13,17 +15,21 @@ import org.springframework.stereotype.Repository
  * @author YJL
  */
 @Mapper
-@Repository
+@Transactional
 interface UserDao : Dao {
 
     /**
      * 新用户
      *
-     * @param name 用户名
-     * @param pwdsha 密码sha
+     * @param user 用户
      */
-    @Insert("insert into user(name,pwd) values(#{name},#{pwdsha})")
-    fun newUser(name: String, pwdsha: String): Int
+    @Insert("insert into user(name, pwd) values(#{name},#{pwd})")
+    @SelectKey(
+        statement = ["select uid from user where name=#{name}"],
+        before = false, keyProperty = "uid", keyColumn = "uid", resultType = Int::class
+    )
+    @Transactional(rollbackFor = [DuplicateKeyException::class])
+    fun newUser(user: User): Int
 
     /**
      * 通过用户名和密码查询用户

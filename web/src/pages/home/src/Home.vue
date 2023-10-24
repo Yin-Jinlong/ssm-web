@@ -159,8 +159,8 @@ function postLogon(name: string, pwd: string): Promise<User> {
     })
 }
 
-function logon(u: { name: string, pwd1: string }, callback: (ok: boolean) => void) {
-    postLogon(u.name, u.pwd1).then((u) => {
+function logon(u: { logid: string, pwd1: string }, callback: (ok: boolean) => void) {
+    postLogon(u.logid, u.pwd1).then((u) => {
         loginSuccess(u)
         ElMessage.success("登录成功")
         showLoginDialog.value = false

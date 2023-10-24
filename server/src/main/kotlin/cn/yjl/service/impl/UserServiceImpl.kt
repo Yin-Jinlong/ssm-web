@@ -1,17 +1,22 @@
 package cn.yjl.service.impl
 
-import cn.yjl.db.User
 import cn.yjl.dao.UserDao
+import cn.yjl.db.User
+import cn.yjl.resp.ErrorRespJson
+import cn.yjl.resp.RespCode
 import cn.yjl.security.sha1_512
 import cn.yjl.security.token.Token
 import cn.yjl.security.token.isAlive
 import cn.yjl.service.BaseService
-import cn.yjl.service.exception.ServiceException
 import cn.yjl.service.UserService
+import cn.yjl.service.exception.ServiceException
+import cn.yjl.service.exception.ServiceExceptionWithJson
+import cn.yjl.service.util.assertRowChangeError
 import cn.yjl.validater.Uid
 import cn.yjl.validater.Uname
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
+import org.springframework.dao.DuplicateKeyException
 import org.springframework.stereotype.Service
 
 /**
@@ -25,12 +30,19 @@ class UserServiceImpl : BaseService(), UserService {
     lateinit var dao: UserDao
 
     override fun logon(name: String, pwd: String): User? {
-        if (dao.newUser(name, pwd.sha1_512) == 0)
-            throw ServiceException("插入用户失败：$name pwd:$pwd")
-        val u = dao.getUserByName(name) ?: throw ServiceException("获取用户失败：$name")
-        if (u.pwd == pwd.sha1_512)
-            return u
-        throw ServiceException("插入出现未知异常")
+        val u = User(0, name, pwd.sha1_512)
+        try {
+            assertRowChangeError(dao.newUser(u)) {
+                ServiceException("插入用户失败：$name pwd:$pwd")
+            }
+        } catch (e: DuplicateKeyException) {
+            throw ServiceExceptionWithJson(
+                "插入用户失败：$name pwd:$pwd",
+                ErrorRespJson(RespCode.USER_LOGON_UNAME_EXISTS),
+                e
+            )
+        }
+        return u
     }
 
     override fun login(logid: String, pwd: String): User? {
