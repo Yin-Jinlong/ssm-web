@@ -205,7 +205,7 @@ let minWaitTime = 200
 let cardLoadedWaitTime = 150
 
 function load() {
-    if (data.length > 0 && data[data.length - 1] == null)
+    if (data.length > 0 && data[data.length - 1].data == null)
         return;
     if (noMore.value)
         return;
