@@ -22,10 +22,6 @@ class MsgServiceImpl : BaseService(), MsgService {
     @Autowired
     lateinit var dao: MsgDao
 
-    override fun getAll(): Array<Msg> {
-        return dao.getAll()
-    }
-
     override fun addMsg(uid: Int, msg: String): Msg? {
         val m = Msg(0, "", uid, msg, Timestamp(0))
         assertRowChangeError(dao.insertMsg(m)) {

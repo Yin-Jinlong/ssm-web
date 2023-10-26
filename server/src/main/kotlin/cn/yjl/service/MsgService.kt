@@ -14,11 +14,6 @@ import org.springframework.transaction.annotation.Transactional
 interface MsgService : Service {
 
     /**
-     *  获取所有消息
-     */
-    fun getAll(): Array<Msg>
-
-    /**
      * 添加消息
      *
      * @param uid 用户ID

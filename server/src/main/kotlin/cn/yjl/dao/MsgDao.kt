@@ -15,14 +15,6 @@ import org.springframework.stereotype.Repository
 interface MsgDao : Dao {
 
     /**
-     * 查出所有消息
-     *
-     * @return 消息列表
-     */
-    @Select("select id,name,uid, msg, time  from leave_words natural join user order by time desc")
-    fun getAll(): Array<Msg>
-
-    /**
      * 插入消息
      *
      * @param uid 用户id
@@ -35,14 +27,14 @@ interface MsgDao : Dao {
     /**
      * 获取小于id的消息count个
      */
-    @Select("select id,name,uid, msg, time from leave_words natural join user where id < #{id} order by id desc limit #{count}")
+    @Select("select id,name,uid, msg, time from user_leave_words where id < #{id} order by id desc limit #{count}")
     fun getMsgBeforeIdLimitCount(id: Int, count: Int): Array<Msg>
 
     @Delete("delete from leave_words where id = #{id} and uid = #{uid}")
     fun delete(id: Int, uid: Int): Int
 
     @ServerUse
-    @Select("select id,name,uid, msg, time  from leave_words natural join user where id = #{id}")
+    @Select("select id,name,uid, msg, time  from user_leave_words where id = #{id}")
     fun getMsgById(id: Int): Msg?
 
 }

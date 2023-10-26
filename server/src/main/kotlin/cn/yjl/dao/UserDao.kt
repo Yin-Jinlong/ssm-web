@@ -49,15 +49,6 @@ interface UserDao : Dao {
     fun getUserByUid(uid: Int): User?
 
     /**
-     * 通过用户名查询用户
-     *
-     * @param name 用户名
-     */
-    @ServerUse
-    @Select("select * from user where name=#{name}")
-    fun getUserByName(name: String): User?
-
-    /**
      *
      * 通过用户名和密码查询用户
      *

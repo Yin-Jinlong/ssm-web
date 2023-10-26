@@ -19,3 +19,11 @@ create table if not exists leave_words
     constraint leave_words_user_uid_fk foreign key (uid) references user (uid)
 )
     comment '留言';
+
+
+drop view if exists user_leave_words;
+
+create view user_leave_words as
+select id, uid, name, msg, time
+from leave_words
+         natural join user;
