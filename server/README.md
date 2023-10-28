@@ -28,5 +28,7 @@ web:
 新建`application-token.yaml`在资源目录下
 
 ```yaml
-token-pwd: password #PBE密码
+token:
+  pwd: password #PBE密码
+  alive-time: 30m # 默认有效时长，默认30m
 ```

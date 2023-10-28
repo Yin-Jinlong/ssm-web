@@ -9,7 +9,7 @@ import java.util.*
  */
 open class Token<T>(
     val v: T,
-    alive: Long = 5 * 60 * 1000L
+    alive: Long = TokenUtil.DefaultAliveTime
 ) {
 
     companion object {
