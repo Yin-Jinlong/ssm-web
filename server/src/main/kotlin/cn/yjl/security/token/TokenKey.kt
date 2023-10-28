@@ -24,7 +24,7 @@ class TokenKey {
 
     lateinit var key: Key
 
-    @Value("\${token-pwd}")
+    @Value("\${token.pwd}")
     lateinit var pwd: String
 
     @Value("PBEWithSHA1AndDESede")

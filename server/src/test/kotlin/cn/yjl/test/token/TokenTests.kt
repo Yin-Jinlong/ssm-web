@@ -3,10 +3,12 @@ package cn.yjl.test.token
 import cn.yjl.security.token.Token
 import cn.yjl.security.token.TokenUtil
 import cn.yjl.ssmweb.SsmWebApplication
+import cn.yjl.ssmweb.config.TokenConfig
 import cn.yjl.test.annotation.SSMTest
 import cn.yjl.test.util.sameAs
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
+import java.lang.IllegalArgumentException
 
 /**
  *
@@ -26,4 +28,11 @@ class TokenTests {
         r sameAs src
     }
 
+    @Test
+    fun testParseAliveTime() {
+        TokenConfig.parseAliveTime("10m") sameAs 600000L
+        Assertions.assertThrowsExactly(IllegalArgumentException::class.java) {
+            TokenConfig.parseAliveTime("10")
+        }
+    }
 }

@@ -16,14 +16,12 @@ object TokenUtil {
 
     lateinit var tokenKey: TokenKey
 
+    var DefaultAliveTime: Long = 0
+
     /**
      * 这里使用默认（全局的用于响应返回）
      */
     val gson = Gson()
-
-    fun init(key: TokenKey) {
-        tokenKey = key
-    }
 
     fun <T> encode(t: Token<T>): String {
         return tokenKey.encode(gson.toJson(t))
